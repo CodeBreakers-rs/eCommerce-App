@@ -1,0 +1,37 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite
+dist/
+.vite/
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+.vitest/
+
+# Environment variables
+.env
+.env.*
+
+# Editor and system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Lint-staged & Husky
+.husky/_/
+*.log
+
+# Optional: local project settings or system files
+*.local.*
+*.swp
+.trash/

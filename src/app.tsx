@@ -7,7 +7,11 @@ function App() {
   return (
     <div>
       <h1>eCommerce-App</h1>
-      <button onClick={() => { setCount(count + 1); }}>
+      <button
+        onClick={() => {
+          setCount(count + 1)
+        }}
+      >
         Count is {count}
       </button>
       <p>Click the button to increase the count</p>
@@ -16,4 +20,3 @@ function App() {
 }
 
 export default App
-

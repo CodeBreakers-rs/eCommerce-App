@@ -18,7 +18,3 @@ test('increments count on click', () => {
   fireEvent.click(button)
   expect(button).toHaveTextContent(/count is 1/i)
 })
-
-test('simple test', () => {
-  expect(1 + 1).toBe(2)
-})

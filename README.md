@@ -34,7 +34,7 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 ### CommerceTools Integration
 - **API Client**: CommerceTools SDK
 - **Authentication**: OAuth
-- **Data Model**: Custom types for products, carts, orders
+- **Data Model**: products, carts, orders
 
 ## 🚀 Getting Started
 

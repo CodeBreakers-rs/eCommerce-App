@@ -56,3 +56,45 @@ This project implements a full-featured e-commerce platform using CommerceTools 
    CT_API_URL=https://api.europe-west1.gcp.commercetools.com
    CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com
    6. npm run dev
+
+
+### Scripts Overview
+
+#### "dev": "vite"
+✅ Starts the development server. Standard for Vite.
+
+---
+
+#### "build": "tsc -b && vite build"
+✅ Runs TypeScript build with project references (`tsconfig.json` with "composite": true assumed).  
+✅ Then builds for production using Vite. Ideal for TypeScript projects.
+
+---
+
+#### "lint": "eslint ."
+✅ Lints all files in the project using ESLint. Ensures code quality.
+
+---
+
+#### "preview": "vite preview"
+✅ Serves the production build locally. Great for final testing before deployment.
+
+---
+
+#### "format": "prettier --write ."
+✅ Formats all files using Prettier. Helps maintain consistent code style.
+
+---
+
+#### "test": "vitest run"
+✅ Runs tests headlessly with Vitest. Suitable for CI and local test runs.
+
+---
+
+### ✅ Summary
+All scripts are correctly set up to support:
+- Development
+- Production
+- Linting & formatting
+- Testing
+- Local production preview

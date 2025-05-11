@@ -45,6 +45,14 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 
 ### Installation
 
-1. **Clone the repository**:
-   https://github.com/CodeBreakers-rs/eCommerce-App.git
-   cd eCommerce-App
+1. **Clone the repository**: https://github.com/CodeBreakers-rs/eCommerce-App.git
+   2. cd eCommerce-App
+   3. Install dependencies: npm install
+   4. Set up environment variables: create .env file based on .env.example
+   5. Then fill in your CommerceTools credentials: 
+   CT_PROJECT_KEY=your_project_key
+   CT_CLIENT_ID=your_client_id
+   CT_CLIENT_SECRET=your_client_secret
+   CT_API_URL=https://api.europe-west1.gcp.commercetools.com
+   CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com
+   6. npm run dev

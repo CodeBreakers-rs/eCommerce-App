@@ -1,5 +1,5 @@
 import React from 'react';
-import { RegForm } from '../regForm';
+import { RegForm } from '../../features/auth/components/regForm';
 
 const TestPage = () => (
   <div>

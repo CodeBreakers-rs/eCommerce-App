@@ -10,11 +10,14 @@ export const isValidName = (name:string) : boolean =>
 export const isValidBirthDate = (birthDate:string) : boolean => {
     const date = new Date(birthDate);
     const age = new Date().getFullYear() - date.getFullYear();
-    return age >= 13;;
+    return age >= 13;
 }
 
 export const isValidStreet = (street:string) : boolean => 
     street.trim().length > 0;
+
+export const isValidCity = (city: string): boolean =>
+  /^[A-Za-z\s]{1,}$/.test(city);
 
 export const isValidPostalCode = (postalCode: string, country: string): boolean => {
   const patterns: Record<string, RegExp> = {

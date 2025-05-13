@@ -61,7 +61,7 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 
      CT_API_URL=https://api.europe-west1.gcp.commercetools.com
 
-     CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com```
+     CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com ```
 
 5. npm run dev
 
@@ -71,33 +71,33 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 #### `npm run dev`
 ✅ Starts the development server. Standard for Vite.
 
----
+
 
 #### `npm run build`
 ✅ Runs TypeScript build with project references (`tsconfig.json` with "composite": true assumed).  
 ✅ Then builds for production using Vite. Ideal for TypeScript projects.
 
----
+
 
 #### `npm run lint`
 ✅ Lints all files in the project using ESLint. Ensures code quality.
 
----
+
 
 #### `npm run preview`
 ✅ Serves the production build locally. Great for final testing before deployment.
 
----
+
 
 #### `npm run format`
 ✅ Formats all files using Prettier. Helps maintain consistent code style.
 
----
+
 
 #### `npm test`
 ✅ Runs tests headlessly with Vitest. Suitable for CI and local test runs.
 
----
+
 
 ### ✅ Summary
 All scripts are correctly set up to support:

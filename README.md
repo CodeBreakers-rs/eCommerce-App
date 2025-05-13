@@ -52,8 +52,9 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 3. Install dependencies: npm install
 
 4. Then fill in your CommerceTools credentials:
- 
-  ```CT_PROJECT_KEY=your_project_key
+
+ ```
+     CT_PROJECT_KEY=your_project_key
 
      CT_CLIENT_ID=your_client_id
 
@@ -61,7 +62,8 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 
      CT_API_URL=https://api.europe-west1.gcp.commercetools.com
 
-     CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com ```
+     CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com 
+ ```
 
 5. npm run dev
 

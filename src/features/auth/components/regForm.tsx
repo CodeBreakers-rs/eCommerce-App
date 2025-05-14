@@ -1,20 +1,20 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from 'react'
 import {
-    isValidEmail,
-    isValidPassword,
-    isValidName,
-    isValidBirthDate,
-    isValidStreet,
-    isValidCity,
-    isValidPostalCode,
-    isValidCountry,
-} from "../../../utils/validators";
-import "./regForm.css";
+  isValidEmail,
+  isValidPassword,
+  isValidName,
+  isValidBirthDate,
+  isValidStreet,
+  isValidCity,
+  isValidPostalCode,
+  isValidCountry,
+} from '../../../utils/validators'
+import './regForm.css'
 
-const validCountries = [ 'United States', 'Canada'];
+const validCountries = ['United States', 'Canada']
 
 export const RegForm = () => {
-    const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
     firstName: '',
@@ -24,50 +24,55 @@ export const RegForm = () => {
     city: '',
     postalCode: '',
     country: '',
-  });
+  })
 
- const [errors, setErrors] = useState<{ [key: string]: string }>({});
- const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
- const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedForm = { ...formData, [e.target.name]: e.target.value };
-    setFormData(updatedForm);
-    validate(updatedForm);
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedForm = { ...formData, [e.target.name]: e.target.value }
+    setFormData(updatedForm)
+    validate(updatedForm)
+  }
 
   const validate = (data = formData) => {
-    const newErrors: typeof errors = {};
+    const newErrors: typeof errors = {}
 
-    if (!isValidEmail(formData.email)) newErrors.email = 'Invalid email format';
-    if (!isValidPassword(formData.password)) newErrors.password = 'Password must be at least 8 characters, include upper/lowercase and number';
-    if (!isValidName(formData.firstName)) newErrors.firstName = 'Invalid first name';
-    if (!isValidName(formData.lastName)) newErrors.lastName = 'Invalid last name';
-    if (!isValidBirthDate(formData.birthDate)) newErrors.birthDate = 'You must be at least 13 years old';
-    if (!isValidStreet(formData.street)) newErrors.street = 'Street cannot be empty';
-    if (!isValidCity(formData.city)) newErrors.city = 'Invalid city name';
-    if (!isValidPostalCode(formData.postalCode, 'US')) newErrors.postalCode = 'Invalid postal code';
-    if (!isValidCountry(formData.country, validCountries)) newErrors.country = 'Select a valid country';
+    if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
+    if (!isValidPassword(data.password))
+      newErrors.password =
+        'Password must be at least 8 characters, include upper/lowercase and number'
+    if (!isValidName(data.firstName)) newErrors.firstName = 'Invalid first name'
+    if (!isValidName(data.lastName)) newErrors.lastName = 'Invalid last name'
+    if (!isValidBirthDate(data.birthDate))
+      newErrors.birthDate = 'You must be at least 13 years old'
+    if (!isValidStreet(data.street)) newErrors.street = 'Street cannot be empty'
+    if (!isValidCity(data.city)) newErrors.city = 'Invalid city name'
+    if (!isValidPostalCode(data.postalCode, 'US'))
+      newErrors.postalCode = 'Invalid postal code'
+    if (!isValidCountry(data.country, validCountries))
+      newErrors.country = 'Select a valid country'
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   useEffect(() => {
-    const allFilled = Object.values(formData).every(val => val.trim() !== '');
-    const noErrors = validate(formData);
-    setIsButtonDisabled(!(allFilled && noErrors));
-  }, [formData]);
+    const allFilled = Object.values(formData).every((val) => val.trim() !== '')
+    const noErrors = validate(formData)
+    setIsButtonDisabled(!(allFilled && noErrors))
+  }, [formData])
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!isButtonDisabled) {
-      //connectApi();  //TODO 
+      //connectApi();  //TODO
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="reg-form">
-       {[
+      {[
         { name: 'email', type: 'email', label: 'Email' },
         { name: 'password', type: 'password', label: 'Password' },
         { name: 'firstName', type: 'text', label: 'First Name' },
@@ -97,7 +102,9 @@ export const RegForm = () => {
           )}
         </div>
       ))}
-      <button type="submit" disabled={isButtonDisabled}>Register</button>
+      <button type="submit" disabled={isButtonDisabled}>
+        Register
+      </button>
     </form>
-  );
-};
+  )
+}

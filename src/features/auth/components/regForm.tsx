@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import {
     isValidEmail,
     isValidPassword,
@@ -9,6 +9,7 @@ import {
     isValidPostalCode,
     isValidCountry,
 } from "../../../utils/validators";
+import "./regForm.css";
 
 const validCountries = [ 'United States', 'Canada'];
 
@@ -26,13 +27,15 @@ export const RegForm = () => {
   });
 
  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+ const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
- const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
-  const { name, value} = e.target;
-  setFormData((prev) => ( { ...prev, [name]: value}));
- };
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedForm = { ...formData, [e.target.name]: e.target.value };
+    setFormData(updatedForm);
+    validate(updatedForm);
+  };
 
-  const validate = () => {
+  const validate = (data = formData) => {
     const newErrors: typeof errors = {};
 
     if (!isValidEmail(formData.email)) newErrors.email = 'Invalid email format';
@@ -49,48 +52,52 @@ export const RegForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  useEffect(() => {
+    const allFilled = Object.values(formData).every(val => val.trim() !== '');
+    const noErrors = validate(formData);
+    setIsButtonDisabled(!(allFilled && noErrors));
+  }, [formData]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      //connectApi();
+    if (!isButtonDisabled) {
+      //connectApi();  //TODO 
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-      <p>{errors.email}</p>
-
-      <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} />
-      <p>{errors.password}</p>
-
-      <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
-      <p>{errors.firstName}</p>
-
-      <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
-      <p>{errors.lastName}</p>
-
-      <input name="birthDate" type="date" placeholder="Birth Date" value={formData.birthDate} onChange={handleChange} />
-      <p>{errors.birthDate}</p>
-
-      <input name="street" placeholder="Street" value={formData.street} onChange={handleChange} />
-      <p>{errors.street}</p>
-
-      <input name="city" placeholder="City" value={formData.city} onChange={handleChange} />
-      <p>{errors.city}</p>
-
-      <input name="postalCode" placeholder="Postal Code" value={formData.postalCode} onChange={handleChange} />
-      <p>{errors.postalCode}</p>
-
-      <select name="country" value={formData.country} onChange={handleChange}>
-        <option value="">Select Country</option>
-        {validCountries.map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-      </select>
-      <p>{errors.country}</p>
-
-      <button type="submit">Register</button>
+    <form onSubmit={handleSubmit} className="reg-form">
+       {[
+        { name: 'email', type: 'email', label: 'Email' },
+        { name: 'password', type: 'password', label: 'Password' },
+        { name: 'firstName', type: 'text', label: 'First Name' },
+        { name: 'lastName', type: 'text', label: 'Last Name' },
+        { name: 'birthDate', type: 'date', label: 'Birth Date' },
+        { name: 'street', type: 'text', label: 'Street' },
+        { name: 'city', type: 'text', label: 'City' },
+        { name: 'postalCode', type: 'text', label: 'Postal Code' },
+        { name: 'country', type: 'text', label: 'Country' },
+      ].map(({ name, type, label }) => (
+        <div key={name} className="form-group">
+          <label htmlFor={name}>{label}</label>
+          <input
+            type={type}
+            id={name}
+            name={name}
+            value={formData[name as keyof typeof formData]}
+            onChange={handleChange}
+            className={errors[name] ? 'input-error' : ''}
+            aria-describedby={`${name}-error`}
+            aria-invalid={!!errors[name]}
+          />
+          {errors[name] && (
+            <span id={`${name}-error`} className="error-message">
+              ⚠️ {errors[name]}
+            </span>
+          )}
+        </div>
+      ))}
+      <button type="submit" disabled={isButtonDisabled}>Register</button>
     </form>
   );
 };

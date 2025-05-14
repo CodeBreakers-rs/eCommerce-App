@@ -12,7 +12,6 @@ const AppRouter = () => (
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="*" element={<NotFoundPage />} />
-      <Route path="/test" element={<TestReg />} />
     </Routes>
   </BrowserRouter>
 );

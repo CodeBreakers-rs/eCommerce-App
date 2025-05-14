@@ -5,15 +5,16 @@
 ## 🔗 Trello Task Link
 
 <!-- Add a link to the Trello card this PR addresses -->
-[Trello Card](PASTE_TRELLO_CARD_LINK_HERE)
 
+[Trello Card](PASTE_TRELLO_CARD_LINK_HERE)
 
 ## 🛠️ Proposed Changes
 
 <!-- List the main changes made -->
-- 
-- 
-- 
+
+-
+-
+-
 
 ## 💡 Rationale
 
@@ -26,4 +27,3 @@
 - [ ] I’ve added/updated relevant documentation
 - [ ] I’ve added/updated tests where applicable
 - [ ] This PR includes only one logical change (no mix of concerns)
-

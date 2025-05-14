@@ -1,6 +1,6 @@
 const ProductPage = () => (
   <section>
-    <h1>Main Page</h1>
+    <h1>ProductPage</h1>
   </section>
 )
 

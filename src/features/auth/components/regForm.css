@@ -38,3 +38,17 @@ button[disabled] {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+select.input-error {
+  border-color: #e74c3c;
+  background-color: #fff6f6;
+}

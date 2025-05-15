@@ -28,11 +28,14 @@ export const RegForm = () => {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const updatedForm = { ...formData, [e.target.name]: e.target.value }
     setFormData(updatedForm)
-    validate(updatedForm)
+    if (hasSubmitted) validate(updatedForm)
   }
 
   const validate = (data = formData) => {
@@ -65,8 +68,11 @@ export const RegForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isButtonDisabled) {
+    setHasSubmitted(true)
+    const noErrors = validate()
+    if (noErrors) {
       //connectApi();  //TODO
+      alert('Submitted succesfully')
     }
   }
 
@@ -81,7 +87,6 @@ export const RegForm = () => {
         { name: 'street', type: 'text', label: 'Street' },
         { name: 'city', type: 'text', label: 'City' },
         { name: 'postalCode', type: 'text', label: 'Postal Code' },
-        { name: 'country', type: 'text', label: 'Country' },
       ].map(({ name, type, label }) => (
         <div key={name} className="form-group">
           <label htmlFor={name}>{label}</label>
@@ -91,17 +96,43 @@ export const RegForm = () => {
             name={name}
             value={formData[name as keyof typeof formData]}
             onChange={handleChange}
-            className={errors[name] ? 'input-error' : ''}
+            className={hasSubmitted && errors[name] ? 'input-error' : ''}
             aria-describedby={`${name}-error`}
             aria-invalid={!!errors[name]}
           />
-          {errors[name] && (
+          {hasSubmitted && errors[name] && (
             <span id={`${name}-error`} className="error-message">
               ⚠️ {errors[name]}
             </span>
           )}
         </div>
       ))}
+
+      <div className="form-group">
+        <label htmlFor="country">Country</label>
+        <select
+          id="country"
+          name="country"
+          value={formData.country}
+          onChange={handleChange}
+          className={hasSubmitted && errors.country ? 'input-error' : ''}
+          aria-describedby="country-error"
+          aria-invalid={!!errors.country}
+        >
+          <option value="">-- Select a country --</option>
+          {validCountries.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select>
+        {hasSubmitted && errors.country && (
+          <span id="country-error" className="error-message">
+            ⚠️ {errors.country}
+          </span>
+        )}
+      </div>
+
       <button type="submit" disabled={isButtonDisabled}>
         Register
       </button>

@@ -8,9 +8,20 @@ export const isValidName = (name: string): boolean =>
   /^[A-Za-z]{1,}$/.test(name)
 
 export const isValidBirthDate = (birthDate: string): boolean => {
-  const date = new Date(birthDate)
-  const age = new Date().getFullYear() - date.getFullYear()
-  return age >= 13
+  const birth = new Date(birthDate)
+  const today = new Date()
+
+  const age = today.getFullYear() - birth.getFullYear()
+  const months = today.getMonth() - birth.getMonth()
+  const days = today.getDate() - birth.getDate()
+
+  if (age > 13) return true
+  if (age === 13) {
+    if (months > 0) return true
+    if (months === 0 && days >= 0) return true
+  }
+
+  return false
 }
 
 export const isValidStreet = (street: string): boolean =>
@@ -23,11 +34,13 @@ export const isValidPostalCode = (
   postalCode: string,
   country: string,
 ): boolean => {
+  const toStandart = postalCode.toUpperCase().trim()
+
   const patterns: Record<string, RegExp> = {
     US: /^\d{5}$/,
     CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
   }
-  return patterns[country]?.test(postalCode) ?? false
+  return patterns[country]?.test(toStandart) ?? false
 }
 
 export const isValidCountry = (

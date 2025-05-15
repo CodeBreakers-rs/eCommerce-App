@@ -62,7 +62,7 @@ export const RegForm = () => {
 
   useEffect(() => {
     const allFilled = Object.values(formData).every((val) => val.trim() !== '')
-    setIsButtonDisabled(!(allFilled))
+    setIsButtonDisabled(!allFilled)
   }, [formData])
 
   const handleSubmit = (e: React.FormEvent) => {

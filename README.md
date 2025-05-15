@@ -4,11 +4,12 @@
 
 **Project Name**: CommerceTools E-Commerce Platform  
 **Purpose**: Build a modern e-commerce solution powered by CommerceTools API with robust development workflows  
-**Status**: In Development (Sprint 1)  
+**Status**: In Development (Sprint 1)
 
 This project implements a full-featured e-commerce platform using CommerceTools as the backend service. The current sprint focuses on setting up the development environment, project infrastructure, and CommerceTools integration.
 
 ## 🏗️ Sprint 1 Focus Areas
+
 - Repository setup and organization
 - Project management board configuration
 - CommerceTools project and API client setup
@@ -18,11 +19,13 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 ## 🛠 Technology Stack
 
 ### Core Infrastructure
+
 - **Version Control**: GitHub
 - **Project Management**: [Trello]
 - **Package Manager**: npm
 
 ### Development Tools
+
 - **Bundler**: Vite
 - **Language**: TypeScript
 - **Framework**: React
@@ -32,6 +35,7 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 - **Testing**: Vitest
 
 ### CommerceTools Integration
+
 - **API Client**: CommerceTools SDK
 - **Authentication**: OAuth 2.0
 - **Data Model**: products, carts, orders
@@ -39,6 +43,7 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js v22+
 - CommerceTools account with admin access
 - GitHub account
@@ -53,56 +58,51 @@ This project implements a full-featured e-commerce platform using CommerceTools 
 
 4. Then fill in your CommerceTools credentials:
 
- ```
-     CT_PROJECT_KEY=your_project_key
+```
+    CT_PROJECT_KEY=your_project_key
 
-     CT_CLIENT_ID=your_client_id
+    CT_CLIENT_ID=your_client_id
 
-     CT_CLIENT_SECRET=your_client_secret
+    CT_CLIENT_SECRET=your_client_secret
 
-     CT_API_URL=https://api.europe-west1.gcp.commercetools.com
+    CT_API_URL=https://api.europe-west1.gcp.commercetools.com
 
-     CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com 
- ```
+    CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com
+```
 
 5. npm run dev
-
 
 ### Scripts Overview
 
 #### `npm run dev`
+
 ✅ Starts the development server. Standard for Vite.
 
-
-
 #### `npm run build`
+
 ✅ Runs TypeScript build with project references (`tsconfig.json` with "composite": true assumed).  
 ✅ Then builds for production using Vite. Ideal for TypeScript projects.
 
-
-
 #### `npm run lint`
+
 ✅ Lints all files in the project using ESLint. Ensures code quality.
 
-
-
 #### `npm run preview`
+
 ✅ Serves the production build locally. Great for final testing before deployment.
 
-
-
 #### `npm run format`
+
 ✅ Formats all files using Prettier. Helps maintain consistent code style.
 
-
-
 #### `npm test`
+
 ✅ Runs tests headlessly with Vitest. Suitable for CI and local test runs.
 
-
-
 ### ✅ Summary
+
 All scripts are correctly set up to support:
+
 - `dev`: Development server
 - `build`: Production build
 - `lint`: Code quality checks

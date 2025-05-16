@@ -39,6 +39,7 @@ describe('Direct Navigation Routes', () => {
     )
     expect(screen.getByText(/Registration/i)).toBeInTheDocument()
   })
+
 })
 describe('Not Found Route', () => {
   it('navigates to Not Found page via direct URL', () => {

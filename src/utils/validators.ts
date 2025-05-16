@@ -1,5 +1,7 @@
-export const isValidEmail = (email: string): boolean =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+export const isValidEmail = (email: string): boolean => {
+  const checkEmail = email.trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(checkEmail)
+}
 
 export const isValidPassword = (password: string): boolean => {
   const checkPass = password.trim();

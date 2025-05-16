@@ -13,6 +13,18 @@ import './regForm.css'
 
 const validCountries = ['United States', 'Canada']
 
+type FormDataType = {
+  email: string
+  password: string
+  firstName: string
+  lastName: string
+  birthDate: string
+  street: string
+  city: string
+  postalCode: string
+  country: string
+}
+
 export const RegForm = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -38,7 +50,7 @@ export const RegForm = () => {
     if (hasSubmitted) validate(updatedForm)
   }
 
-  const validate = (data = formData) => {
+  const validate = (data: FormDataType) => {
     const newErrors: typeof errors = {}
 
     if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
@@ -51,7 +63,7 @@ export const RegForm = () => {
       newErrors.birthDate = 'You must be at least 13 years old'
     if (!isValidStreet(data.street)) newErrors.street = 'Street cannot be empty'
     if (!isValidCity(data.city)) newErrors.city = 'Invalid city name'
-    if (!isValidPostalCode(data.postalCode, 'US'))
+    if (!isValidPostalCode(data.postalCode, data.country))
       newErrors.postalCode = 'Invalid postal code'
     if (!isValidCountry(data.country, validCountries))
       newErrors.country = 'Select a valid country'
@@ -68,10 +80,10 @@ export const RegForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setHasSubmitted(true)
-    const noErrors = validate()
+    const noErrors = validate(formData)
     if (noErrors) {
       //connectApi();  //TODO
-      alert('Submitted succesfully')
+      alert('Submitted successfully')
     }
   }
 

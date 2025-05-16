@@ -50,9 +50,9 @@ describe('Validation Utilities', () => {
   })
 
   it('validates postal code', () => {
-    expect(isValidPostalCode('12345', 'US')).toBe(true)
-    expect(isValidPostalCode('A1B 2C3', 'CA')).toBe(true)
-    expect(isValidPostalCode('invalid', 'US')).toBe(false)
+    expect(isValidPostalCode('12345', 'United States')).toBe(true)
+    expect(isValidPostalCode('A1B 2C3', 'Canada')).toBe(true)
+    expect(isValidPostalCode('invalid', 'United States')).toBe(false)
   })
 
   it('validates country from list', () => {

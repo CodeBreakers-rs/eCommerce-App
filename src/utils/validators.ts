@@ -34,23 +34,14 @@ export const isValidPostalCode = (
   postalCode: string,
   country: string,
 ): boolean => {
-  const toStandard = postalCode.toUpperCase().replace(/[^A-Z0-9]/g, '')
-
-  const toCanStandard = (input: string) => {
-    if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(input)) {
-      return `${input.slice(0, 3)} ${input.slice(3)}`
-    }
-    return input
-  }
-
   const patterns: Record<string, RegExp> = {
-    US: /^\d{5}$/,
-    CA: /^[A-Z]\d[A-Z] ?\d[A-Z]\d$/,
+    'United States': /^\d{5}$/,
+    Canada: /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/,
   }
+  const pattern = patterns[country]
+  if (!pattern) return false
 
-  const normalized = country === 'CA' ? toCanStandard(toStandard) : toStandard
-
-  return patterns[country]?.test(normalized) ?? false
+  return pattern.test(postalCode)
 }
 
 export const isValidCountry = (

@@ -56,7 +56,7 @@ export const RegForm = () => {
     if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
     if (!isValidPassword(data.password))
       newErrors.password =
-        'Password must be at least 8 characters, include upper/lowercase and number'
+        'Password must be at least 8 characters, include upper/lowercase, number and one special character'
     if (!isValidName(data.firstName)) newErrors.firstName = 'Invalid first name'
     if (!isValidName(data.lastName)) newErrors.lastName = 'Invalid last name'
     if (!isValidBirthDate(data.birthDate))

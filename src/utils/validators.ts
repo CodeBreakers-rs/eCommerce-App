@@ -1,8 +1,10 @@
 export const isValidEmail = (email: string): boolean =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
-export const isValidPassword = (password: string): boolean =>
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)
+export const isValidPassword = (password: string): boolean => {
+  const checkPass = password.trim();
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(checkPass)
+}
 
 export const isValidName = (name: string): boolean =>
   /^[A-Za-z]{1,}$/.test(name)

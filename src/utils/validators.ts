@@ -1,11 +1,12 @@
 export const isValidEmail = (email: string): boolean => {
-  const checkEmail = email.trim();
+  const checkEmail = email.trim()
+  if (checkEmail !== email) return false
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(checkEmail)
 }
 
 export const isValidPassword = (password: string): boolean => {
-  const checkPass = password.trim();
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(checkPass)
+  const checkPass = password.trim()
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(checkPass)
 }
 
 export const isValidName = (name: string): boolean =>

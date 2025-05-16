@@ -26,7 +26,7 @@ describe('Direct Navigation Routes', () => {
         </Routes>
       </MemoryRouter>,
     )
-    expect(screen.getByText(/Login/i)).toBeInTheDocument()
+    expect(screen.getByText('Login Page')).toBeInTheDocument()
   })
 
   it('navigates to Registration page via direct URL', () => {
@@ -39,7 +39,6 @@ describe('Direct Navigation Routes', () => {
     )
     expect(screen.getByText(/Registration/i)).toBeInTheDocument()
   })
-
 })
 describe('Not Found Route', () => {
   it('navigates to Not Found page via direct URL', () => {

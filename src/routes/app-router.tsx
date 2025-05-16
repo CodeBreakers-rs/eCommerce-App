@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './protected-route'
+import RedirectIfAuth from './redirect-if-auth'
+
 import MainLayout from '../components/layout/main-layout'
 
 import MainPage from '../pages/main-page'
@@ -16,13 +19,62 @@ const AppRouter = () => (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegistrationPage />} />
-        <Route path="/catalog" element={<CatalogPage />} />
-        <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/basket" element={<BasketPage />} />
-        <Route path="/about" element={<AboutPage />} />
+        <Route
+          path="/login"
+          element={
+            <RedirectIfAuth>
+              <LoginPage />
+            </RedirectIfAuth>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <RedirectIfAuth>
+              <RegistrationPage />
+            </RedirectIfAuth>
+          }
+        />
+        <Route
+          path="/catalog"
+          element={
+            <ProtectedRoute>
+              <CatalogPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProtectedRoute>
+              <ProductPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/basket"
+          element={
+            <ProtectedRoute>
+              <BasketPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <AboutPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

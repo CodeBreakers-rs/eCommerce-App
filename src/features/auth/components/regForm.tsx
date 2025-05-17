@@ -79,8 +79,8 @@ export const RegForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setHasSubmitted(true)
     const noErrors = validate(formData)
+    setHasSubmitted(true)
     if (noErrors) {
       //connectApi();  //TODO
       alert('Submitted successfully')

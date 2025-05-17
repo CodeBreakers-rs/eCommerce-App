@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { LoginForm } from '../../features/auth/components/loginForm'
+import { LoginForm } from '../loginForm'
 
 describe('LoginForm', () => {
   it('renders email and password inputs and login button', () => {

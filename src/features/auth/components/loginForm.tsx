@@ -9,7 +9,7 @@ export const LoginForm = () => {
     {},
   )
   const [showPassword, setShowPassword] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const [hasValidated, setHasValidated] = useState(false)
 
   const validate = () => {
     const newErrors: typeof errors = {}
@@ -25,7 +25,7 @@ export const LoginForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setHasValidated(true)
     if (validate()) {
       alert('Form submitted successfully')
       // API //TODO
@@ -42,10 +42,10 @@ export const LoginForm = () => {
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={submitted && errors.email ? 'input-error' : ''}
+          className={hasValidated && errors.email ? 'input-error' : ''}
           aria-describedby="email-error"
         />
-        {submitted && errors.email && (
+        {hasValidated && errors.email && (
           <span id="email-error" className="error-message">
             ⚠️ {errors.email}
           </span>
@@ -60,20 +60,21 @@ export const LoginForm = () => {
           name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className={submitted && errors.password ? 'input-error' : ''}
+          className={hasValidated && errors.password ? 'input-error' : ''}
           aria-describedby="password-error"
         />
         <div>
-          <label>
+          <label htmlFor={password}>
             <input
               type="checkbox"
+              id="show-password"
               checked={showPassword}
               onChange={() => setShowPassword((prev) => !prev)}
             />
             Show Password 👁️‍🗨️
           </label>
         </div>
-        {submitted && errors.password && (
+        {hasValidated && errors.password && (
           <span id="password-error" className="error-message">
             ⚠️ {errors.password}
           </span>

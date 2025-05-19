@@ -64,7 +64,7 @@ export const LoginForm = () => {
           aria-describedby="password-error"
         />
         <div>
-          <label htmlFor={'show-password'}>
+          <label htmlFor="show-password">
             <input
               type="checkbox"
               id="show-password"

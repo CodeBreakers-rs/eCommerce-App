@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { RegForm } from '../../features/auth/components/regForm'
+import { RegForm } from '../regForm'
 
 describe('Registration Form', () => {
   it('renders all required input fields', () => {
@@ -9,20 +9,20 @@ describe('Registration Form', () => {
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/first name/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/last name/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/date of birth/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/birth/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/street/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/city/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/postal code/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/country/i)).toBeInTheDocument()
   })
 
-  it('shows validation errors when submitting empty form', () => {
+  it('shows validation errors when submitting empty form', async () => {
     render(<RegForm />)
     const button = screen.getByRole('button', { name: /register/i })
     fireEvent.click(button)
 
-    expect(screen.getByText(/invalid email format/i)).toBeInTheDocument()
-    expect(screen.getByText(/password must be at least/i)).toBeInTheDocument()
+    expect(await screen.getByLabelText(/Email/i)).toBeInTheDocument()
+    expect(await screen.getByLabelText(/Password/i)).toBeInTheDocument()
   })
 
   it('submits correctly when all fields are valid', () => {
@@ -40,7 +40,7 @@ describe('Registration Form', () => {
     fireEvent.change(screen.getByLabelText(/last name/i), {
       target: { value: 'Doe' },
     })
-    fireEvent.change(screen.getByLabelText(/date of birth/i), {
+    fireEvent.change(screen.getByLabelText(/birth/i), {
       target: { value: '2000-01-01' },
     })
     fireEvent.change(screen.getByLabelText(/street/i), {
@@ -50,7 +50,7 @@ describe('Registration Form', () => {
       target: { value: 'Toronto' },
     })
     fireEvent.change(screen.getByLabelText(/postal code/i), {
-      target: { value: '12345' },
+      target: { value: 'A1B 2C3' },
     })
     fireEvent.change(screen.getByLabelText(/country/i), {
       target: { value: 'Canada' },

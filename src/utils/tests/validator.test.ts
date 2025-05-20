@@ -15,11 +15,22 @@ describe('Validation Utilities', () => {
   it('validates email correctly', () => {
     expect(isValidEmail('test@example.com')).toBe(true)
     expect(isValidEmail('invalid-email')).toBe(false)
+    expect(isValidEmail(' test@example.com')).toBe(false)
+    expect(isValidEmail('test@example.com ')).toBe(false)
+    expect(isValidEmail('user@.com')).toBe(false)
+    expect(isValidEmail('user@example')).toBe(false)
   })
 
   it('validates password complexity', () => {
-    expect(isValidPassword('Password1')).toBe(true)
+    expect(isValidPassword('Pass123!')).toBe(true)
+    expect(isValidPassword('Password1')).toBe(false)
     expect(isValidPassword('pass')).toBe(false)
+    expect(isValidPassword('short1A')).toBe(false)
+    expect(isValidPassword('password1')).toBe(false)
+    expect(isValidPassword('PASSWORD1')).toBe(false)
+    expect(isValidPassword('Password')).toBe(false)
+    expect(isValidPassword(' Password1')).toBe(false)
+    expect(isValidPassword('Password1 ')).toBe(false)
   })
 
   it('validates name', () => {

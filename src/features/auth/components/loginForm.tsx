@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { isValidEmail, isValidPassword } from '../../../utils/validators'
+import { loginWithPassword, getCustomerData } from '../services/authService'
+import { logout } from '../services/authService'
 import './regForm.css'
 
 export const LoginForm = () => {
@@ -10,6 +12,8 @@ export const LoginForm = () => {
   )
   const [showPassword, setShowPassword] = useState(false)
   const [hasValidated, setHasValidated] = useState(false)
+  const [loginError, setLoginError] = useState('')
+  const [user, setUser] = useState<any>(null)
 
   const validate = () => {
     const newErrors: typeof errors = {}
@@ -23,12 +27,22 @@ export const LoginForm = () => {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setHasValidated(true)
+    setLoginError('')
     if (validate()) {
-      alert('Form submitted successfully')
-      // API //TODO
+      try {
+        const tokens = await loginWithPassword(email, password)
+        const customer = await getCustomerData(tokens.access_token)
+        setUser(customer)
+        alert(`Welcome, ${customer.firstName || customer.email}!`)
+      } catch (error: any) {
+        setLoginError(
+          'Login failed. Please check your credentials and try again.',
+        )
+        console.error(error)
+      }
     }
   }
 
@@ -81,9 +95,29 @@ export const LoginForm = () => {
         )}
       </div>
 
+      {loginError && <div className="error-message">{loginError}</div>}
+
       <button type="submit" disabled={!email.trim() || !password.trim()}>
         Login
       </button>
+      {user && (
+        <>
+          <div className="success-message">
+            Logged in as: <strong>{user.email}</strong>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              logout()
+              setUser(null)
+              setEmail('')
+              setPassword('')
+            }}
+          >
+            Logout
+          </button>
+        </>
+      )}
     </form>
   )
 }

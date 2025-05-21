@@ -1,8 +1,8 @@
-const PROJECT_KEY = import.meta.env.CTP_PROJECT_KEY
-const CLIENT_ID = import.meta.env.CTP_CLIENT_ID
-const CLIENT_SECRET = import.meta.env.CTP_CLIENT_SECRET
-const API_BASE_URL = import.meta.env.CTP_API_URL
-const AUTH_BASE_URL = import.meta.env.CTP_AUTH_URL
+const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
+const CLIENT_ID = import.meta.env.VITE_CT_CLIENT_ID
+const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
+const API_BASE_URL = import.meta.env.VITE_CT_API_URL
+const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
 
 const API_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`

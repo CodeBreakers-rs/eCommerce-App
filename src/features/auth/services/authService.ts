@@ -4,8 +4,31 @@ const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
 const API_BASE_URL = import.meta.env.VITE_CT_API_URL
 const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
 
+const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers/signup`
 const API_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
+
+export async function registerCustomer(email: string, password: string, firstName?: string, lastName?: string) {
+  const response = await fetch(API_SIGNUP_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      firstName,
+      lastName,
+    }),
+  })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.message || 'Registration failed')
+  }
+
+  return await response.json()
+}
 
 const encodeCredentials = (clientId: string, clientSecret: string) =>
   btoa(`${clientId}:${clientSecret}`)

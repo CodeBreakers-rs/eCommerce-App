@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { registerCustomer } from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -41,6 +42,8 @@ export const RegForm = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [errorMessage, setErrorMessage] = useState()
+  const [] = useState()
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -77,12 +80,19 @@ export const RegForm = () => {
     setIsButtonDisabled(!allFilled)
   }, [formData])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const noErrors = validate(formData)
     setHasSubmitted(true)
     if (noErrors) {
-      //connectApi();  //TODO
+      try {
+        const result = await registerCustomer(email, password, firstName, lastName);
+        //message for succcessfull registration
+        console.log(" success", result)
+      } catch {
+        // error
+        console.log(" error")
+      }
       alert('Submitted successfully')
     }
   }

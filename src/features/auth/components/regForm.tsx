@@ -27,7 +27,7 @@ type FormDataType = {
 }
 
 export const RegForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     email: '',
     password: '',
     firstName: '',
@@ -42,8 +42,8 @@ export const RegForm = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [hasSubmitted, setHasSubmitted] = useState(false)
-  const [errorMessage, setErrorMessage] = useState()
-  const [] = useState()
+  const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -82,23 +82,63 @@ export const RegForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const noErrors = validate(formData)
     setHasSubmitted(true)
-    if (noErrors) {
-      try {
-        const result = await registerCustomer(email, password, firstName, lastName);
-        //message for succcessfull registration
-        console.log(" success", result)
-      } catch {
-        // error
-        console.log(" error")
-      }
-      alert('Submitted successfully')
+    setMessage('')
+    setErrorMessage('')
+
+    const noErrors = validate(formData)
+    if (!noErrors) return
+
+    const customerDraft = {
+      email: formData.email,
+      password: formData.password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dateOfBirth: formData.birthDate,
+      addresses: [
+        {
+          streetName: formData.street,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          country: formData.country === 'United States' ? 'US' : 'CA',
+        },
+      ],
+      defaultShippingAddress: 0,
+    }
+
+    try {
+      const result = await registerCustomer(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName,
+      )
+      console.log('Success:', result)
+      setMessage(` Account created for ${result.customer.email}`)
+      setFormData({
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        birthDate: '',
+        street: '',
+        city: '',
+        postalCode: '',
+        country: '',
+      })
+      setErrors({})
+      setHasSubmitted(false)
+    } catch (error: any) {
+      console.error('Registration error:', error)
+      setErrorMessage(` Registration failed: ${error.message}`)
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="reg-form">
+      {message && <p className="success-message">{message}</p>}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
       {[
         { name: 'email', type: 'email', label: 'Email' },
         { name: 'password', type: 'password', label: 'Password' },

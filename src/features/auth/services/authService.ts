@@ -4,11 +4,16 @@ const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
 const API_BASE_URL = import.meta.env.VITE_CT_API_URL
 const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
 
-const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers/signup`
+const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers/customers`
 const API_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
 
-export async function registerCustomer(email: string, password: string, firstName?: string, lastName?: string) {
+export async function registerCustomer(
+  email: string,
+  password: string,
+  firstName?: string,
+  lastName?: string,
+) {
   const response = await fetch(API_SIGNUP_URL, {
     method: 'POST',
     headers: {
@@ -44,7 +49,11 @@ export async function loginWithPassword(email: string, password: string) {
       grant_type: 'password',
       username: email,
       password: password,
-      scope: `manage_project:${PROJECT_KEY}`,
+      scope: [
+        `view_published_products:${PROJECT_KEY},
+        manage_my_orders:${PROJECT_KEY},
+        manage_my_profile:${PROJECT_KEY}`,
+      ].join(' '),
     }),
   })
 

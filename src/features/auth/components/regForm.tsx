@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { registerCustomer } from '../services/authService'
+import * as authService from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -107,14 +107,9 @@ export const RegForm = () => {
     }
 
     try {
-      const result = await registerCustomer(
-        formData.email,
-        formData.password,
-        formData.firstName,
-        formData.lastName,
-      )
+      const result = await authService.registerCustomer(customerDraft)
       console.log('Success:', result)
-      setMessage(` Account created for ${result.customer.email}`)
+      setMessage(`Account created for ${result.customer.email}`)
       setFormData({
         email: '',
         password: '',

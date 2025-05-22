@@ -8,23 +8,21 @@ const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers/customers`
 const API_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
 
-export async function registerCustomer(
-  email: string,
-  password: string,
-  firstName?: string,
-  lastName?: string,
-) {
+export async function registerCustomer(customerDraft: {
+  email: string
+  password: string
+  firstName?: string
+  lastName?: string
+  dateOfBirth?: string
+  addresses?: any[]
+  defaultShippingAddress?: number
+}) {
   const response = await fetch(API_SIGNUP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      email,
-      password,
-      firstName,
-      lastName,
-    }),
+    body: JSON.stringify(customerDraft),
   })
 
   if (!response.ok) {

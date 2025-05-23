@@ -126,38 +126,46 @@ export const RegForm = () => {
     } catch (error: any) {
       console.error('Registration error:', error)
 
-      const message = error.message?.toLowerCase() || ''
+      const statusCode = error.statusCode
+      const backendErrors = error.body?.errors || []
 
-      if (message.includes('already exists')) {
-        setErrorMessage(
-          '📧 An account with this email already exists. Please log in or use a different email address.',
-        )
-      } else if (error.body?.errors?.length > 0) {
-        const backendErrors = error.body.errors
-        const messages = backendErrors.map((err: any) => {
-          switch (err.code) {
-            case 'InvalidField':
-              return `🛡️ Invalid value for '${err.field}': ${err.message}`
-            case 'MissingField':
-              return `🛡️ Missing required field: ${err.field}`
-            case 'InvalidInput':
-              return `🛡️ Invalid input: ${err.message}`
-            case 'DuplicateField':
-              return `📧 Duplicate field '${err.field}': ${err.message}`
-            case 'ResourceNotFound':
-              return `🔍 Resource not found: ${err.message}`
-            case 'RequiredField':
-              return `🛡️ Required field missing: ${err.message}`
-            default:
-              return `⚠️ ${err.message || 'Unknown error occurred'}`
-          }
-        })
-
-        setErrorMessage(messages.join(' '))
-      } else {
-        setErrorMessage(
-          '⚠️ Something went wrong during registration. Please try again later.',
-        )
+      switch (statusCode) {
+        case 400: {
+          const messages = backendErrors.map((err: any) => {
+            switch (err.code) {
+              case 'InvalidField':
+                return `⚠️ Invalid value for '${err.field}': ${err.message}`
+              case 'MissingField':
+              case 'RequiredField':
+                return `⚠️ Missing required field: ${err.field}`
+              case 'DuplicateField':
+                return `⚠️ Duplicate value for '${err.field}': ${err.message}`
+              case 'InvalidInput':
+                return `⚠️ Invalid input: ${err.message}`
+              default:
+                return `⚠️ ${err.message || 'Validation error'}`
+            }
+          })
+          setErrorMessage(messages.join(' '))
+          break
+        }
+        case 401:
+          setErrorMessage('🔒 Unauthorized. Please check your credentials.')
+          break
+        case 403:
+          setErrorMessage('🚫 Access denied. You do not have permission.')
+          break
+        case 409:
+          setErrorMessage('⚠️ An account with this email already exists.')
+          break
+        case 500:
+        case 502:
+        case 503:
+          setErrorMessage('⚠️ Server error. Please try again later.')
+          break
+        default:
+          setErrorMessage('⚠️ Something went wrong. Please try again.')
+          break
       }
     }
   }

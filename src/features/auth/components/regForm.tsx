@@ -130,6 +130,12 @@ export const RegForm = () => {
       const fallbackMessage = error.message || 'Something went wrong'
       const errorList = error.errors || []
 
+      console.group(`🚨 Error ${statusCode} - Detailed Error Report`)
+  console.log('Status Code:', statusCode)
+  console.log('Main Message:', fallbackMessage)
+  console.log('Error List:', errorList)
+  console.groupEnd()
+  
       let formattedMessage = ` Error ${statusCode}: `
 
       switch (statusCode) {

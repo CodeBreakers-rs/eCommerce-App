@@ -89,7 +89,7 @@ export const RegForm = () => {
     const noErrors = validate(formData)
     if (!noErrors) return
 
-    const customerDraft = {
+    const customerFormData = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
@@ -107,7 +107,7 @@ export const RegForm = () => {
     }
 
     try {
-      const result = await authService.registerCustomer(customerDraft)
+      const result = await authService.registerCustomer(customerFormData)
       console.log('Success:', result)
       setMessage(`Account created for ${result.customer.email}`)
       setFormData({
@@ -132,13 +132,28 @@ export const RegForm = () => {
         setErrorMessage(
           '📧 An account with this email already exists. Please log in or use a different email address.',
         )
-      } else if (
-        message.includes('invalid') ||
-        message.includes('validation')
-      ) {
-        setErrorMessage(
-          '🛡️ Some input was invalid. Please double-check your form and try again.',
-        )
+      } else if (error.body?.errors?.length > 0) {
+        const backendErrors = error.body.errors
+        const messages = backendErrors.map((err: any) => {
+          switch (err.code) {
+            case 'InvalidField':
+              return `🛡️ Invalid value for '${err.field}': ${err.message}`
+            case 'MissingField':
+              return `🛡️ Missing required field: ${err.field}`
+            case 'InvalidInput':
+              return `🛡️ Invalid input: ${err.message}`
+            case 'DuplicateField':
+              return `📧 Duplicate field '${err.field}': ${err.message}`
+            case 'ResourceNotFound':
+              return `🔍 Resource not found: ${err.message}`
+            case 'RequiredField':
+              return `🛡️ Required field missing: ${err.message}`
+            default:
+              return `⚠️ ${err.message || 'Unknown error occurred'}`
+          }
+        })
+
+        setErrorMessage(messages.join(' '))
       } else {
         setErrorMessage(
           '⚠️ Something went wrong during registration. Please try again later.',

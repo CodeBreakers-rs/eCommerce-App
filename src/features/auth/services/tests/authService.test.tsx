@@ -19,6 +19,14 @@ describe('authService', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
+        json: async () => ({
+          access_token: 'mock-access-token',
+          token_type: 'Bearer',
+        }),
+      })
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       })
 
@@ -29,7 +37,30 @@ describe('authService', () => {
         lastName: 'Doe',
       })
 
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/customers/customers'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledTimes(2)
+
+      const secondCallArgs = mockFetch.mock.calls[1]
+      const [url, options] = secondCallArgs
+
+      expect(url).toContain('/customers')
+      expect(options).toMatchObject({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: expect.stringContaining('Bearer'),
+          'Content-Type': 'application/json',
+        }),
+      })
+
+      const parsedBody = JSON.parse(options.body)
+      expect(parsedBody).toEqual(
+        expect.objectContaining({
+          email: 'test@example.com',
+          password: 'Password1!',
+          firstName: 'John',
+          lastName: 'Doe',
+        }),
+      )
+
       expect(result).toEqual(mockResponse)
     })
 
@@ -39,10 +70,12 @@ describe('authService', () => {
         json: async () => ({ message: 'Email already exists' }),
       })
 
-      await expect(authService.registerCustomer({
-        email: 'fail@example.com',
-        password: 'Password1!',
-      })).rejects.toThrow('Email already exists')
+      await expect(
+        authService.registerCustomer({
+          email: 'fail@example.com',
+          password: 'Password1!',
+        }),
+      ).rejects.toThrow('Email already exists')
     })
   })
 
@@ -58,9 +91,15 @@ describe('authService', () => {
         json: async () => mockLoginData,
       })
 
-      const result = await authService.loginWithPassword('user@example.com', 'Password1!')
+      const result = await authService.loginWithPassword(
+        'user@example.com',
+        'Password1!',
+      )
 
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/customers/token'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/customers/token'),
+        expect.any(Object),
+      )
       expect(result).toEqual(mockLoginData)
       expect(localStorage.getItem('access_token')).toBe('mockAccessToken')
       expect(localStorage.getItem('refresh_token')).toBe('mockRefreshToken')
@@ -72,7 +111,9 @@ describe('authService', () => {
         json: async () => ({}),
       })
 
-      await expect(authService.loginWithPassword('user@example.com', 'wrongpass')).rejects.toThrow('Login failed')
+      await expect(
+        authService.loginWithPassword('user@example.com', 'wrongpass'),
+      ).rejects.toThrow('Login failed')
     })
   })
 
@@ -86,7 +127,10 @@ describe('authService', () => {
       })
 
       const result = await authService.getCustomerData('mockAccessToken')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/me'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/me'),
+        expect.any(Object),
+      )
       expect(result).toEqual(mockCustomer)
     })
 
@@ -96,7 +140,9 @@ describe('authService', () => {
         json: async () => ({}),
       })
 
-      await expect(authService.getCustomerData('badToken')).rejects.toThrow('Failed to fetch customer data')
+      await expect(authService.getCustomerData('badToken')).rejects.toThrow(
+        'Failed to fetch customer data',
+      )
     })
   })
 

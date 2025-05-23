@@ -125,7 +125,25 @@ export const RegForm = () => {
       setHasSubmitted(false)
     } catch (error: any) {
       console.error('Registration error:', error)
-      setErrorMessage(` Registration failed: ${error.message}`)
+
+      const message = error.message?.toLowerCase() || ''
+
+      if (message.includes('already exists')) {
+        setErrorMessage(
+          '📧 An account with this email already exists. Please log in or use a different email address.',
+        )
+      } else if (
+        message.includes('invalid') ||
+        message.includes('validation')
+      ) {
+        setErrorMessage(
+          '🛡️ Some input was invalid. Please double-check your form and try again.',
+        )
+      } else {
+        setErrorMessage(
+          '⚠️ Something went wrong during registration. Please try again later.',
+        )
+      }
     }
   }
 

@@ -4,9 +4,31 @@ const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
 const API_BASE_URL = import.meta.env.VITE_CT_API_URL
 const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
 
-const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers/customers`
+const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers`
 const API_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
+
+async function getClientAccessToken() {
+  const response = await fetch(`${AUTH_BASE_URL}/oauth/token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${encodeCredentials(CLIENT_ID, CLIENT_SECRET)}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      scope: `manage_project:${PROJECT_KEY}`,
+    }),
+  })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.message || 'Failed to get access token')
+  }
+
+  const data = await response.json()
+  return data.access_token
+}
 
 export async function registerCustomer(customerDraft: {
   email: string
@@ -17,10 +39,12 @@ export async function registerCustomer(customerDraft: {
   addresses?: any[]
   defaultShippingAddress?: number
 }) {
+  const token = await getClientAccessToken()
   const response = await fetch(API_SIGNUP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(customerDraft),
   })

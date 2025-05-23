@@ -1,3 +1,5 @@
+import type { CustomerDraft } from '../../../types/customer'
+
 const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
 const CLIENT_ID = import.meta.env.VITE_CT_CLIENT_ID
 const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
@@ -30,15 +32,7 @@ async function getClientAccessToken() {
   return data.access_token
 }
 
-export async function registerCustomer(customerDraft: {
-  email: string
-  password: string
-  firstName?: string
-  lastName?: string
-  dateOfBirth?: string
-  addresses?: any[]
-  defaultShippingAddress?: number
-}) {
+export async function registerCustomer(customerDraft: CustomerDraft) {
   const token = await getClientAccessToken()
   const response = await fetch(API_SIGNUP_URL, {
     method: 'POST',
@@ -72,19 +66,21 @@ export async function loginWithPassword(email: string, password: string) {
       username: email,
       password: password,
       scope: [
-        `view_published_products:${PROJECT_KEY},
-        manage_my_orders:${PROJECT_KEY},
-        manage_my_profile:${PROJECT_KEY}`,
+        `view_published_products:${PROJECT_KEY}`,
+        `manage_my_orders:${PROJECT_KEY}`,
+        `manage_my_profile:${PROJECT_KEY}`,
       ].join(' '),
     }),
   })
 
-  if (!res.ok) throw new Error('Login failed')
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    console.error('Login failed response:', err)
+    throw new Error(err.message || 'Login failed')
+  }
 
   const data = await res.json()
 
-  localStorage.setItem('access_token', data.access_token)
-  localStorage.setItem('refresh_token', data.refresh_token)
 
   return data
 }
@@ -99,10 +95,6 @@ export async function getCustomerData(accessToken: string) {
   if (!res.ok) throw new Error('Failed to fetch customer data')
 
   const data = await res.json()
-  return data.customer
+  return data
 }
 
-export function logout() {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-}

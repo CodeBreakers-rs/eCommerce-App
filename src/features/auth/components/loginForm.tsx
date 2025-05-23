@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { isValidEmail, isValidPassword } from '../../../utils/validators'
 import { loginWithPassword, getCustomerData } from '../services/authService'
-import { logout } from '../services/authService'
+//import { logout } from '../services/authService'
 import './regForm.css'
 
 export const LoginForm = () => {
@@ -35,6 +35,7 @@ export const LoginForm = () => {
       try {
         const tokens = await loginWithPassword(email, password)
         const customer = await getCustomerData(tokens.access_token)
+        console.log('Customer data:', customer)
         setUser(customer)
         alert(`Welcome, ${customer.firstName || customer.email}!`)
       } catch (error: any) {
@@ -108,7 +109,7 @@ export const LoginForm = () => {
           <button
             type="button"
             onClick={() => {
-              logout()
+              //logout()
               setUser(null)
               setEmail('')
               setPassword('')

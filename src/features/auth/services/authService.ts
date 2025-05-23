@@ -81,7 +81,6 @@ export async function loginWithPassword(email: string, password: string) {
 
   const data = await res.json()
 
-
   return data
 }
 
@@ -97,4 +96,3 @@ export async function getCustomerData(accessToken: string) {
   const data = await res.json()
   return data
 }
-

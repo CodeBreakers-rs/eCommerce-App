@@ -106,17 +106,6 @@ export const LoginForm = () => {
           <div className="success-message">
             Logged in as: <strong>{user.email}</strong>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              //logout()
-              setUser(null)
-              setEmail('')
-              setPassword('')
-            }}
-          >
-            Logout
-          </button>
         </>
       )}
     </form>

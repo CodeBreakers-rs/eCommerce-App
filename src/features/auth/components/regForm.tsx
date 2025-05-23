@@ -126,47 +126,41 @@ export const RegForm = () => {
     } catch (error: any) {
       console.error('Registration error:', error)
 
-      const statusCode = error.statusCode
-      const backendErrors = error.body?.errors || []
+      const statusCode = error.statusCode || error.status || 500
+      const fallbackMessage = error.message || 'Something went wrong'
+      const errorList = error.errors || []
+
+      let formattedMessage = ` Error ${statusCode}: `
 
       switch (statusCode) {
         case 400: {
-          const messages = backendErrors.map((err: any) => {
-            switch (err.code) {
-              case 'InvalidField':
-                return `⚠️ Invalid value for '${err.field}': ${err.message}`
-              case 'MissingField':
-              case 'RequiredField':
-                return `⚠️ Missing required field: ${err.field}`
-              case 'DuplicateField':
-                return `⚠️ Duplicate value for '${err.field}': ${err.message}`
-              case 'InvalidInput':
-                return `⚠️ Invalid input: ${err.message}`
-              default:
-                return `⚠️ ${err.message || 'Validation error'}`
-            }
-          })
-          setErrorMessage(messages.join(' '))
+          const messages = errorList.length
+            ? errorList.map((err: any) => `⚠️ ${err.message}`).join(' ')
+            : fallbackMessage
+          formattedMessage += messages
           break
         }
         case 401:
-          setErrorMessage('🔒 Unauthorized. Please check your credentials.')
+          formattedMessage += '🔒 Unauthorized. Please log in again.'
           break
         case 403:
-          setErrorMessage('🚫 Access denied. You do not have permission.')
+          formattedMessage +=
+            '🚫 Access denied. You do not have permission to perform this action.'
           break
         case 409:
-          setErrorMessage('⚠️ An account with this email already exists.')
+          formattedMessage += '⚠️ An account with this email already exists.'
           break
         case 500:
         case 502:
         case 503:
-          setErrorMessage('⚠️ Server error. Please try again later.')
+          formattedMessage += '⚠️ Server error. Please try again later.'
           break
         default:
-          setErrorMessage('⚠️ Something went wrong. Please try again.')
+          formattedMessage += fallbackMessage
           break
       }
+
+      setErrorMessage(formattedMessage)
     }
   }
 

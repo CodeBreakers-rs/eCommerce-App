@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import * as authService from '../services/authService'
+import { sanitizeCustomerDraft } from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -11,20 +12,9 @@ import {
   isValidCountry,
 } from '../../../utils/validators'
 import './regForm.css'
+import type { CustomerType, FormDataType } from '../../../types/customer'
 
 const validCountries = ['United States', 'Canada']
-
-type FormDataType = {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
-  birthDate: string
-  street: string
-  city: string
-  postalCode: string
-  country: string
-}
 
 export const RegForm = () => {
   const [formData, setFormData] = useState<FormDataType>({
@@ -37,6 +27,10 @@ export const RegForm = () => {
     city: '',
     postalCode: '',
     country: '',
+    billingStreet: '',
+    billingCity: '',
+    billingPostalCode: '',
+    billingCountry: '',
   })
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -47,6 +41,7 @@ export const RegForm = () => {
 
   const [defaultShipping, setDefaultShipping] = useState(false)
   const [defaultBilling, setDefaultBilling] = useState(false)
+  const [useSameAddress, setUseSameAddress] = useState(true)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -83,6 +78,24 @@ export const RegForm = () => {
     setIsButtonDisabled(!allFilled)
   }, [formData])
 
+  useEffect(() => {
+    if (useSameAddress) {
+      setFormData((prev) => ({
+        ...prev,
+        billingStreet: prev.street,
+        billingCity: prev.city,
+        billingPostalCode: prev.postalCode,
+        billingCountry: prev.country,
+      }))
+    }
+  }, [
+    formData.street,
+    formData.city,
+    formData.postalCode,
+    formData.country,
+    useSameAddress,
+  ])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setHasSubmitted(true)
@@ -92,26 +105,50 @@ export const RegForm = () => {
     const noErrors = validate(formData)
     if (!noErrors) return
 
-    const address = {
-      streetName: formData.street,
-      city: formData.city,
-      postalCode: formData.postalCode,
-      country: formData.country,
+    const addresses = [
+      {
+        streetName: formData.street,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        country: formData.country,
+      },
+    ]
+
+    if (!useSameAddress) {
+      addresses.push({
+        streetName: formData.billingStreet,
+        city: formData.billingCity,
+        postalCode: formData.billingPostalCode,
+        country: formData.billingCountry,
+      })
     }
 
-    const customerFormData = {
+    let defaultShippingIndex: number | undefined = undefined
+    let defaultBillingIndex: number | undefined = undefined
+
+    if (defaultShipping) defaultShippingIndex = 0
+    if (defaultBilling) defaultBillingIndex = useSameAddress ? 0 : 1
+
+    const customerFormData: CustomerType = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
       lastName: formData.lastName,
       dateOfBirth: formData.birthDate,
-      addresses: [address],
+      addresses,
       defaultShippingAddress: defaultShipping ? 0 : undefined,
       defaultBillingAddress: defaultBilling ? 0 : undefined,
     }
 
+    const sanitized = sanitizeCustomerDraft(customerFormData)
+    console.log(
+      'Sanitized registration payload:',
+      JSON.stringify(sanitized, null, 2),
+    )
     try {
-      const result = await authService.registerCustomer(customerFormData)
+      const result = await authService.registerCustomer(
+        sanitized as CustomerType,
+      )
       console.log('Success:', result)
       setMessage(`Account created for ${result.customer.email}`)
       setFormData({
@@ -124,6 +161,10 @@ export const RegForm = () => {
         city: '',
         postalCode: '',
         country: '',
+        billingStreet: '',
+        billingCity: '',
+        billingPostalCode: '',
+        billingCountry: '',
       })
       setDefaultShipping(false)
       setDefaultBilling(false)
@@ -227,7 +268,16 @@ export const RegForm = () => {
           />
           Set as default billing address
         </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={useSameAddress}
+            onChange={() => setUseSameAddress(!useSameAddress)}
+          />
+          Use the same address for billing and shipping
+        </label>
       </div>
+      <h3>Shipping Address</h3>
       {[
         { name: 'street', type: 'text', label: 'Street' },
         { name: 'city', type: 'text', label: 'City' },
@@ -276,6 +326,44 @@ export const RegForm = () => {
           </span>
         )}
       </div>
+
+      {!useSameAddress && (
+        <>
+          <h3>Billing Address</h3>
+          {[
+            { name: 'billingStreet', type: 'text', label: 'Street' },
+            { name: 'billingCity', type: 'text', label: 'City' },
+            { name: 'billingPostalCode', type: 'text', label: 'Postal Code' },
+          ].map(({ name, type, label }) => (
+            <div key={name} className="form-group">
+              <label htmlFor={name}>{label}</label>
+              <input
+                type={type}
+                id={name}
+                name={name}
+                value={formData[name as keyof typeof formData]}
+                onChange={handleChange}
+              />
+            </div>
+          ))}
+          <div className="form-group">
+            <label htmlFor="billingCountry">Country</label>
+            <select
+              id="billingCountry"
+              name="billingCountry"
+              value={formData.billingCountry}
+              onChange={handleChange}
+            >
+              <option value="">-- Select a country --</option>
+              {validCountries.map((country) => (
+                <option key={country} value={country}>
+                  {country}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
 
       <button type="submit" disabled={isButtonDisabled}>
         Register

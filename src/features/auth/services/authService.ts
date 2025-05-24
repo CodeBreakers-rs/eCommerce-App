@@ -32,15 +32,33 @@ async function getClientAccessToken() {
   return customerData.access_token
 }
 
+export function sanitizeCustomerDraft(
+  draft: CustomerType,
+): Record<string, unknown> {
+  const cleaned: Record<string, unknown> = {}
+
+  for (const key in draft) {
+    const value = (draft as any)[key]
+    if (value !== undefined && value !== null) {
+      cleaned[key] = value
+    }
+  }
+
+  return cleaned
+}
+
 export async function registerCustomer(customerDraft: CustomerType) {
   const token = await getClientAccessToken()
+
+  const sanitized = sanitizeCustomerDraft(customerDraft)
+
   const response = await fetch(API_SIGNUP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(customerDraft),
+    body: JSON.stringify(sanitized),
   })
 
   if (!response.ok) {

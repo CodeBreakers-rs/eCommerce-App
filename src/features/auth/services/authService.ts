@@ -44,8 +44,13 @@ export async function registerCustomer(customerDraft: CustomerType) {
   })
 
   if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || 'Registration failed')
+    const errorBody = await response.json()
+    throw {
+      statusCode: response.status,
+      message: errorBody.message || 'Registration failed',
+      errors: errorBody.errors || [],
+      error: errorBody.error || 'registration_error',
+    }
   }
 
   return await response.json()

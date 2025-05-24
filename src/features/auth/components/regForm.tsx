@@ -128,22 +128,23 @@ export const RegForm = () => {
 
       const statusCode = error.statusCode || error.status || 500
       const fallbackMessage = error.message || 'Something went wrong'
-      const errorList = error.errors || []
+      const errorData = error.response?.data || error
+      const errorList = errorData.errors || []
 
-      console.group(`🚨 Error ${statusCode} - Detailed Error Report`)
-      console.log('Status Code:', statusCode)
-      console.log('Main Message:', fallbackMessage)
-      console.log('Error List:', errorList)
-      console.groupEnd()
+      console.error('🚨 Registration failed:', {
+        statusCode,
+        message,
+        errors: errorList,
+      })
 
-      let formattedMessage = ` Error ${statusCode}: `
+      let formattedMessage = ` Error ${statusCode}: ${message} `
 
       switch (statusCode) {
         case 400: {
-          const messages = errorList.length
-            ? errorList.map((err: any) => `⚠️ ${err.message}`).join(' ')
-            : fallbackMessage
-          formattedMessage += messages
+          if (errorList.length) {
+            formattedMessage +=
+              '\n' + errorList.map((e: any) => `• ${e.message}`).join('\n')
+          }
           break
         }
         case 401:

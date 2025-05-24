@@ -45,6 +45,9 @@ export const RegForm = () => {
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
+  const [defaultShipping, setDefaultShipping] = useState(false)
+  const [defaultBilling, setDefaultBilling] = useState(false)
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -89,21 +92,22 @@ export const RegForm = () => {
     const noErrors = validate(formData)
     if (!noErrors) return
 
+    const address = {
+      streetName: formData.street,
+      city: formData.city,
+      postalCode: formData.postalCode,
+      country: formData.country,
+    }
+
     const customerFormData = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
       lastName: formData.lastName,
       dateOfBirth: formData.birthDate,
-      addresses: [
-        {
-          streetName: formData.street,
-          city: formData.city,
-          postalCode: formData.postalCode,
-          country: formData.country === 'United States' ? 'US' : 'CA',
-        },
-      ],
-      defaultShippingAddress: 0,
+      addresses: [ address],
+      defaultShippingAddress: defaultShipping ? 0 : undefined,
+      defaultBillingAddress: defaultBilling ? 0 : undefined,
     }
 
     try {
@@ -121,6 +125,8 @@ export const RegForm = () => {
         postalCode: '',
         country: '',
       })
+      setDefaultShipping(false)
+      setDefaultBilling(false)
       setErrors({})
       setHasSubmitted(false)
     } catch (error: any) {

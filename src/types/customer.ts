@@ -7,3 +7,10 @@ export type CustomerType = {
   addresses?: any[]
   defaultShippingAddress?: number
 }
+
+export type Address = {
+  streetName: string;
+  city: string;
+  postalCode: string;
+  country: string;
+};

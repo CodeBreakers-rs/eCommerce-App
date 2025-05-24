@@ -1,4 +1,4 @@
-import type { CustomerDraft } from '../../../types/customer'
+import type { CustomerType } from '../../../types/customer'
 
 const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
 const CLIENT_ID = import.meta.env.VITE_CT_CLIENT_ID
@@ -7,7 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_CT_API_URL
 const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
 
 const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers`
-const API_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
+const API_TOKEN_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
 
 async function getClientAccessToken() {
@@ -28,11 +28,11 @@ async function getClientAccessToken() {
     throw new Error(error.message || 'Failed to get access token')
   }
 
-  const data = await response.json()
-  return data.access_token
+  const customerData = await response.json()
+  return customerData.access_token
 }
 
-export async function registerCustomer(customerDraft: CustomerDraft) {
+export async function registerCustomer(customerDraft: CustomerType) {
   const token = await getClientAccessToken()
   const response = await fetch(API_SIGNUP_URL, {
     method: 'POST',
@@ -44,8 +44,13 @@ export async function registerCustomer(customerDraft: CustomerDraft) {
   })
 
   if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || 'Registration failed')
+    const errorBody = await response.json()
+    throw {
+      statusCode: response.status,
+      message: errorBody.message || 'Registration failed',
+      errors: errorBody.errors || [],
+      error: errorBody.error || 'registration_error',
+    }
   }
 
   return await response.json()
@@ -55,7 +60,7 @@ const encodeCredentials = (clientId: string, clientSecret: string) =>
   btoa(`${clientId}:${clientSecret}`)
 
 export async function loginWithPassword(email: string, password: string) {
-  const res = await fetch(API_URL, {
+  const tokenRes = await fetch(API_TOKEN_URL, {
     method: 'POST',
     headers: {
       Authorization: `Basic ${encodeCredentials(CLIENT_ID, CLIENT_SECRET)}`,
@@ -73,16 +78,15 @@ export async function loginWithPassword(email: string, password: string) {
     }),
   })
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
+  if (!tokenRes.ok) {
+    const err = await tokenRes.json().catch(() => ({}))
     console.error('Login failed response:', err)
     throw new Error(err.message || 'Login failed')
   }
 
-  const data = await res.json()
+  const tokenData = await tokenRes.json()
 
-
-  return data
+  return tokenData
 }
 
 export async function getCustomerData(accessToken: string) {
@@ -97,4 +101,3 @@ export async function getCustomerData(accessToken: string) {
   const data = await res.json()
   return data
 }
-

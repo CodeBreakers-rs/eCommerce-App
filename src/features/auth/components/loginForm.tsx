@@ -37,7 +37,7 @@ export const LoginForm = () => {
         const customer = await getCustomerData(tokens.access_token)
         console.log('Customer data:', customer)
         setUser(customer)
-        alert(`Welcome, ${customer.firstName || customer.email}!`)
+        alert(`Welcome back, ${customer.firstName || customer.email}!`)
       } catch (error: any) {
         setLoginError(
           'Login failed. Please check your credentials and try again.',

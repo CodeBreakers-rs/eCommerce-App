@@ -89,7 +89,7 @@ export const RegForm = () => {
     const noErrors = validate(formData)
     if (!noErrors) return
 
-    const customerDraft = {
+    const customerFormData = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
@@ -107,7 +107,7 @@ export const RegForm = () => {
     }
 
     try {
-      const result = await authService.registerCustomer(customerDraft)
+      const result = await authService.registerCustomer(customerFormData)
       console.log('Success:', result)
       setMessage(`Account created for ${result.customer.email}`)
       setFormData({
@@ -126,24 +126,48 @@ export const RegForm = () => {
     } catch (error: any) {
       console.error('Registration error:', error)
 
-      const message = error.message?.toLowerCase() || ''
+      const statusCode = error.statusCode || error.status || 500
+      const fallbackMessage = error.message || 'Something went wrong'
+      const errorData = error.response?.data || error
+      const errorList = errorData.errors || []
 
-      if (message.includes('already exists')) {
-        setErrorMessage(
-          '📧 An account with this email already exists. Please log in or use a different email address.',
-        )
-      } else if (
-        message.includes('invalid') ||
-        message.includes('validation')
-      ) {
-        setErrorMessage(
-          '🛡️ Some input was invalid. Please double-check your form and try again.',
-        )
-      } else {
-        setErrorMessage(
-          '⚠️ Something went wrong during registration. Please try again later.',
-        )
+      console.error('🚨 Registration failed:', {
+        statusCode,
+        message,
+        errors: errorList,
+      })
+
+      let formattedMessage = ` Error ${statusCode}: ${message} `
+
+      switch (statusCode) {
+        case 400: {
+          if (errorList.length) {
+            formattedMessage +=
+              '\n' + errorList.map((e: any) => `• ${e.message}`).join('\n')
+          }
+          break
+        }
+        case 401:
+          formattedMessage += '🔒 Unauthorized. Please log in again.'
+          break
+        case 403:
+          formattedMessage +=
+            '🚫 Access denied. You do not have permission to perform this action.'
+          break
+        case 409:
+          formattedMessage += '⚠️ An account with this email already exists.'
+          break
+        case 500:
+        case 502:
+        case 503:
+          formattedMessage += '⚠️ Server error. Please try again later.'
+          break
+        default:
+          formattedMessage += fallbackMessage
+          break
       }
+
+      setErrorMessage(formattedMessage)
     }
   }
 

@@ -9,8 +9,8 @@ export type CustomerType = {
 }
 
 export type Address = {
-  streetName: string;
-  city: string;
-  postalCode: string;
-  country: string;
-};
+  streetName: string
+  city: string
+  postalCode: string
+  country: string
+}

@@ -105,7 +105,7 @@ export const RegForm = () => {
       firstName: formData.firstName,
       lastName: formData.lastName,
       dateOfBirth: formData.birthDate,
-      addresses: [ address],
+      addresses: [address],
       defaultShippingAddress: defaultShipping ? 0 : undefined,
       defaultBillingAddress: defaultBilling ? 0 : undefined,
     }
@@ -188,6 +188,47 @@ export const RegForm = () => {
         { name: 'firstName', type: 'text', label: 'First Name' },
         { name: 'lastName', type: 'text', label: 'Last Name' },
         { name: 'birthDate', type: 'date', label: 'Birth Date' },
+      ].map(({ name, type, label }) => (
+        <div key={name} className="form-group">
+          <label htmlFor={name}>{label}</label>
+          <input
+            type={type}
+            id={name}
+            name={name}
+            value={formData[name as keyof typeof formData]}
+            onChange={handleChange}
+            className={hasSubmitted && errors[name] ? 'input-error' : ''}
+            aria-describedby={`${name}-error`}
+            aria-invalid={!!errors[name]}
+          />
+          {hasSubmitted && errors[name] && (
+            <span id={`${name}-error`} className="error-message">
+              ⚠️ {errors[name]}
+            </span>
+          )}
+        </div>
+      ))}
+
+      <div className="form-group checkbox-group">
+        <label>
+          <input
+            type="checkbox"
+            checked={defaultShipping}
+            onChange={() => setDefaultShipping(!defaultShipping)}
+          />
+          Set as default shipping address
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={defaultBilling}
+            onChange={() => setDefaultBilling(!defaultBilling)}
+          />
+          Set as default billing address
+        </label>
+      </div>
+      {[
         { name: 'street', type: 'text', label: 'Street' },
         { name: 'city', type: 'text', label: 'City' },
         { name: 'postalCode', type: 'text', label: 'Postal Code' },
@@ -211,7 +252,6 @@ export const RegForm = () => {
           )}
         </div>
       ))}
-
       <div className="form-group">
         <label htmlFor="country">Country</label>
         <select

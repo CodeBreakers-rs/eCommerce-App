@@ -8,6 +8,10 @@ form-group {
   margin-bottom: 1rem;
 }
 
+.form-group label input[type='checkbox'] {
+  margin-right: 0.5rem;
+}
+
 label {
   display: block;
   margin-bottom: 0.3rem;

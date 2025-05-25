@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import { isValidEmail, isValidPassword } from '../../../utils/validators'
-import { loginWithPassword, getCustomerData } from '../services/authService'
-//import { logout } from '../services/authService'
+import { login } from '../../../store/slices/auth-slice'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { getCustomerData, loginWithPassword } from '../services/authService'
 import './regForm.css'
 
 export const LoginForm = () => {
+  const dispatch = useAppDispatch()
+  const auth = useAppSelector((state) => state.auth)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -13,7 +17,6 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [hasValidated, setHasValidated] = useState(false)
   const [loginError, setLoginError] = useState('')
-  const [user, setUser] = useState<any>(null)
 
   const validate = () => {
     const newErrors: typeof errors = {}
@@ -31,18 +34,15 @@ export const LoginForm = () => {
     e.preventDefault()
     setHasValidated(true)
     setLoginError('')
+
     if (validate()) {
       try {
         const tokens = await loginWithPassword(email, password)
         const customer = await getCustomerData(tokens.access_token)
+        dispatch(login(customer))
         console.log('Customer data:', customer)
-        setUser(customer)
-        alert(`Welcome back, ${customer.firstName || customer.email}!`)
       } catch (error: any) {
-        setLoginError(
-          'Login failed. Please check your credentials and try again.',
-        )
-        console.error(error)
+        setLoginError(error.message || 'Login failed')
       }
     }
   }
@@ -101,10 +101,11 @@ export const LoginForm = () => {
       <button type="submit" disabled={!email.trim() || !password.trim()}>
         Login
       </button>
-      {user && (
+
+      {auth.isLoggedIn && auth.customer && (
         <>
           <div className="success-message">
-            Logged in as: <strong>{user.email}</strong>
+            Logged in as: <strong>{auth.customer.email}</strong>
           </div>
         </>
       )}

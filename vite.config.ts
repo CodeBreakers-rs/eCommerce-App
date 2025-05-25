@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/eCommerce-App/',
+  base: '/',
   test: {
     globals: true,
     environment: 'jsdom',

@@ -1,10 +1,23 @@
+import React from 'react'
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
 import { LoginForm } from '../loginForm'
+import authReducer from '../../../../store/slices/auth-slice'
+
+function renderWithStore(ui: React.ReactElement) {
+  const store = configureStore({
+    reducer: {
+      auth: authReducer,
+    },
+  })
+  return render(<Provider store={store}>{ui}</Provider>)
+}
 
 describe('LoginForm', () => {
   it('renders email and password inputs and login button', () => {
-    render(<LoginForm />)
+    renderWithStore(<LoginForm />)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(
       screen.getByLabelText('Password', { selector: 'input' }),
@@ -13,13 +26,13 @@ describe('LoginForm', () => {
   })
 
   it('disables login button when fields are empty', () => {
-    render(<LoginForm />)
+    renderWithStore(<LoginForm />)
     const button = screen.getByRole('button', { name: /login/i })
     expect(button).toBeDisabled()
   })
 
   it('enables login button when both fields are filled', () => {
-    render(<LoginForm />)
+    renderWithStore(<LoginForm />)
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'user@example.com' },
     })
@@ -30,7 +43,7 @@ describe('LoginForm', () => {
   })
 
   it('toggles password visibility', () => {
-    render(<LoginForm />)
+    renderWithStore(<LoginForm />)
     const passwordInput = screen.getByLabelText('Password', {
       selector: 'input',
     })
@@ -44,7 +57,7 @@ describe('LoginForm', () => {
   })
 
   it('shows validation errors on invalid input', () => {
-    render(<LoginForm />)
+    renderWithStore(<LoginForm />)
     fireEvent.change(screen.getByLabelText('Email'), {
       target: { value: 'bad-email' },
     })

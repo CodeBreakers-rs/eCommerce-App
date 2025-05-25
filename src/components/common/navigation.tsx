@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom'
-// import { useAppSelector } from '../../store/hooks'
+import { useAppSelector } from '../../store/hooks'
 
 import './css/navigation.css'
 
 const Navigation = () => {
-  // const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
-  const isLoggedIn = false
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
   return (
     <nav className="nav">
       <ul className="nav-list">

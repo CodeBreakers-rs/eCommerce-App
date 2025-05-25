@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import * as authService from '../services/authService'
+import { useAppDispatch } from '../../../store/hooks'
+import { login } from '../../../store/slices/auth-slice'
 import { sanitizeCustomerDraft } from '../services/authService'
 import {
   isValidEmail,
@@ -22,6 +24,8 @@ const countryNameToCode: Record<string, string> = {
 }
 
 export const RegForm = () => {
+  const dispatch = useAppDispatch()
+
   const initialForm: FormDataType = {
     email: '',
     password: '',
@@ -75,7 +79,8 @@ export const RegForm = () => {
 
     if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
     if (!isValidPassword(data.password))
-      newErrors.password = 'Password must be at least 8 characters, include upper/lowercase, number and one special character'
+      newErrors.password =
+        'Password must be at least 8 characters, include upper/lowercase, number and one special character'
     if (!isValidName(data.firstName)) newErrors.firstName = 'Invalid first name'
     if (!isValidName(data.lastName)) newErrors.lastName = 'Invalid last name'
     if (!isValidBirthDate(data.birthDate))
@@ -170,7 +175,9 @@ export const RegForm = () => {
       const result = await authService.registerCustomer(
         sanitized as CustomerType,
       )
-      setMessage(`✅ Account created for ${result.customer.email}`)
+      dispatch(login(result.customer))
+      console.log('Registration successful:', result)
+
       setFormData(initialForm)
       setDefaultShipping(false)
       setDefaultBilling(false)

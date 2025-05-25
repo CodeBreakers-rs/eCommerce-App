@@ -9,6 +9,7 @@ const Navigation = () => {
   const navigate = useNavigate()
 
   const handleLogout = () => {
+    localStorage.removeItem('auth')
     dispatch(logout())
     navigate('/login')
   }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import * as authService from '../services/authService'
 import { useAppDispatch } from '../../../store/hooks'
 import { login } from '../../../store/slices/auth-slice'
+import { sanitizeCustomerDraft } from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -13,25 +14,19 @@ import {
   isValidCountry,
 } from '../../../utils/validators'
 import './regForm.css'
+import type { CustomerType, FormDataType } from '../../../types/customer'
 
 const validCountries = ['United States', 'Canada']
 
-type FormDataType = {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
-  birthDate: string
-  street: string
-  city: string
-  postalCode: string
-  country: string
+const countryNameToCode: Record<string, string> = {
+  Canada: 'CA',
+  'United States': 'US',
 }
 
 export const RegForm = () => {
   const dispatch = useAppDispatch()
-
   const [formData, setFormData] = useState<FormDataType>({
+  const initialForm: FormDataType = {
     email: '',
     password: '',
     firstName: '',
@@ -41,39 +36,64 @@ export const RegForm = () => {
     city: '',
     postalCode: '',
     country: '',
-  })
+    billingStreet: '',
+    billingCity: '',
+    billingPostalCode: '',
+    billingCountry: '',
+  }
 
+  const [formData, setFormData] = useState<FormDataType>(initialForm)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [defaultShipping, setDefaultShipping] = useState(false)
+  const [defaultBilling, setDefaultBilling] = useState(false)
+  const [useSameAddress, setUseSameAddress] = useState(true)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const updatedForm = { ...formData, [e.target.name]: e.target.value }
+    const { name, value } = e.target
+    const updatedForm = { ...formData, [name]: value }
     setFormData(updatedForm)
     if (hasSubmitted) validate(updatedForm)
   }
 
+  const validateBillingFields = (data: FormDataType) => {
+    const billingErrors: { [key: string]: string } = {}
+    if (!isValidStreet(data.billingStreet))
+      billingErrors.billingStreet = 'Billing street cannot be empty'
+    if (!isValidCity(data.billingCity))
+      billingErrors.billingCity = 'Invalid billing city'
+    if (!isValidPostalCode(data.billingPostalCode, data.billingCountry))
+      billingErrors.billingPostalCode = 'Invalid billing postal code'
+    if (!isValidCountry(data.billingCountry, validCountries))
+      billingErrors.billingCountry = 'Select a valid billing country'
+    return billingErrors
+  }
+
   const validate = (data: FormDataType) => {
-    const newErrors: typeof errors = {}
+    const newErrors: { [key: string]: string } = {}
 
     if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
     if (!isValidPassword(data.password))
-      newErrors.password =
-        'Password must be at least 8 characters, include upper/lowercase, number and one special character'
+      newErrors.password = 'Password must be at least 8 characters, include upper/lowercase, number and one special character'
     if (!isValidName(data.firstName)) newErrors.firstName = 'Invalid first name'
     if (!isValidName(data.lastName)) newErrors.lastName = 'Invalid last name'
     if (!isValidBirthDate(data.birthDate))
       newErrors.birthDate = 'You must be at least 13 years old'
     if (!isValidStreet(data.street)) newErrors.street = 'Street cannot be empty'
-    if (!isValidCity(data.city)) newErrors.city = 'Invalid city name'
+    if (!isValidCity(data.city)) newErrors.city = 'Invalid city'
     if (!isValidPostalCode(data.postalCode, data.country))
       newErrors.postalCode = 'Invalid postal code'
     if (!isValidCountry(data.country, validCountries))
       newErrors.country = 'Select a valid country'
+
+    if (!useSameAddress) {
+      Object.assign(newErrors, validateBillingFields(data))
+    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -84,31 +104,71 @@ export const RegForm = () => {
     setIsButtonDisabled(!allFilled)
   }, [formData])
 
+  useEffect(() => {
+    if (useSameAddress) {
+      setFormData((prev) => ({
+        ...prev,
+        billingStreet: prev.street,
+        billingCity: prev.city,
+        billingPostalCode: prev.postalCode,
+        billingCountry: prev.country,
+      }))
+    }
+  }, [
+    formData.street,
+    formData.city,
+    formData.postalCode,
+    formData.country,
+    useSameAddress,
+  ])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setHasSubmitted(true)
     setMessage('')
     setErrorMessage('')
 
-    const noErrors = validate(formData)
-    if (!noErrors) return
+    if (!validate(formData)) return
 
-    const customerFormData = {
+    const addresses = [
+      {
+        streetName: formData.street,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        country: countryNameToCode[formData.country] || formData.country,
+      },
+    ]
+
+    if (!useSameAddress) {
+      addresses.push({
+        streetName: formData.billingStreet,
+        city: formData.billingCity,
+        postalCode: formData.billingPostalCode,
+        country:
+          countryNameToCode[formData.billingCountry] || formData.billingCountry,
+      })
+    }
+
+    const customerFormData: CustomerType = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
       lastName: formData.lastName,
       dateOfBirth: formData.birthDate,
-      addresses: [
-        {
-          streetName: formData.street,
-          city: formData.city,
-          postalCode: formData.postalCode,
-          country: formData.country === 'United States' ? 'US' : 'CA',
-        },
-      ],
-      defaultShippingAddress: 0,
+      addresses,
+      defaultShippingAddress: defaultShipping ? 0 : undefined,
+      defaultBillingAddress: defaultBilling
+        ? useSameAddress
+          ? 0
+          : 1
+        : undefined,
     }
+
+    const sanitized = sanitizeCustomerDraft(customerFormData)
+    console.log(
+      'Sanitized registration payload:',
+      JSON.stringify(sanitized, null, 2),
+    )
 
     try {
       const result = await authService.registerCustomer(customerFormData)
@@ -126,117 +186,160 @@ export const RegForm = () => {
         postalCode: '',
         country: '',
       })
+      const result = await authService.registerCustomer(
+        sanitized as CustomerType,
+      )
+      setMessage(`✅ Account created for ${result.customer.email}`)
+      setFormData(initialForm)
+      setDefaultShipping(false)
+      setDefaultBilling(false)
       setErrors({})
       setHasSubmitted(false)
     } catch (error: any) {
-      console.error('Registration error:', error)
-
       const statusCode = error.statusCode || error.status || 500
+      const errorList = error.response?.data?.errors || []
       const fallbackMessage = error.message || 'Something went wrong'
-      const errorData = error.response?.data || error
-      const errorList = errorData.errors || []
 
-      console.error('🚨 Registration failed:', {
-        statusCode,
-        message,
-        errors: errorList,
-      })
-
-      let formattedMessage = ` Error ${statusCode}: ${message} `
+      let formattedMessage = `Error ${statusCode}: `
 
       switch (statusCode) {
-        case 400: {
-          if (errorList.length) {
-            formattedMessage +=
-              '\n' + errorList.map((e: any) => `• ${e.message}`).join('\n')
-          }
+        case 400:
+          formattedMessage +=
+            errorList.map((e: any) => `• ${e.message}`).join('\n') ||
+            fallbackMessage
           break
-        }
         case 401:
-          formattedMessage += '🔒 Unauthorized. Please log in again.'
+          formattedMessage += 'Unauthorized. Please log in again.'
           break
         case 403:
-          formattedMessage +=
-            '🚫 Access denied. You do not have permission to perform this action.'
+          formattedMessage += 'Access denied.'
           break
         case 409:
-          formattedMessage += '⚠️ An account with this email already exists.'
+          formattedMessage += 'An account with this email already exists.'
           break
         case 500:
         case 502:
         case 503:
-          formattedMessage += '⚠️ Server error. Please try again later.'
+          formattedMessage += 'Server error. Please try again later.'
           break
         default:
           formattedMessage += fallbackMessage
-          break
       }
 
       setErrorMessage(formattedMessage)
     }
   }
 
+  const renderInput = (
+    name: keyof FormDataType,
+    label: string,
+    type: string = 'text',
+  ) => (
+    <div className="form-group">
+      <label htmlFor={name}>{label}</label>
+      <input
+        type={type}
+        id={name}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        className={hasSubmitted && errors[name] ? 'input-error' : ''}
+        aria-describedby={`${name}-error`}
+        aria-invalid={!!errors[name]}
+      />
+      {hasSubmitted && errors[name] && (
+        <span id={`${name}-error`} className="error-message">
+          ⚠️ {errors[name]}
+        </span>
+      )}
+    </div>
+  )
+
+  const renderSelect = (name: keyof FormDataType, label: string) => (
+    <div className="form-group">
+      <label htmlFor={name}>{label}</label>
+      <select
+        id={name}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        className={hasSubmitted && errors[name] ? 'input-error' : ''}
+        aria-describedby={`${name}-error`}
+        aria-invalid={!!errors[name]}
+      >
+        <option value="">-- Select a country --</option>
+        {validCountries.map((country) => (
+          <option key={country} value={country}>
+            {country}
+          </option>
+        ))}
+      </select>
+      {hasSubmitted && errors[name] && (
+        <span id={`${name}-error`} className="error-message">
+          ⚠️ {errors[name]}
+        </span>
+      )}
+    </div>
+  )
+
   return (
     <form onSubmit={handleSubmit} className="reg-form">
       {message && <p className="success-message">{message}</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      {[
-        { name: 'email', type: 'email', label: 'Email' },
-        { name: 'password', type: 'password', label: 'Password' },
-        { name: 'firstName', type: 'text', label: 'First Name' },
-        { name: 'lastName', type: 'text', label: 'Last Name' },
-        { name: 'birthDate', type: 'date', label: 'Birth Date' },
-        { name: 'street', type: 'text', label: 'Street' },
-        { name: 'city', type: 'text', label: 'City' },
-        { name: 'postalCode', type: 'text', label: 'Postal Code' },
-      ].map(({ name, type, label }) => (
-        <div key={name} className="form-group">
-          <label htmlFor={name}>{label}</label>
-          <input
-            type={type}
-            id={name}
-            name={name}
-            value={formData[name as keyof typeof formData]}
-            onChange={handleChange}
-            className={hasSubmitted && errors[name] ? 'input-error' : ''}
-            aria-describedby={`${name}-error`}
-            aria-invalid={!!errors[name]}
-          />
-          {hasSubmitted && errors[name] && (
-            <span id={`${name}-error`} className="error-message">
-              ⚠️ {errors[name]}
-            </span>
-          )}
-        </div>
-      ))}
+      {renderInput('email', 'Email', 'email')}
+      {renderInput('password', 'Password', 'password')}
+      {renderInput('firstName', 'First Name')}
+      {renderInput('lastName', 'Last Name')}
+      {renderInput('birthDate', 'Birth Date', 'date')}
 
-      <div className="form-group">
-        <label htmlFor="country">Country</label>
-        <select
-          id="country"
-          name="country"
-          value={formData.country}
-          onChange={handleChange}
-          className={hasSubmitted && errors.country ? 'input-error' : ''}
-          aria-describedby="country-error"
-          aria-invalid={!!errors.country}
-        >
-          <option value="">-- Select a country --</option>
-          {validCountries.map((country) => (
-            <option key={country} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
-        {hasSubmitted && errors.country && (
-          <span id="country-error" className="error-message">
-            ⚠️ {errors.country}
-          </span>
-        )}
+      <div className="form-group checkbox-group">
+        <label>
+          <input
+            type="checkbox"
+            checked={defaultShipping}
+            onChange={() => setDefaultShipping(!defaultShipping)}
+          />{' '}
+          Default Shipping
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={defaultBilling}
+            onChange={() => setDefaultBilling(!defaultBilling)}
+          />{' '}
+          Default Billing
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={useSameAddress}
+            onChange={() => setUseSameAddress(!useSameAddress)}
+          />{' '}
+          Use same address
+        </label>
       </div>
 
-      <button type="submit" disabled={isButtonDisabled}>
+      <h3>Shipping Address</h3>
+      {renderInput('street', 'Street')}
+      {renderInput('city', 'City')}
+      {renderInput('postalCode', 'Postal Code')}
+      {renderSelect('country', 'Country')}
+
+      {!useSameAddress && (
+        <>
+          <h3>Billing Address</h3>
+          {renderInput('billingStreet', 'Street')}
+          {renderInput('billingCity', 'City')}
+          {renderInput('billingPostalCode', 'Postal Code')}
+          {renderSelect('billingCountry', 'Billing Country')}
+        </>
+      )}
+
+      <button
+        type="submit"
+        disabled={isButtonDisabled || Object.keys(errors).length > 0}
+      >
         Register
       </button>
     </form>

@@ -3,6 +3,7 @@ import { isValidEmail, isValidPassword } from '../../../utils/validators'
 import { login } from '../../../store/slices/auth-slice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { getCustomerData, loginWithPassword } from '../services/authService'
+import { saveAuthState } from '../../../store/local-storage'
 import './regForm.css'
 
 export const LoginForm = () => {
@@ -37,9 +38,20 @@ export const LoginForm = () => {
 
     if (validate()) {
       try {
-        const tokens = await loginWithPassword(email, password)
-        const customer = await getCustomerData(tokens.access_token)
-        dispatch(login(customer))
+        const tokenData = await loginWithPassword(email, password)
+        const customer = await getCustomerData(tokenData.access_token)
+
+        const payload = {
+          customer,
+          token: tokenData.access_token,
+        }
+
+        dispatch(login(payload))
+        saveAuthState({
+          isLoggedIn: true,
+          customer,
+          token: tokenData.access_token,
+        })
         console.log('Customer data:', customer)
       } catch (error: any) {
         setLoginError(error.message || 'Login failed')

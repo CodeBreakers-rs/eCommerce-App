@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { type CustomerType } from '../../types/customer'
+import { removeToken } from '../local-storage.ts'
 
 export type AuthState = {
   isLoggedIn: boolean
@@ -23,6 +24,7 @@ const authSlice = createSlice({
       state.isLoggedIn = false
       state.customer = null
       localStorage.removeItem('auth')
+      removeToken()
     },
   },
 })

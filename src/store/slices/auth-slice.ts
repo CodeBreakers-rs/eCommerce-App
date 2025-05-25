@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import { type CustomerType } from '../../types/customer'
-import { removeToken } from '../local-storage.ts'
+import { removeToken, loadAuthState, saveAuthState, saveToken } from '../local-storage.ts'
 import * as authService from '../../features/auth/services/authService.ts'
 
 export type AuthState = {
@@ -11,12 +11,13 @@ export type AuthState = {
   error: string | null
 }
 
-export const authInitialState: AuthState = {
-  isLoggedIn: false,
-  customer: null,
-  token: null,
-  status: 'idle',
-  error: null,
+export const authInitialState: AuthState = 
+  loadAuthState() || {
+    isLoggedIn: false,
+    customer: null,
+    token: null,
+    status: 'idle',
+    error: null,
 }
 
 export const loginAsync = createAsyncThunk(
@@ -47,6 +48,8 @@ const authSlice = createSlice({
       state.isLoggedIn = true
       state.customer = action.payload.customer
       state.token = action.payload.token
+      saveAuthState(state)
+      saveToken(action.payload.token)
     },
     logout(state) {
       state.isLoggedIn = false
@@ -69,6 +72,8 @@ const authSlice = createSlice({
         state.customer = action.payload.customer
         state.token = action.payload.token
         state.error = null
+        saveAuthState(state)
+        saveToken(action.payload.token)
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.status = 'failed'

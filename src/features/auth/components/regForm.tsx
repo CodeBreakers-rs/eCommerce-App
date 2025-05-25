@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import * as authService from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -26,7 +27,7 @@ type FormDataType = {
 }
 
 export const RegForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     email: '',
     password: '',
     firstName: '',
@@ -41,6 +42,8 @@ export const RegForm = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -56,7 +59,7 @@ export const RegForm = () => {
     if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
     if (!isValidPassword(data.password))
       newErrors.password =
-        'Password must be at least 8 characters, include upper/lowercase and number'
+        'Password must be at least 8 characters, include upper/lowercase, number and one special character'
     if (!isValidName(data.firstName)) newErrors.firstName = 'Invalid first name'
     if (!isValidName(data.lastName)) newErrors.lastName = 'Invalid last name'
     if (!isValidBirthDate(data.birthDate))
@@ -77,18 +80,102 @@ export const RegForm = () => {
     setIsButtonDisabled(!allFilled)
   }, [formData])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setHasSubmitted(true)
+    setMessage('')
+    setErrorMessage('')
+
     const noErrors = validate(formData)
-    if (noErrors) {
-      //connectApi();  //TODO
-      alert('Submitted successfully')
+    if (!noErrors) return
+
+    const customerFormData = {
+      email: formData.email,
+      password: formData.password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dateOfBirth: formData.birthDate,
+      addresses: [
+        {
+          streetName: formData.street,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          country: formData.country === 'United States' ? 'US' : 'CA',
+        },
+      ],
+      defaultShippingAddress: 0,
+    }
+
+    try {
+      const result = await authService.registerCustomer(customerFormData)
+      console.log('Success:', result)
+      setMessage(`Account created for ${result.customer.email}`)
+      setFormData({
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        birthDate: '',
+        street: '',
+        city: '',
+        postalCode: '',
+        country: '',
+      })
+      setErrors({})
+      setHasSubmitted(false)
+    } catch (error: any) {
+      console.error('Registration error:', error)
+
+      const statusCode = error.statusCode || error.status || 500
+      const fallbackMessage = error.message || 'Something went wrong'
+      const errorData = error.response?.data || error
+      const errorList = errorData.errors || []
+
+      console.error('🚨 Registration failed:', {
+        statusCode,
+        message,
+        errors: errorList,
+      })
+
+      let formattedMessage = ` Error ${statusCode}: ${message} `
+
+      switch (statusCode) {
+        case 400: {
+          if (errorList.length) {
+            formattedMessage +=
+              '\n' + errorList.map((e: any) => `• ${e.message}`).join('\n')
+          }
+          break
+        }
+        case 401:
+          formattedMessage += '🔒 Unauthorized. Please log in again.'
+          break
+        case 403:
+          formattedMessage +=
+            '🚫 Access denied. You do not have permission to perform this action.'
+          break
+        case 409:
+          formattedMessage += '⚠️ An account with this email already exists.'
+          break
+        case 500:
+        case 502:
+        case 503:
+          formattedMessage += '⚠️ Server error. Please try again later.'
+          break
+        default:
+          formattedMessage += fallbackMessage
+          break
+      }
+
+      setErrorMessage(formattedMessage)
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="reg-form">
+      {message && <p className="success-message">{message}</p>}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
       {[
         { name: 'email', type: 'email', label: 'Email' },
         { name: 'password', type: 'password', label: 'Password' },

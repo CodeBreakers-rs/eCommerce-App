@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { authInitialState } from './slices/auth-slice'
-import { loadAuthState, saveAuthState } from './localStorage'
+import { loadAuthState, saveAuthState } from './local-storage'
 
 const preloadedAuthState = loadAuthState() ?? authInitialState
 

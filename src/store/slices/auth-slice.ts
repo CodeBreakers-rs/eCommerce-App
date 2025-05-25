@@ -1,36 +1,27 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-
-type User = {
-  email: string
-  firstName?: string
-  lastName?: string
-}
+import { type CustomerType } from '../../types/customer'
 
 export type AuthState = {
   isLoggedIn: boolean
-  user: {
-    email: string
-    firstName?: string
-    lastName?: string
-  } | null
+  customer: CustomerType | null
 }
 
 export const authInitialState: AuthState = {
   isLoggedIn: false,
-  user: null,
+  customer: null,
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
   reducers: {
-    login(state, action: PayloadAction<User>) {
+    login(state, action: PayloadAction<CustomerType>) {
       state.isLoggedIn = true
-      state.user = action.payload
+      state.customer = action.payload
     },
     logout(state) {
       state.isLoggedIn = false
-      state.user = null
+      state.customer = null
       localStorage.removeItem('auth')
     },
   },

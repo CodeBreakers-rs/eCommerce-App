@@ -82,6 +82,22 @@ const authSlice = createSlice({
   },
 })
 
+export const verifyTokenAsync = createAsyncThunk(
+  'auth/verifyTokenAsync',
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as { auth: AuthState }
+
+    if (!state.auth.token) return rejectWithValue('No token available')
+
+    try {
+      const customer = await authService.getCustomerData(state.auth.token)
+      return { customer }
+    } catch (error: any) {
+      dispatch(logout())
+      return rejectWithValue('Invalid or expired token')
+    }
+  }
+)
 
 export const { login, logout } = authSlice.actions
 export default authSlice.reducer

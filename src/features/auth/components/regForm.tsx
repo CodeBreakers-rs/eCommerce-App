@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import * as authService from '../services/authService'
+import { useAppDispatch } from '../../../store/hooks'
+import { login } from '../../../store/slices/auth-slice'
 import {
   isValidEmail,
   isValidPassword,
@@ -27,6 +29,8 @@ type FormDataType = {
 }
 
 export const RegForm = () => {
+  const dispatch = useAppDispatch()
+
   const [formData, setFormData] = useState<FormDataType>({
     email: '',
     password: '',
@@ -109,7 +113,8 @@ export const RegForm = () => {
     try {
       const result = await authService.registerCustomer(customerFormData)
       console.log('Success:', result)
-      setMessage(`Account created for ${result.customer.email}`)
+      dispatch(login(result.customer))
+
       setFormData({
         email: '',
         password: '',

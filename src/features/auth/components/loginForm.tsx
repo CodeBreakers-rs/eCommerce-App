@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { isValidEmail, isValidPassword } from '../../../utils/validators'
-import { loginAsync } from '../../../store/slices/auth-slice'
+import {
+  loginStarted,
+  login,
+  loginFailed,
+} from '../../../store/slices/auth-slice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
-import { getCustomerData, loginWithPassword } from '../services/authService'
-import { saveAuthState, saveToken } from '../../../store/local-storage'
+import { loginUser } from '../services/authService'
 import './regForm.css'
 
 export const LoginForm = () => {
@@ -36,13 +39,17 @@ export const LoginForm = () => {
     setHasValidated(true)
     setLoginError('')
 
-    if (validate()) {
-      try {
-        const result = await dispatch(loginAsync({ email, password })).unwrap()
-        console.log('Customer data:', result.customer)
-      } catch (error: any) {
-        setLoginError(error.message || 'Login failed')
-      }
+    if (!validate()) return
+    dispatch(loginStarted())
+
+    try {
+      const result = await loginUser(email, password)
+      dispatch(login(result))
+      console.log('Customer data:', result.customer)
+    } catch (error: any) {
+      const message = error.message || 'Login failed'
+      dispatch(loginFailed(message))
+      setLoginError(message)
     }
   }
 
@@ -53,7 +60,6 @@ export const LoginForm = () => {
         <input
           type="email"
           id="email"
-          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={hasValidated && errors.email ? 'input-error' : ''}

@@ -1,6 +1,7 @@
 import type { AuthState } from './slices/auth-slice'
 
 const AUTH_STATE_KEY = 'auth'
+const AUTH_TOKEN_KEY = 'auth_token'
 
 export const loadAuthState = (): AuthState | undefined => {
   try {
@@ -19,5 +20,13 @@ export const saveAuthState = (state: AuthState) => {
     localStorage.setItem(AUTH_STATE_KEY, serializedState)
   } catch (err) {
     console.warn('Failed to save auth state to localStorage:', err)
+  }
+}
+
+export const clearAuthState = () => {
+  try {
+    localStorage.removeItem(AUTH_TOKEN_KEY)
+  } catch (err) {
+    console.warn('Failed to clear auth state to localStorage:', err)
   }
 }

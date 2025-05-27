@@ -26,3 +26,21 @@
 .nav-list li a:hover {
   background-color: #e6f0ff;
 }
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: #e6f0ff;
+}
+
+.nav-link.active {
+  background-color: #cce0ff;
+  color: #0056b3;
+}

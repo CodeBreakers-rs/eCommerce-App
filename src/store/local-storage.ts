@@ -21,5 +21,3 @@ export const saveAuthState = (state: AuthState) => {
     console.warn('Failed to save auth state to localStorage:', err)
   }
 }
-
-

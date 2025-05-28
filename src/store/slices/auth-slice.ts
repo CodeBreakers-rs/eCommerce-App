@@ -34,7 +34,6 @@ const authSlice = createSlice({
       state.token = action.payload.token
       state.status = 'succeeded'
       state.error = null
-
     },
     loginFailed(state, action: PayloadAction<string>) {
       state.status = 'failed'

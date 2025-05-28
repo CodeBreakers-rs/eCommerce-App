@@ -17,7 +17,6 @@ function renderWithStore(ui: React.ReactElement) {
 }
 
 describe('Registration Form', () => {
-
   it('renders all required input fields', () => {
     renderWithStore(<RegForm />)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()

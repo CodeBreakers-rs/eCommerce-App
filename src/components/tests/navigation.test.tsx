@@ -9,13 +9,13 @@ import authReducer from '../../store/slices/auth-slice'
 const renderWithStore = (isLoggedIn: boolean) => {
   const store = configureStore({
     reducer: { auth: authReducer },
-    preloadedState: { 
-      auth:  {
-        isLoggedIn ,
+    preloadedState: {
+      auth: {
+        isLoggedIn,
         customer: null,
         token: isLoggedIn ? 'fake-token' : null,
         status: 'idle' as 'idle',
-        error:  null
+        error: null,
       },
     },
   })

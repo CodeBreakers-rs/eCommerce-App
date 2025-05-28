@@ -175,6 +175,7 @@ export const RegForm = () => {
       const result = await authService.registerCustomer(
         sanitized as CustomerType,
       )
+
       dispatch(login(result.customer))
       console.log('Registration successful:', result)
 

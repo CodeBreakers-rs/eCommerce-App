@@ -13,6 +13,9 @@ const renderWithStore = (isLoggedIn: boolean) => {
       auth: {
         isLoggedIn,
         customer: null,
+        token: isLoggedIn ? 'fake-token' : null,
+        status: 'idle' as 'idle',
+        error: null,
       },
     },
   })

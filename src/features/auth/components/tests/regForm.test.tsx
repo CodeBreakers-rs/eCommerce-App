@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
@@ -17,10 +17,6 @@ function renderWithStore(ui: React.ReactElement) {
 }
 
 describe('Registration Form', () => {
-  beforeEach(() => {
-    vi.restoreAllMocks()
-  })
-
   it('renders all required input fields', () => {
     renderWithStore(<RegForm />)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()

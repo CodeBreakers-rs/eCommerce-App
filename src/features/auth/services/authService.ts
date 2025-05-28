@@ -10,6 +10,16 @@ const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers`
 const API_TOKEN_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
 
+export async function loginUser(email: string, password: string) {
+  const tokenData = await loginWithPassword(email, password)
+  const customer = await getCustomerData(tokenData.access_token)
+
+  return {
+    token: tokenData.access_token,
+    customer,
+  }
+}
+
 async function getClientAccessToken() {
   const response = await fetch(`${AUTH_BASE_URL}/oauth/token`, {
     method: 'POST',

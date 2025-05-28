@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { isValidEmail, isValidPassword } from '../../../utils/validators'
-import { login } from '../../../store/slices/auth-slice'
+import {
+  loginStarted,
+  login,
+  loginFailed,
+} from '../../../store/slices/auth-slice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
-import { getCustomerData, loginWithPassword } from '../services/authService'
+import { loginUser } from '../services/authService'
 import './regForm.css'
 
 export const LoginForm = () => {
@@ -35,15 +39,17 @@ export const LoginForm = () => {
     setHasValidated(true)
     setLoginError('')
 
-    if (validate()) {
-      try {
-        const tokens = await loginWithPassword(email, password)
-        const customer = await getCustomerData(tokens.access_token)
-        dispatch(login(customer))
-        console.log('Customer data:', customer)
-      } catch (error: any) {
-        setLoginError(error.message || 'Login failed')
-      }
+    if (!validate()) return
+    dispatch(loginStarted())
+
+    try {
+      const result = await loginUser(email, password)
+      dispatch(login(result))
+      console.log('Customer data:', result.customer)
+    } catch (error: any) {
+      const message = error.message || 'Login failed'
+      dispatch(loginFailed(message))
+      setLoginError(message)
     }
   }
 

@@ -1,10 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { type CustomerType } from '../../types/customer'
-import {
-  loadAuthState,
-  saveAuthState,
-  clearAuthState,
-} from '../local-storage.ts'
 
 export type AuthState = {
   isLoggedIn: boolean
@@ -14,7 +9,7 @@ export type AuthState = {
   error: string | null
 }
 
-export const authInitialState: AuthState = loadAuthState() || {
+export const authInitialState: AuthState = {
   isLoggedIn: false,
   customer: null,
   token: null,
@@ -39,7 +34,7 @@ const authSlice = createSlice({
       state.token = action.payload.token
       state.status = 'succeeded'
       state.error = null
-      saveAuthState({ ...state, token: null })
+
     },
     loginFailed(state, action: PayloadAction<string>) {
       state.status = 'failed'
@@ -51,7 +46,6 @@ const authSlice = createSlice({
       state.token = null
       state.status = 'idle'
       state.error = null
-      clearAuthState()
     },
   },
 })

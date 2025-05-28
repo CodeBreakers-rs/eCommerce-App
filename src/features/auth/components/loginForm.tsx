@@ -60,6 +60,7 @@ export const LoginForm = () => {
         <input
           type="email"
           id="email"
+          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={hasValidated && errors.email ? 'input-error' : ''}

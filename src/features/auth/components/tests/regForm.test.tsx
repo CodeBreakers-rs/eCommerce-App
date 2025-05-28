@@ -1,15 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { Provider } from 'react-redux'
 import { RegForm } from '../regForm'
+import { store } from '../../../../store'
 import * as authService from '../../services/authService'
 
 describe('Registration Form', () => {
-  beforeEach(() => {
-    vi.restoreAllMocks()
-  })
+  const renderWithProvider = (ui: React.ReactElement) => {
+    return render(<Provider store={store}>{ui}</Provider>)
+  }
 
   it('renders all required input fields', () => {
-    render(<RegForm />)
+    renderWithProvider(<RegForm />)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/first name/i)).toBeInTheDocument()
@@ -22,7 +24,7 @@ describe('Registration Form', () => {
   })
 
   it('shows validation errors when submitting empty form', async () => {
-    render(<RegForm />)
+    renderWithProvider(<RegForm />)
     const button = screen.getByRole('button', { name: /register/i })
     fireEvent.click(button)
 
@@ -39,7 +41,7 @@ describe('Registration Form', () => {
         customer: { email: 'test@example.com', id: 'abc123' },
       })
 
-    render(<RegForm />)
+    renderWithProvider(<RegForm />)
 
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },

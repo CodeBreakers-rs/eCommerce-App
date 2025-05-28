@@ -179,6 +179,8 @@ export const RegForm = () => {
       dispatch(login(result.customer))
       console.log('Registration successful:', result)
 
+      setMessage(`Account created for ${result.customer.email}`)
+
       setFormData(initialForm)
       setDefaultShipping(false)
       setDefaultBilling(false)

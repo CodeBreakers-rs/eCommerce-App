@@ -1,10 +1,9 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { RegForm } from '../regForm'
-import { store } from '../../../../store'
 import * as authService from '../../services/authService'
 import authReducer from '../../../../store/slices/auth-slice'
 
@@ -18,9 +17,6 @@ function renderWithStore(ui: React.ReactElement) {
 }
 
 describe('Registration Form', () => {
-  const renderWithProvider = (ui: React.ReactElement) => {
-    return render(<Provider store={store}>{ui}</Provider>)
-  }
 
   it('renders all required input fields', () => {
     renderWithStore(<RegForm />)

@@ -1,12 +1,20 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { configDefaults } from 'vitest/config'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  base: '/',
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: './src/tests/setup.ts',
     exclude: [...configDefaults.exclude, 'e2e/*'],
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: './coverage',
+      reporter: ['text', 'html'],
+    },
   },
 })

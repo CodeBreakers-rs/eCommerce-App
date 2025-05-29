@@ -1,0 +1,2 @@
+echo "Running npm install after merge..."
+npm install

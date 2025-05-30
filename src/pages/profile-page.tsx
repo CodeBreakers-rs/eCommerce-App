@@ -19,31 +19,37 @@ const ProfilePage = () => {
     }
   }, [customer])
 
-  if (!customer) return <div>Loading profile...</div>
+  if (!customer)
+    return <div className="text-center text-lg mt-10">Loading profile...</div>
 
   return (
-    <div className="profile-container">
-      <h1>User Profile 📝</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">User Profile 📝</h1>
 
-      <section className="user-info">
-        <h2>Personal Information</h2>
-        <p>
-          <strong>First Name:</strong> {customer.firstName}
-        </p>
-        <p>
-          <strong>Last Name:</strong> {customer.lastName}
-        </p>
-        <p>
-          <strong>Date of Birth:</strong> {customer.dateOfBirth}
-        </p>
+      <section className="mb-8 bg-white p-6 rounded-2xl shadow">
+        <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
+        <div className="space-y-2 text-gray-700">
+          <p>
+            <span className="font-medium">First Name:</span>{' '}
+            {customer.firstName || 'N/A'}
+          </p>
+          <p>
+            <span className="font-medium">Last Name:</span>{' '}
+            {customer.lastName || 'N/A'}
+          </p>
+          <p>
+            <span className="font-medium">Date of Birth:</span>{' '}
+            {customer.dateOfBirth || 'N/A'}
+          </p>
+        </div>
       </section>
 
-      <section className="user-addresses">
-        <h2>Saved Addresses 🏠</h2>
+      <section className="bg-white p-6 rounded-2xl shadow">
+        <h2 className="text-xl font-semibold mb-4">Saved Addresses 🏠</h2>
         {customer.addresses.length === 0 ? (
-          <p>No saved addresses</p>
+          <p className="text-gray-500">No saved addresses</p>
         ) : (
-          <ul className="address-list">
+          <ul className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
             {customer.addresses.map((address) => {
               const isDefaultShipping = address.id === defaultShippingId
               const isDefaultBilling = address.id === defaultBillingId
@@ -51,30 +57,45 @@ const ProfilePage = () => {
               return (
                 <li
                   key={address.id}
-                  className={`address-card ${isDefaultShipping ? 'default-shipping' : ''} ${isDefaultBilling ? 'default-billing' : ''}`}
+                  className="bg-gray-50 border rounded-xl p-4 shadow relative"
                 >
-                  <p>
-                    <strong>Street:</strong> {address.streetName}
-                  </p>
-                  <p>
-                    <strong>City:</strong> {address.city}
-                  </p>
-                  <p>
-                    <strong>State:</strong> {address.region}
-                  </p>
-                  <p>
-                    <strong>ZIP Code:</strong> {address.postalCode}
-                  </p>
-                  <p>
-                    <strong>Country:</strong> {address.country}
-                  </p>
+                  <div className="space-y-1 text-gray-700">
+                    <p>
+                      <span className="font-medium">Street:</span>{' '}
+                      {address.streetName || '—'}
+                    </p>
+                    <p>
+                      <span className="font-medium">City:</span>{' '}
+                      {address.city || '—'}
+                    </p>
+                    {address.region && (
+                      <p>
+                        <span className="font-medium">State:</span>{' '}
+                        {address.region}
+                      </p>
+                    )}
+                    <p>
+                      <span className="font-medium">ZIP Code:</span>{' '}
+                      {address.postalCode || '—'}
+                    </p>
+                    <p>
+                      <span className="font-medium">Country:</span>{' '}
+                      {address.country || '—'}
+                    </p>
+                  </div>
 
-                  {isDefaultShipping && (
-                    <span className="badge shipping">Default Shipping</span>
-                  )}
-                  {isDefaultBilling && (
-                    <span className="badge billing">Default Billing</span>
-                  )}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {isDefaultShipping && (
+                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                        Default Shipping
+                      </span>
+                    )}
+                    {isDefaultBilling && (
+                      <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                        Default Billing
+                      </span>
+                    )}
+                  </div>
                 </li>
               )
             })}

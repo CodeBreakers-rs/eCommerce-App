@@ -1,7 +1,6 @@
 import { useAppSelector } from '../../store/hooks'
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, afterEach, type Mock } from 'vitest'
-
 import ProfilePage from '../profile-page'
 import { type Customer } from '@commercetools/platform-sdk'
 

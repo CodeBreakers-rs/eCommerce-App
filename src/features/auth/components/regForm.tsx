@@ -18,7 +18,6 @@ import {
 } from '../../../utils/validators'
 import './regForm.css'
 import type { CustomerType, FormDataType } from '../../../types/customer'
-import { useNavigate } from 'react-router-dom'
 
 const validCountries = ['United States', 'Canada']
 
@@ -29,7 +28,6 @@ const countryNameToCode: Record<string, string> = {
 
 export const RegForm = () => {
   const dispatch = useAppDispatch()
-  const navigate = useNavigate()
 
   const initialForm: FormDataType = {
     email: '',
@@ -189,7 +187,6 @@ export const RegForm = () => {
           token: loginResult.token,
         }),
       )
-      navigate('/profile')
       setFormData(initialForm)
       setDefaultShipping(false)
       setDefaultBilling(false)

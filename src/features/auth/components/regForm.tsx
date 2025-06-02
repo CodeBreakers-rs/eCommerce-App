@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import * as authService from '../services/authService'
 import { useAppDispatch } from '../../../store/hooks'
 import { login } from '../../../store/slices/auth-slice'
-import { sanitizeCustomerDraft } from '../services/authService'
+import {
+  registerCustomer,
+  loginUser,
+  sanitizeCustomerDraft,
+} from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -15,6 +18,7 @@ import {
 } from '../../../utils/validators'
 import './regForm.css'
 import type { CustomerType, FormDataType } from '../../../types/customer'
+import { useNavigate } from 'react-router-dom'
 
 const validCountries = ['United States', 'Canada']
 
@@ -25,6 +29,7 @@ const countryNameToCode: Record<string, string> = {
 
 export const RegForm = () => {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const initialForm: FormDataType = {
     email: '',
@@ -172,13 +177,19 @@ export const RegForm = () => {
     )
 
     try {
-      const result = await authService.registerCustomer(
-        sanitized as CustomerType,
-      )
-
-      dispatch(login(result.customer))
+      const result = await registerCustomer(sanitized as CustomerType)
       console.log('Registration successful:', result)
-
+      const loginResult = await loginUser(
+        customerFormData.email,
+        customerFormData.password,
+      )
+      dispatch(
+        login({
+          customer: loginResult.customer,
+          token: loginResult.token,
+        }),
+      )
+      navigate('/profile')
       setFormData(initialForm)
       setDefaultShipping(false)
       setDefaultBilling(false)

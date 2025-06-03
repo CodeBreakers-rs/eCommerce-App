@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import * as authService from '../services/authService'
 import { useAppDispatch } from '../../../store/hooks'
 import { login } from '../../../store/slices/auth-slice'
-import { sanitizeCustomerDraft } from '../services/authService'
+import {
+  registerCustomer,
+  loginUser,
+  sanitizeCustomerDraft,
+} from '../services/authService'
 import {
   isValidEmail,
   isValidPassword,
@@ -172,13 +175,18 @@ export const RegForm = () => {
     )
 
     try {
-      const result = await authService.registerCustomer(
-        sanitized as CustomerType,
-      )
-
-      dispatch(login(result.customer))
+      const result = await registerCustomer(sanitized as CustomerType)
       console.log('Registration successful:', result)
-
+      const loginResult = await loginUser(
+        customerFormData.email,
+        customerFormData.password,
+      )
+      dispatch(
+        login({
+          customer: loginResult.customer,
+          token: loginResult.token,
+        }),
+      )
       setFormData(initialForm)
       setDefaultShipping(false)
       setDefaultBilling(false)

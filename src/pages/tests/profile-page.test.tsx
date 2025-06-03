@@ -20,7 +20,11 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />)
 
-    expect(screen.getByText('Loading profile...')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'No profile data found. You need to log in to view your profile.',
+      ),
+    ).toBeInTheDocument()
   })
 
   it('renders personal information and addresses', () => {

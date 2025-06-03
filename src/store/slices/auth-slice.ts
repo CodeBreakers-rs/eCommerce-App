@@ -7,7 +7,6 @@ export type AuthState = {
   token: string | null
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null
-  isAuthenticated: boolean
 }
 
 export const authInitialState: AuthState = {
@@ -16,7 +15,6 @@ export const authInitialState: AuthState = {
   token: null,
   status: 'idle',
   error: null,
-  isAuthenticated: false,
 }
 
 const authSlice = createSlice({

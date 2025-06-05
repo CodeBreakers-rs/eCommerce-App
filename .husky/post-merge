@@ -1,2 +1,5 @@
 echo "Running npm install after merge..."
 npm install
+
+echo "Running full coverage tests..."
+npm run test:coverage

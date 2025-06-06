@@ -4,7 +4,7 @@ import {
   type PayloadAction,
 } from '@reduxjs/toolkit'
 import type { RootState } from '../index'
-import type { DessertProduct } from '../../types/product-list'
+import type { DessertProduct } from '../../types/dessert-product'
 
 import { fetchProducts } from '../../features/catalog/services/catalog-service'
 
@@ -15,7 +15,6 @@ export const loadProducts = createAsyncThunk<
 >('catalog/loadProducts', async (_, thunkAPI) => {
   const state = thunkAPI.getState()
   const token = state.auth.token
-  console.count('Loading products with token:')
 
   if (!token) {
     return thunkAPI.rejectWithValue('No authentication token found')

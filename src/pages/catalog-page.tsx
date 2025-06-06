@@ -6,6 +6,7 @@ import {
   selectCatalogLoading,
   selectCatalogError,
 } from '../store/slices/catalog-slice'
+import ProductCard from '../features/catalog/components/product-card'
 
 const CatalogPage = () => {
   const dispatch = useAppDispatch()
@@ -26,24 +27,9 @@ const CatalogPage = () => {
       {isLoading && <p>Loading products...</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 auto-rows-fr">
         {products.map((product) => (
-          <div
-            key={product.id}
-            className="border rounded-xl shadow-md p-4 bg-white hover:shadow-lg transition"
-          >
-            {product.masterVariant.images?.[0].url && (
-              <img
-                src={product.masterVariant?.images?.[0]?.url}
-                alt={product.name[locale]}
-                className="w-full h-48 object-cover rounded-md mb-3"
-              />
-            )}
-            <h2 className="text-lg font-semibold">{product.name[locale]}</h2>
-            <p className="text-sm text-gray-600">
-              {product.description[locale]}
-            </p>
-          </div>
+          <ProductCard key={product.id} product={product} locale={locale} />
         ))}
       </div>
     </main>

@@ -28,12 +28,19 @@ export interface ProductImage {
 export interface ProductVariant<TAttributes = DessertProductAttributes> {
   attributes: TAttributes
   images?: ProductImage[]
-  priceCents: number
+  prices: {
+    value: {
+      centAmount: number
+      fractionDigits: number
+      currencyCode: string
+    }
+  }[]
 }
 
 export interface BaseProduct<TAttributes = DessertProductAttributes> {
   id: string
   name: LocalizedString
+  slug: LocalizedString
   description: LocalizedString
   masterVariant: ProductVariant<TAttributes>
 }

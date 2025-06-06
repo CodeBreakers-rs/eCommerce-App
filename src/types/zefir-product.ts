@@ -20,7 +20,7 @@ type ZefirPackageType = 'box' | 'container'
 
 type ZefirPackageSize = '4_pcs' | '9_pcs' | '12_pcs' | '18_pcs' | null
 
-interface ZefirProductAttributes extends BaseDessertAttributes {
+export interface ZefirProductAttributes extends BaseDessertAttributes {
   flavor: ZefirFlavor
   covering: ZefirCovering
   coverType: ZefirCoverType

@@ -1,7 +1,7 @@
 import type { ZefirProduct } from './zefir-product'
 import type { MarshmallowProduct } from './marshmallow-product'
 
-type DessertProduct = ZefirProduct | MarshmallowProduct
+export type DessertProduct = ZefirProduct | MarshmallowProduct
 
 export interface ProductList {
   products: DessertProduct[]

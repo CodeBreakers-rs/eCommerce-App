@@ -4,7 +4,7 @@ type MarshmallowDesign = 'hand_cut' | 'custom_shaped'
 
 type MarshmallowPackageType = 'box' | 'transparent_packaging'
 
-interface MarshmallowProductAttributes extends BaseDessertAttributes {
+export interface MarshmallowProductAttributes extends BaseDessertAttributes {
   design: MarshmallowDesign
   packageType?: MarshmallowPackageType
 }

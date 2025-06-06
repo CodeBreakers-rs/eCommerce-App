@@ -1,5 +1,6 @@
 import { describe, it, vi, beforeEach, expect, type Mock } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import CatalogPage from '../catalog-page'
 import * as hooks from '../../store/hooks'
 import * as catalogSlice from '../../store/slices/catalog-slice'
@@ -9,6 +10,7 @@ const mockProducts = [
     id: '1',
     name: { en: 'Apple Zefir' },
     description: { en: 'Delicious apple-flavored zefir.' },
+    slug: { en: 'apple-zefir' },
     masterVariant: {
       images: [{ url: 'https://example.com/apple.jpg' }],
     },
@@ -17,6 +19,7 @@ const mockProducts = [
     id: '2',
     name: { en: 'Cranberry Marshmallow' },
     description: { en: 'Tangy cranberry marshmallow treats.' },
+    slug: { en: 'cranberry-marshmallow' },
     masterVariant: {
       images: [{ url: 'https://example.com/cranberry.jpg' }],
     },
@@ -60,7 +63,11 @@ describe('CatalogPage', () => {
       if (selectorFn === catalogSlice.selectCatalogError) return null
     })
 
-    render(<CatalogPage />)
+    render(
+      <MemoryRouter>
+        <CatalogPage />
+      </MemoryRouter>,
+    )
 
     expect(mockDispatch).toHaveBeenCalled()
   })
@@ -72,7 +79,11 @@ describe('CatalogPage', () => {
       if (selectorFn === catalogSlice.selectCatalogError) return null
     })
 
-    render(<CatalogPage />)
+    render(
+      <MemoryRouter>
+        <CatalogPage />
+      </MemoryRouter>,
+    )
     expect(screen.getByText(/loading products/i)).toBeInTheDocument()
   })
 
@@ -84,7 +95,11 @@ describe('CatalogPage', () => {
         return 'Something went wrong'
     })
 
-    render(<CatalogPage />)
+    render(
+      <MemoryRouter>
+        <CatalogPage />
+      </MemoryRouter>,
+    )
     expect(screen.getByText(/error: something went wrong/i)).toBeInTheDocument()
   })
 
@@ -95,7 +110,11 @@ describe('CatalogPage', () => {
       if (selectorFn === catalogSlice.selectCatalogError) return null
     })
 
-    render(<CatalogPage />)
+    render(
+      <MemoryRouter>
+        <CatalogPage />
+      </MemoryRouter>,
+    )
 
     expect(screen.getByText('Apple Zefir')).toBeInTheDocument()
     expect(screen.getByText('Cranberry Marshmallow')).toBeInTheDocument()

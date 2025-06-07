@@ -7,6 +7,7 @@ import type { DessertProduct } from '../../../types/dessert-product'
 const query = new URLSearchParams({
   staged: 'false',
   limit: '10',
+  sort: 'id desc',
 }).toString()
 
 export const fetchProducts = async (

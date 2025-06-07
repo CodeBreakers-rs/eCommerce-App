@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
 import * as authService from '../authService'
+import { getCustomerProfile} from '../authService'
 
 globalThis.fetch = vi.fn()
 
@@ -101,8 +102,6 @@ describe('authService', () => {
         expect.any(Object),
       )
       expect(result).toEqual(mockLoginData)
-      //expect(localStorage.getItem('access_token')).toBe('mockAccessToken')
-      //expect(localStorage.getItem('refresh_token')).toBe('mockRefreshToken')
     })
 
     it('should throw error on failed login', async () => {
@@ -117,7 +116,7 @@ describe('authService', () => {
     })
   })
 
-  describe('getCustomerData', () => {
+  describe('getCustomerProfile', () => {
     it('should return customer data on success', async () => {
       const mockCustomer = { id: '123', email: 'test@example.com' }
 
@@ -126,7 +125,7 @@ describe('authService', () => {
         json: async () => mockCustomer,
       })
 
-      const result = await authService.getCustomerData('mockAccessToken')
+      const result = await authService.getCustomerProfile('mockAccessToken')
       expect(fetch).toHaveBeenCalledWith(
         expect.stringContaining('/me'),
         expect.any(Object),
@@ -140,21 +139,10 @@ describe('authService', () => {
         json: async () => ({}),
       })
 
-      await expect(authService.getCustomerData('badToken')).rejects.toThrow(
+      await expect(authService.getCustomerProfile('badToken')).rejects.toThrow(
         'Failed to fetch customer data',
       )
     })
   })
 
-  /*describe('logout', () => {
-    it('should clear tokens from localStorage', () => {
-      localStorage.setItem('access_token', 'token123')
-      localStorage.setItem('refresh_token', 'token456')
-
-      //authService.logout()
-
-      //expect(localStorage.getItem('access_token')).toBeNull()
-      //expect(localStorage.getItem('refresh_token')).toBeNull()
-    })
-  })*/
 })

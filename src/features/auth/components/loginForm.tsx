@@ -8,6 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { loginUser } from '../services/authService'
 import './regForm.css'
+import type { CustomerType } from '../../../types/customer'
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch()
@@ -18,7 +19,7 @@ export const LoginForm = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {},
   )
-  const [showPassword, setShowPassword] = useState(false)
+  const [isShownPassword, setIsShownPassword] = useState(false)
   const [hasValidated, setHasValidated] = useState(false)
   const [loginError, setLoginError] = useState('')
 
@@ -44,7 +45,10 @@ export const LoginForm = () => {
 
     try {
       const result = await loginUser(email, password)
-      dispatch(login(result))
+      dispatch(login({
+      token: result.token,
+      customer: result.customer as CustomerType,
+    }))
       console.log('Customer data:', result.customer)
     } catch (error: any) {
       const message = error.message || 'Login failed'
@@ -76,7 +80,7 @@ export const LoginForm = () => {
       <div className="form-group">
         <label htmlFor="password">Password</label>
         <input
-          type={showPassword ? 'text' : 'password'}
+          type={isShownPassword ? 'text' : 'password'}
           id="password"
           name="password"
           value={password}
@@ -89,8 +93,8 @@ export const LoginForm = () => {
             <input
               type="checkbox"
               id="show-password"
-              checked={showPassword}
-              onChange={() => setShowPassword((prev) => !prev)}
+              checked={isShownPassword}
+              onChange={() => setIsShownPassword((prev) => !prev)}
             />
             Show Password 👁️‍🗨️
           </label>

@@ -183,7 +183,7 @@ export const RegForm = () => {
       )
       dispatch(
         login({
-          customer: loginResult.customer,
+          customer: loginResult.customer as CustomerType,
           token: loginResult.token,
         }),
       )

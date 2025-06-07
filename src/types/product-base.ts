@@ -1,9 +1,4 @@
-import type { MarshmallowProductAttributes } from './marshmallow-product'
-import type { ZefirProductAttributes } from './zefir-product'
-
-export type DessertProductAttributes =
-  | ZefirProductAttributes
-  | MarshmallowProductAttributes
+import type { ZefirProductAttributes } from './dessert-product'
 
 export interface BaseDessertAttributes {
   ingredients: string[]
@@ -25,7 +20,7 @@ export interface ProductImage {
   }
 }
 
-export interface ProductVariant<TAttributes = DessertProductAttributes> {
+export interface ProductVariant<TAttributes = ZefirProductAttributes> {
   attributes: TAttributes
   images?: ProductImage[]
   prices: {
@@ -37,7 +32,7 @@ export interface ProductVariant<TAttributes = DessertProductAttributes> {
   }[]
 }
 
-export interface BaseProduct<TAttributes = DessertProductAttributes> {
+export interface BaseProduct<TAttributes = ZefirProductAttributes> {
   id: string
   name: LocalizedString
   slug: LocalizedString

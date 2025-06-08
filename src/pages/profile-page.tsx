@@ -9,31 +9,37 @@ import { EditProfileModal } from '../features/profile/edit-profile-modal'
 
 const ProfilePage = () => {
   const dispatch = useDispatch()
-  const customer = useAppSelector((state) => state.auth.customer) as SDKCustomer | null
+  const customer = useAppSelector(
+    (state) => state.auth.customer,
+  ) as SDKCustomer | null
   const token = useAppSelector((state) => state.auth.token)
 
-  const [defaultShippingId, setDefaultShippingId] = useState<string | null>(null)
+  const [defaultShippingId, setDefaultShippingId] = useState<string | null>(
+    null,
+  )
   const [defaultBillingId, setDefaultBillingId] = useState<string | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
 
   const handleProfileSave = async (updatedCustomer: CustomerUpdatePayload) => {
     setStatusMessage(null)
-    
+
     try {
       if (!token || !customer) throw new Error('Not authenticated')
 
-        const updatePayload = {
-      ...updatedCustomer,
-      version: customer.version,
-    };
+      const updatePayload = {
+        ...updatedCustomer,
+        version: customer.version,
+      }
 
       const newCustomerData = await updateCustomerProfile(token, updatePayload)
-      
-      dispatch(setCustomerData({
-  token,
-  customer: updatedCustomer as SDKCustomer,
-}));
+
+      dispatch(
+        setCustomerData({
+          token,
+          customer: newCustomerData as SDKCustomer,
+        }),
+      )
       setStatusMessage('Profile updated successfully!')
       setIsEditMode(false)
     } catch (error) {
@@ -77,9 +83,18 @@ const ProfilePage = () => {
       <section className="mb-8 bg-white p-6 rounded-2xl shadow">
         <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
         <div className="space-y-2 text-gray-700">
-          <p><span className="font-medium">First Name:</span> {customer.firstName || 'N/A'}</p>
-          <p><span className="font-medium">Last Name:</span> {customer.lastName || 'N/A'}</p>
-          <p><span className="font-medium">Date of Birth:</span> {customer.dateOfBirth || 'N/A'}</p>
+          <p>
+            <span className="font-medium">First Name:</span>{' '}
+            {customer.firstName || 'N/A'}
+          </p>
+          <p>
+            <span className="font-medium">Last Name:</span>{' '}
+            {customer.lastName || 'N/A'}
+          </p>
+          <p>
+            <span className="font-medium">Date of Birth:</span>{' '}
+            {customer.dateOfBirth || 'N/A'}
+          </p>
         </div>
       </section>
 
@@ -99,13 +114,28 @@ const ProfilePage = () => {
                   className="bg-gray-50 border rounded-xl p-4 shadow relative"
                 >
                   <div className="space-y-1 text-gray-700">
-                    <p><span className="font-medium">Street:</span> {address.streetName || '—'}</p>
-                    <p><span className="font-medium">City:</span> {address.city || '—'}</p>
+                    <p>
+                      <span className="font-medium">Street:</span>{' '}
+                      {address.streetName || '—'}
+                    </p>
+                    <p>
+                      <span className="font-medium">City:</span>{' '}
+                      {address.city || '—'}
+                    </p>
                     {address.region && (
-                      <p><span className="font-medium">State:</span> {address.region}</p>
+                      <p>
+                        <span className="font-medium">State:</span>{' '}
+                        {address.region}
+                      </p>
                     )}
-                    <p><span className="font-medium">ZIP Code:</span> {address.postalCode || '—'}</p>
-                    <p><span className="font-medium">Country:</span> {address.country || '—'}</p>
+                    <p>
+                      <span className="font-medium">ZIP Code:</span>{' '}
+                      {address.postalCode || '—'}
+                    </p>
+                    <p>
+                      <span className="font-medium">Country:</span>{' '}
+                      {address.country || '—'}
+                    </p>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2">

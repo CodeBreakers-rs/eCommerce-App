@@ -4,9 +4,9 @@ const ProductPage = () => {
   const { id } = useParams()
 
   return (
-    <section>
-      <h1>Product Page</h1>
-      <p>Product ID: {id}</p>
+    <section className="p-4">
+      <h1 className="text-2xl font-bold mb-2">Product Detail</h1>
+      <p className="text-gray-600">Slug: {id}</p>
     </section>
   )
 }

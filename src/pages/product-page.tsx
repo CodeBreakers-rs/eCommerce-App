@@ -67,10 +67,10 @@ const ProductPage = () => {
 
   return (
     <section className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">{name}</h1>
-      <p className="text-gray-600 mb-4">{description}</p>
+      <h1 className="text-3xl font-bold mb-2">{name}</h1>
+      <p className="text-gray-600 text-lg mb-6">{description}</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         {images ? (
           images.length > 0 ? (
             images.map((img, i) => (
@@ -78,7 +78,7 @@ const ProductPage = () => {
                 key={i}
                 src={img.url}
                 alt={img.label ?? `Product image ${i + 1}`}
-                className="w-full object-cover rounded-lg shadow-sm"
+                className="w-full aspect-square object-cover rounded-lg shadow-sm"
               />
             ))
           ) : (
@@ -89,29 +89,30 @@ const ProductPage = () => {
         )}
       </div>
 
-      <div className="text-xl font-semibold mb-4">
+      <div className="text-xl font-semibold flex items-center gap-3 mb-6">
         {discountedPrice ? (
-          <div>
-            <span className="line-through text-gray-400 mr-2">
+          <>
+            <span className="text-base line-through text-gray-400">
               {originalPrice} {currency}
             </span>
-            <span className="text-red-600">
+            <span className="text-red-600 px-1">
               {discountedPrice} {currency}
             </span>
             {discountPercentage !== null && (
-              <span className="inline-block mt-1 text-xs font-semibold text-white bg-red-500 px-2 py-0.5 rounded-full">
+              <span className="inline-block text-xs font-semibold text-white bg-red-500 px-2 py-0.5 rounded-full">
                 -{discountPercentage}%
               </span>
             )}
-          </div>
+          </>
         ) : (
           <span className="text-green-700">
             {originalPrice} {currency}
           </span>
         )}
       </div>
-      <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Product Details 🧾</h2>
+
+      <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+        <h2 className="text-xl font-bold mb-4">Product Details 🧾</h2>
         <ProductAttributes rawAttributes={rawAttributes} />
       </div>
     </section>

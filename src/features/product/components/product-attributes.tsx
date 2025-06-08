@@ -45,11 +45,14 @@ const ProductAttributes: React.FC<Props> = ({ rawAttributes }) => {
   const renderValue = (value: any) => {
     if (Array.isArray(value)) {
       return (
-        <ul className="list-disc ml-5">
-          {value.map((v, i) => (
-            <li key={i}>{v}</li>
+        <span className="font-medium">
+          {value.map((v: string, i: number) => (
+            <span key={i}>
+              {v}
+              {i < value.length - 1 ? ', ' : ''}
+            </span>
           ))}
-        </ul>
+        </span>
       )
     }
 
@@ -67,18 +70,21 @@ const ProductAttributes: React.FC<Props> = ({ rawAttributes }) => {
   return (
     <div className="space-y-6">
       {Object.entries(grouped).map(([section, attrs]) => (
-        <div key={section}>
-          <h3 className="text-md font-semibold text-gray-800 mb-2">
+        <div
+          key={section}
+          className={`p-4 rounded-lg bg-white border border-gray-200 shadow-sm`}
+        >
+          <h3 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-300 pb-1">
             {section}
           </h3>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 text-sm text-gray-700">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 text-base text-gray-700">
             {attrs.map((attr) => (
-              <li key={attr.name}>
-                <span className="mr-2">{iconMap[attr.name] || '🔹'}</span>
-                <span className="capitalize font-semibold">
-                  {attr.name}:
-                </span>{' '}
-                {renderValue(attr.value)}
+              <li key={attr.name} className="flex items-start gap-2">
+                <span>{iconMap[attr.name] || '🔹'}</span>
+                <div>
+                  <span className="capitalize font-semibold">{attr.name}:</span>{' '}
+                  {renderValue(attr.value)}
+                </div>
               </li>
             ))}
           </ul>

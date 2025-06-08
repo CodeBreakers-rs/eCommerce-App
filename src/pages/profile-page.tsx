@@ -15,11 +15,9 @@ const ProfilePage = () => {
   const [defaultShippingId, setDefaultShippingId] = useState<string | null>(null)
   const [defaultBillingId, setDefaultBillingId] = useState<string | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
-  //const [isSaving, setIsSaving] = useState(false)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
 
   const handleProfileSave = async (updatedCustomer: CustomerUpdatePayload) => {
-    ///setIsSaving(true)
     setStatusMessage(null)
     
     try {
@@ -31,25 +29,17 @@ const ProfilePage = () => {
     };
 
       const newCustomerData = await updateCustomerProfile(token, updatePayload)
-      const { email = '', firstName, lastName, dateOfBirth, addresses } = newCustomerData;
+      
       dispatch(setCustomerData({
-      token,
-      customer: {
-        email,
-        firstName,
-        lastName,
-        dateOfBirth,
-        addresses,
-      },
-    }));
+  token,
+  customer: updatedCustomer as SDKCustomer,
+}));
       setStatusMessage('Profile updated successfully!')
       setIsEditMode(false)
     } catch (error) {
       console.error(error)
       setStatusMessage('Failed to update profile.')
     }
-
-    //setIsSaving(false)
   }
 
   useEffect(() => {
@@ -95,7 +85,7 @@ const ProfilePage = () => {
 
       <section className="bg-white p-6 rounded-2xl shadow">
         <h2 className="text-xl font-semibold mb-4">Saved Addresses 🏠</h2>
-        {customer.addresses.length === 0 ? (
+        {!customer.addresses || customer.addresses.length === 0 ? (
           <p className="text-gray-500">No saved addresses</p>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">

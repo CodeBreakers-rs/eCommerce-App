@@ -113,6 +113,5 @@ export async function loginWithPassword(email: string, password: string) {
   }
 
   const tokenData = await tokenRes.json()
-
   return tokenData
 }

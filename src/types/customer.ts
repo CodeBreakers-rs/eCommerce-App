@@ -74,5 +74,5 @@ export type CustomerProfileType = {
 
 export interface CustomerState {
   token: string | null
-  customer: CustomerProfileType | null
+  customer: SDKCustomer | null
 }

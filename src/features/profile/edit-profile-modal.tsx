@@ -1,19 +1,26 @@
 import { useState } from 'react'
-import type {
-  EditProfileModalProps,
-  Address, 
-} from '../../types/customer'
-import type { Address as SDKAddress } from '@commercetools/platform-sdk';
+import type { EditProfileModalProps, Address } from '../../types/customer'
+import type { Address as SDKAddress } from '@commercetools/platform-sdk'
 
-export const EditProfileModal = ({ customer, onSave, onClose }: EditProfileModalProps) => {
+export const EditProfileModal = ({
+  customer,
+  onSave,
+  onClose,
+}: EditProfileModalProps) => {
   const [firstName, setFirstName] = useState(customer.firstName ?? '')
   const [lastName, setLastName] = useState(customer.lastName ?? '')
   const [dateOfBirth, setDateOfBirth] = useState(customer.dateOfBirth ?? '')
   const [email, setEmail] = useState(customer.email)
-  const [addresses, setAddresses] = useState<SDKAddress[]>(customer.addresses ?? [])
+  const [addresses, setAddresses] = useState<SDKAddress[]>(
+    customer.addresses ?? [],
+  )
   const [isSaving, setIsSaving] = useState(false)
 
-  const handleAddressChange = (index: number, field: keyof Address, value: string) => {
+  const handleAddressChange = (
+    index: number,
+    field: keyof Address,
+    value: string,
+  ) => {
     const updated = [...addresses]
     updated[index] = { ...updated[index], [field]: value }
     setAddresses(updated)
@@ -41,8 +48,14 @@ export const EditProfileModal = ({ customer, onSave, onClose }: EditProfileModal
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">First Name</label>
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium mb-1"
+            >
+              First Name
+            </label>
             <input
+              id="firstName"
               type="text"
               name="firstName"
               value={firstName}
@@ -51,8 +64,14 @@ export const EditProfileModal = ({ customer, onSave, onClose }: EditProfileModal
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Last Name</label>
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium mb-1"
+            >
+              Last Name
+            </label>
             <input
+              id="lastName"
               type="text"
               name="lastName"
               value={lastName}
@@ -61,8 +80,11 @@ export const EditProfileModal = ({ customer, onSave, onClose }: EditProfileModal
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium mb-1">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               name="email"
               value={email}
@@ -71,8 +93,14 @@ export const EditProfileModal = ({ customer, onSave, onClose }: EditProfileModal
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Date of Birth</label>
+            <label
+              htmlFor="birthDate"
+              className="block text-sm font-medium mb-1"
+            >
+              Date of Birth
+            </label>
             <input
+              id="birthDate"
               type="date"
               name="birthDate"
               value={dateOfBirth}
@@ -84,37 +112,72 @@ export const EditProfileModal = ({ customer, onSave, onClose }: EditProfileModal
 
         <div className="mt-6 space-y-6">
           {addresses.map((address, index) => (
-            <div key={index} className="border-t pt-4 border-gray-200 space-y-4">
+            <div
+              key={index}
+              className="border-t pt-4 border-gray-200 space-y-4"
+            >
               <h4 className="text-lg font-medium">Address {index + 1}</h4>
               <div>
-                <label className="block text-sm font-medium mb-1">Street</label>
+                <label
+                  htmlFor={`street-${index}`}
+                  className="block text-sm font-medium mb-1"
+                >
+                  Street
+                </label>
                 <input
+                  id={`street-${index}`}
                   value={address.streetName}
-                  onChange={(e) => handleAddressChange(index, 'streetName', e.target.value)}
+                  onChange={(e) =>
+                    handleAddressChange(index, 'streetName', e.target.value)
+                  }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">City</label>
+                <label
+                  htmlFor={`city-${index}`}
+                  className="block text-sm font-medium mb-1"
+                >
+                  City
+                </label>
                 <input
+                  id={`city-${index}`}
                   value={address.city}
-                  onChange={(e) => handleAddressChange(index, 'city', e.target.value)}
+                  onChange={(e) =>
+                    handleAddressChange(index, 'city', e.target.value)
+                  }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Postal Code</label>
+                <label
+                  htmlFor={`postalCode-${index}`}
+                  className="block text-sm font-medium mb-1"
+                >
+                  Postal Code
+                </label>
                 <input
+                  id={`postalCode-${index}`}
                   value={address.postalCode}
-                  onChange={(e) => handleAddressChange(index, 'postalCode', e.target.value)}
+                  onChange={(e) =>
+                    handleAddressChange(index, 'postalCode', e.target.value)
+                  }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Country</label>
+                <label
+                  htmlFor={`country-${index}`}
+                  className="block text-sm font-medium mb-1"
+                >
+                  Country
+                </label>
                 <input
+                  id={`country-${index}`}
                   value={address.country}
-                  onChange={(e) => handleAddressChange(index, 'country', e.target.value)}
+                  onChange={(e) =>
+                    handleAddressChange(index, 'country', e.target.value)
+                  }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
               </div>

@@ -1,32 +1,74 @@
-import type { BaseDessertAttributes, BaseProduct } from './product-base'
+import type { ZefirProductAttributes } from './zefir-product-attributes'
 
-type ZefirFlavor =
-  | 'apple'
-  | 'cranberry'
-  | 'banana'
-  | 'coffee'
-  | 'cinnamon'
-  | 'pumpkin_spice'
-  | 'mint'
-  | 'mulled_wine'
-
-type ZefirCovering = 'full' | 'half'
-
-type ZefirCoverType = 'white_chocolate' | 'milk_chocolate' | 'icing_sugar'
-
-type ZefirDesign = 'swirl' | 'rose' | 'mushroom' | 'heart' | null
-
-type ZefirPackageType = 'box' | 'container'
-
-type ZefirPackageSize = '4_pcs' | '9_pcs' | '12_pcs' | '18_pcs' | null
-
-export interface ZefirProductAttributes extends BaseDessertAttributes {
-  flavor: ZefirFlavor
-  covering: ZefirCovering
-  coverType: ZefirCoverType
-  design?: ZefirDesign
-  packageType: ZefirPackageType
-  packageSize?: ZefirPackageSize
+export interface LocalizedString {
+  [locale: string]: string
 }
 
-export type DessertProduct = BaseProduct<ZefirProductAttributes>
+export interface ProductImage {
+  url: string
+  label?: string
+  dimensions?: {
+    w: number
+    h: number
+  }
+}
+
+export interface ProductPrice {
+  value: {
+    centAmount: number
+    fractionDigits: number
+    currencyCode: string
+  }
+  discounted?: {
+    value: {
+      centAmount: number
+      fractionDigits: number
+      currencyCode: string
+    }
+    discount: {
+      id: string
+      name: {
+        [locale: string]: string
+      }
+    }
+  }
+}
+
+export interface ProductAttribute {
+  name: string
+  value: { key: string; label: string } | string | string[] | boolean | null
+}
+
+export interface RawProductVariant {
+  attributes: ProductAttribute[]
+  images?: ProductImage[]
+  prices: ProductPrice[]
+  key?: string
+  sku?: string
+  id?: number
+}
+
+export interface ProductVariant {
+  attributes: ZefirProductAttributes
+  images?: ProductImage[]
+  prices: ProductPrice[]
+  key?: string
+  sku?: string
+  id?: number
+}
+
+export interface RawDessertProduct {
+  id: string
+  name: LocalizedString
+  slug: LocalizedString
+  description: LocalizedString
+  masterVariant: RawProductVariant
+}
+
+export interface ParsedDessertProduct {
+  id: string
+  name: LocalizedString
+  slug: LocalizedString
+  description: LocalizedString
+  masterVariant: ProductVariant
+}

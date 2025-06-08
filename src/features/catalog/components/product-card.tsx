@@ -1,9 +1,9 @@
-import type { DessertProduct } from '../../../types/dessert-product'
+import type { RawDessertProduct } from '../../../types/dessert-product'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
 type ProductCardProps = {
-  product: DessertProduct
+  product: RawDessertProduct
   locale: string
 }
 

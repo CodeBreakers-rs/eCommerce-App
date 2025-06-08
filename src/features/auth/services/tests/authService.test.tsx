@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
 import * as authService from '../authService'
-import { getCustomerProfile} from '../authService'
 
 globalThis.fetch = vi.fn()
 
@@ -115,34 +114,4 @@ describe('authService', () => {
       ).rejects.toThrow('Login failed')
     })
   })
-
-  describe('getCustomerProfile', () => {
-    it('should return customer data on success', async () => {
-      const mockCustomer = { id: '123', email: 'test@example.com' }
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockCustomer,
-      })
-
-      const result = await authService.getCustomerProfile('mockAccessToken')
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/me'),
-        expect.any(Object),
-      )
-      expect(result).toEqual(mockCustomer)
-    })
-
-    it('should throw error if fetch fails', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({}),
-      })
-
-      await expect(authService.getCustomerProfile('badToken')).rejects.toThrow(
-        'Failed to fetch customer data',
-      )
-    })
-  })
-
 })

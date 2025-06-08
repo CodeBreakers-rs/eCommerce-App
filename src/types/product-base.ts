@@ -20,16 +20,31 @@ export interface ProductImage {
   }
 }
 
-export interface ProductVariant<TAttributes = ZefirProductAttributes> {
-  attributes: TAttributes
-  images?: ProductImage[]
-  prices: {
+export interface ProductPrice {
+  value: {
+    centAmount: number
+    fractionDigits: number
+    currencyCode: string
+  }
+  discounted?: {
     value: {
       centAmount: number
       fractionDigits: number
       currencyCode: string
     }
-  }[]
+    discount: {
+      id: string
+      name: {
+        [locale: string]: string
+      }
+    }
+  }
+}
+
+export interface ProductVariant<TAttributes = ZefirProductAttributes> {
+  attributes: TAttributes
+  images?: ProductImage[]
+  prices: ProductPrice[]
 }
 
 export interface BaseProduct<TAttributes = ZefirProductAttributes> {

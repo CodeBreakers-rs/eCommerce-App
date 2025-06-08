@@ -22,9 +22,9 @@ const ProductPage = () => {
   useEffect(() => {
     if (slug) {
       dispatch(loadProductBySlug(slug))
-      return () => {
-        dispatch(clearProduct())
-      }
+    }
+    return () => {
+      dispatch(clearProduct())
     }
   }, [dispatch, slug])
 

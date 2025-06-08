@@ -1,6 +1,6 @@
 const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
 const API_BASE_URL = import.meta.env.VITE_CT_API_URL
-const API_PRODUCTS_SEARCH_URL = `${API_BASE_URL}/${PROJECT_KEY}/product-projections/search`
+const API_PRODUCT_SEARCH_URL = `${API_BASE_URL}/${PROJECT_KEY}/product-projections`
 
 import type { RawDessertProduct } from '../../../types/dessert-product'
 
@@ -9,14 +9,9 @@ export const fetchProductBySlug = async (
   locale = 'en',
   token: string,
 ): Promise<RawDessertProduct> => {
-  const query = new URLSearchParams({
-    [`where`]: `slug(${locale}="${slug}")`,
-    staged: 'false',
-    limit: '1',
-  }).toString()
+  const query = `staged=false&where=slug(${locale}="${slug}")&limit=1`
 
-  const response = await fetch(`${API_PRODUCTS_SEARCH_URL}?${query}`, {
-    method: 'GET',
+  const response = await fetch(`${API_PRODUCT_SEARCH_URL}?${query}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

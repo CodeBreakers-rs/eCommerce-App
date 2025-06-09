@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
 
   return (
     <Link to={`/product/${slug}`} className="block h-full">
-      <div className="flex flex-col justify-between h-full bg-white border rounded-xl shadow-md p-4 transition-all duration-300 transform hover:shadow-xl hover:scale-105 hover:bg-gray-50 cursor-pointer">
+      <div className="flex flex-col justify-between h-full bg-white border-transparent rounded-xl shadow-md p-4 transition-all duration-300 transform hover:shadow-xl hover:scale-105 hover:bg-gray-50 cursor-pointer">
         {imageUrl && (
           <img
             src={imageUrl}

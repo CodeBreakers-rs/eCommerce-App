@@ -1,14 +1,23 @@
-import { useAppSelector } from '../../store/hooks'
 import { render, screen } from '@testing-library/react'
+import { Provider } from 'react-redux'
 import { describe, it, expect, vi, afterEach, type Mock } from 'vitest'
+import { store } from '../../store/index'
 import ProfilePage from '../profile-page'
 import { type Customer } from '@commercetools/platform-sdk'
+import { useAppSelector } from '../../store/hooks'
 
 vi.mock('../../store/hooks', () => ({
   useAppSelector: vi.fn(),
 }))
 
 const mockedUseAppSelector = useAppSelector as Mock
+
+const renderWithProvider = () =>
+  render(
+    <Provider store={store}>
+      <ProfilePage />
+    </Provider>,
+  )
 
 describe('ProfilePage', () => {
   afterEach(() => {
@@ -18,7 +27,7 @@ describe('ProfilePage', () => {
   it('renders loading message when customer is null', () => {
     mockedUseAppSelector.mockReturnValue(null)
 
-    render(<ProfilePage />)
+    renderWithProvider()
 
     expect(
       screen.getByText(
@@ -56,7 +65,7 @@ describe('ProfilePage', () => {
 
     mockedUseAppSelector.mockReturnValue(mockCustomer)
 
-    render(<ProfilePage />)
+    renderWithProvider()
 
     expect(screen.getByText(/First Name:/)).toHaveTextContent('First Name:')
     expect(screen.getByText(/Last Name:/)).toHaveTextContent('Last Name:')
@@ -94,7 +103,7 @@ describe('ProfilePage', () => {
 
     mockedUseAppSelector.mockReturnValue(mockCustomer)
 
-    render(<ProfilePage />)
+    renderWithProvider()
 
     expect(screen.getByText('No saved addresses')).toBeInTheDocument()
   })

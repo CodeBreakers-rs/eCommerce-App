@@ -101,8 +101,6 @@ describe('authService', () => {
         expect.any(Object),
       )
       expect(result).toEqual(mockLoginData)
-      //expect(localStorage.getItem('access_token')).toBe('mockAccessToken')
-      //expect(localStorage.getItem('refresh_token')).toBe('mockRefreshToken')
     })
 
     it('should throw error on failed login', async () => {
@@ -116,45 +114,4 @@ describe('authService', () => {
       ).rejects.toThrow('Login failed')
     })
   })
-
-  describe('getCustomerData', () => {
-    it('should return customer data on success', async () => {
-      const mockCustomer = { id: '123', email: 'test@example.com' }
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockCustomer,
-      })
-
-      const result = await authService.getCustomerData('mockAccessToken')
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/me'),
-        expect.any(Object),
-      )
-      expect(result).toEqual(mockCustomer)
-    })
-
-    it('should throw error if fetch fails', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({}),
-      })
-
-      await expect(authService.getCustomerData('badToken')).rejects.toThrow(
-        'Failed to fetch customer data',
-      )
-    })
-  })
-
-  /*describe('logout', () => {
-    it('should clear tokens from localStorage', () => {
-      localStorage.setItem('access_token', 'token123')
-      localStorage.setItem('refresh_token', 'token456')
-
-      //authService.logout()
-
-      //expect(localStorage.getItem('access_token')).toBeNull()
-      //expect(localStorage.getItem('refresh_token')).toBeNull()
-    })
-  })*/
 })

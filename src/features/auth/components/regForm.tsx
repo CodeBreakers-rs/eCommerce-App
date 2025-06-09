@@ -16,7 +16,6 @@ import {
   isValidPostalCode,
   isValidCountry,
 } from '../../../utils/validators'
-import './regForm.css'
 import type { CustomerType, FormDataType } from '../../../types/customer'
 
 const validCountries = ['United States', 'Canada']
@@ -183,7 +182,7 @@ export const RegForm = () => {
       )
       dispatch(
         login({
-          customer: loginResult.customer,
+          customer: loginResult.customer as CustomerType,
           token: loginResult.token,
         }),
       )
@@ -232,20 +231,26 @@ export const RegForm = () => {
     label: string,
     type: string = 'text',
   ) => (
-    <div className="form-group">
-      <label htmlFor={name}>{label}</label>
+    <div className="mb-4">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
       <input
         type={type}
         id={name}
         name={name}
         value={formData[name]}
         onChange={handleChange}
-        className={hasSubmitted && errors[name] ? 'input-error' : ''}
+        className={`mt-1 block w-full rounded border-2 px-3 py-2 focus:outline-none transition ${
+          hasSubmitted && errors[name]
+            ? 'border-red-500 bg-red-50'
+            : 'border-gray-300 focus:border-blue-500'
+        }`}
         aria-describedby={`${name}-error`}
         aria-invalid={!!errors[name]}
       />
       {hasSubmitted && errors[name] && (
-        <span id={`${name}-error`} className="error-message">
+        <span id={`${name}-error`} className="text-red-600 text-sm mt-1 block">
           ⚠️ {errors[name]}
         </span>
       )}
@@ -253,14 +258,20 @@ export const RegForm = () => {
   )
 
   const renderSelect = (name: keyof FormDataType, label: string) => (
-    <div className="form-group">
-      <label htmlFor={name}>{label}</label>
+    <div className="mb-4">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
       <select
         id={name}
         name={name}
         value={formData[name]}
         onChange={handleChange}
-        className={hasSubmitted && errors[name] ? 'input-error' : ''}
+        className={`mt-1 block w-full rounded border-2 px-3 py-2 focus:outline-none transition ${
+          hasSubmitted && errors[name]
+            ? 'border-red-500 bg-red-50'
+            : 'border-gray-300 focus:border-blue-500'
+        }`}
         aria-describedby={`${name}-error`}
         aria-invalid={!!errors[name]}
       >
@@ -272,7 +283,7 @@ export const RegForm = () => {
         ))}
       </select>
       {hasSubmitted && errors[name] && (
-        <span id={`${name}-error`} className="error-message">
+        <span id={`${name}-error`} className="text-red-600 text-sm mt-1 block">
           ⚠️ {errors[name]}
         </span>
       )}
@@ -280,9 +291,18 @@ export const RegForm = () => {
   )
 
   return (
-    <form onSubmit={handleSubmit} className="reg-form">
-      {message && <p className="success-message">{message}</p>}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto p-4 space-y-4 bg-white shadow rounded"
+    >
+      {message && (
+        <p className="text-green-600 font-medium text-sm">{message}</p>
+      )}
+      {errorMessage && (
+        <p className="text-red-600 font-medium whitespace-pre-line text-sm">
+          {errorMessage}
+        </p>
+      )}
 
       {renderInput('email', 'Email', 'email')}
       {renderInput('password', 'Password', 'password')}
@@ -290,34 +310,39 @@ export const RegForm = () => {
       {renderInput('lastName', 'Last Name')}
       {renderInput('birthDate', 'Birth Date', 'date')}
 
-      <div className="form-group checkbox-group">
+      <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 mb-4">
         <label>
           <input
             type="checkbox"
             checked={defaultShipping}
             onChange={() => setDefaultShipping(!defaultShipping)}
+            className="mr-2"
           />{' '}
           Default Shipping
         </label>
-        <label>
+        <label className="inline-flex items-center text-sm text-gray-700">
           <input
             type="checkbox"
             checked={defaultBilling}
             onChange={() => setDefaultBilling(!defaultBilling)}
+            className="mr-2"
           />{' '}
           Default Billing
         </label>
-        <label>
+        <label className="inline-flex items-center text-sm text-gray-700">
           <input
             type="checkbox"
             checked={useSameAddress}
             onChange={() => setUseSameAddress(!useSameAddress)}
+            className="mr-2"
           />{' '}
           Use same address
         </label>
       </div>
 
-      <h3>Shipping Address</h3>
+      <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
+        Shipping Address
+      </h3>
       {renderInput('street', 'Street')}
       {renderInput('city', 'City')}
       {renderInput('postalCode', 'Postal Code')}
@@ -325,7 +350,9 @@ export const RegForm = () => {
 
       {!useSameAddress && (
         <>
-          <h3>Billing Address</h3>
+          <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
+            Billing Address
+          </h3>
           {renderInput('billingStreet', 'Street')}
           {renderInput('billingCity', 'City')}
           {renderInput('billingPostalCode', 'Postal Code')}
@@ -336,6 +363,11 @@ export const RegForm = () => {
       <button
         type="submit"
         disabled={isButtonDisabled || Object.keys(errors).length > 0}
+        className={`w-full py-2 px-4 rounded font-semibold text-white transition ${
+          isButtonDisabled || Object.keys(errors).length > 0
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
+        }`}
       >
         Register
       </button>

@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { logout } from '../../store/slices/auth-slice'
-import './css/navigation.css'
 
 const Navigation = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
@@ -14,90 +13,45 @@ const Navigation = () => {
     navigate('/login')
   }
 
+  const renderNavLink = (to: string, label: string, end: boolean = false) => (
+    <li>
+      <NavLink
+        to={to}
+        end={end}
+        className={({ isActive }) =>
+          `block px-4 py-2 rounded transition-colors duration-200 ${
+            isActive
+              ? 'bg-blue-600 text-white font-semibold'
+              : 'text-gray-700 hover:bg-blue-100'
+          }`
+        }
+      >
+        {label}
+      </NavLink>
+    </li>
+  )
+
   return (
-    <nav className="nav">
-      <ul className="nav-list">
-        <li>
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              isActive ? 'nav-link active' : 'nav-link'
-            }
-          >
-            🏠 Main
-          </NavLink>
-        </li>
+    <nav className="bg-white shadow-md p-4">
+      <ul className="flex flex-wrap gap-2 items-center justify-center sm:justify-start">
+        {renderNavLink('/', '🏠 Main', true)}
 
-        {!isLoggedIn && (
+        {!isLoggedIn ? (
           <>
-            <li>
-              <NavLink
-                to="/login"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
-              >
-                🔐 Login
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/register"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
-              >
-                📝 Register
-              </NavLink>
-            </li>
+            {renderNavLink('/login', '🔐 Login')}
+            {renderNavLink('/register', '📝 Register')}
           </>
-        )}
-
-        {isLoggedIn && (
+        ) : (
           <>
+            {renderNavLink('/catalog', '📋 Catalog')}
+            {renderNavLink('/profile', '👤 Profile')}
+            {renderNavLink('/basket', '🛒 Basket')}
+            {renderNavLink('/about', '🙋 About')}
             <li>
-              <NavLink
-                to="/catalog"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-red-600 hover:text-white hover:bg-red-500 rounded transition-colors duration-200"
               >
-                📋 Catalog
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
-              >
-                👤 Profile
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/basket"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
-              >
-                🛒 Basket
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
-              >
-                🙋 About
-              </NavLink>
-            </li>
-            <li>
-              <button className="logout-btn" onClick={handleLogout}>
                 🚪 Logout
               </button>
             </li>

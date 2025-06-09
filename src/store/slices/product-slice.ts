@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../index'
-import type { RawDessertProduct } from '../../types/dessert-product'
+import type { DessertProduct } from '../../types/dessert-product'
 import { fetchProductBySlug } from '../../features/product/services/product-service'
 
 const locale = 'en'
 
 export const loadProductBySlug = createAsyncThunk<
-  RawDessertProduct,
+  DessertProduct,
   string,
   { state: RootState }
 >('product/loadBySlug', async (slug: string, thunkAPI) => {
@@ -27,7 +27,7 @@ export const loadProductBySlug = createAsyncThunk<
 })
 
 interface ProductState {
-  product: RawDessertProduct | null
+  product: DessertProduct | null
   isLoading: boolean
   error: string | null
 }

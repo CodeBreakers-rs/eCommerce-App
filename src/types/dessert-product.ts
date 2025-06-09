@@ -33,22 +33,7 @@ export interface ProductPrice {
     }
   }
 }
-
-export interface ProductAttribute {
-  name: string
-  value: { key: string; label: string } | string | string[] | boolean | null
-}
-
-export interface RawProductVariant {
-  attributes: ProductAttribute[]
-  images?: ProductImage[]
-  prices: ProductPrice[]
-  key?: string
-  sku?: string
-  id?: number
-}
-
-export interface ProductVariant {
+export interface ParsedProductVariant {
   attributes: ZefirProductAttributes
   images?: ProductImage[]
   prices: ProductPrice[]
@@ -57,15 +42,29 @@ export interface ProductVariant {
   id?: number
 }
 
-export interface RawDessertProduct {
+export interface ParsedDessertProduct {
   id: string
   name: LocalizedString
   slug: LocalizedString
   description: LocalizedString
-  masterVariant: RawProductVariant
+  masterVariant: ParsedProductVariant
 }
 
-export interface ParsedDessertProduct {
+export interface ProductAttribute {
+  name: string
+  value: { key: string; label: string } | string | string[] | boolean | null
+}
+
+export interface ProductVariant {
+  attributes: ProductAttribute[]
+  images?: ProductImage[]
+  prices: ProductPrice[]
+  key?: string
+  sku?: string
+  id?: number
+}
+
+export interface DessertProduct {
   id: string
   name: LocalizedString
   slug: LocalizedString

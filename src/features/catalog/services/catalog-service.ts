@@ -2,7 +2,7 @@ const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
 const API_BASE_URL = import.meta.env.VITE_CT_API_URL
 const API_PRODUCTS_SEARCH_URL = `${API_BASE_URL}/${PROJECT_KEY}/product-projections/search`
 
-import type { RawDessertProduct } from '../../../types/dessert-product'
+import type { DessertProduct } from '../../../types/dessert-product'
 
 const query = new URLSearchParams({
   staged: 'false',
@@ -12,7 +12,7 @@ const query = new URLSearchParams({
 
 export const fetchProducts = async (
   token: string,
-): Promise<{ results: RawDessertProduct[] }> => {
+): Promise<{ results: DessertProduct[] }> => {
   const response = await fetch(`${API_PRODUCTS_SEARCH_URL}?${query}`, {
     method: 'GET',
     headers: {

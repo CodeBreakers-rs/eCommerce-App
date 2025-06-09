@@ -4,12 +4,12 @@ import {
   type PayloadAction,
 } from '@reduxjs/toolkit'
 import type { RootState } from '../index'
-import type { RawDessertProduct } from '../../types/dessert-product'
+import type { DessertProduct } from '../../types/dessert-product'
 
 import { fetchProducts } from '../../features/catalog/services/catalog-service'
 
 export const loadProducts = createAsyncThunk<
-  RawDessertProduct[],
+  DessertProduct[],
   void,
   { state: RootState }
 >('catalog/loadProducts', async (_, thunkAPI) => {
@@ -30,7 +30,7 @@ export const loadProducts = createAsyncThunk<
 })
 
 interface CatalogState {
-  products: RawDessertProduct[]
+  products: DessertProduct[]
   isLoading: boolean
   error: string | null
   // Pagination/filter placeholders
@@ -62,7 +62,7 @@ export const catalogSlice = createSlice({
       })
       .addCase(
         loadProducts.fulfilled,
-        (state, action: PayloadAction<RawDessertProduct[]>) => {
+        (state, action: PayloadAction<DessertProduct[]>) => {
           state.isLoading = false
           state.products = action.payload
         },

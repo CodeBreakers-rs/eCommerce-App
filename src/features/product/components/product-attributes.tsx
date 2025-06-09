@@ -2,7 +2,7 @@ import React from 'react'
 import type { ProductAttribute } from '../../../types/dessert-product'
 
 type Props = {
-  rawAttributes: ProductAttribute[]
+  attributes: ProductAttribute[]
 }
 
 const iconMap: Record<string, string> = {
@@ -33,10 +33,10 @@ const sectionMap: Record<string, string> = {
   storageAdvice: 'Dietary',
 }
 
-const ProductAttributes: React.FC<Props> = ({ rawAttributes }) => {
+const ProductAttributes: React.FC<Props> = ({ attributes }) => {
   const grouped: Record<string, ProductAttribute[]> = {}
 
-  rawAttributes.forEach((attr) => {
+  attributes.forEach((attr) => {
     const section = sectionMap[attr.name] || 'Other'
     if (!grouped[section]) grouped[section] = []
     grouped[section].push(attr)

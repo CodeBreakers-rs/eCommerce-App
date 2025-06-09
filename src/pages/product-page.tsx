@@ -63,7 +63,7 @@ const ProductPage = () => {
       ? Math.round(((originalCents - discountedCents) / originalCents) * 100)
       : null
 
-  const rawAttributes = product.masterVariant.attributes
+  const attributes = product.masterVariant.attributes
 
   return (
     <section className="p-4 max-w-3xl mx-auto">
@@ -113,7 +113,7 @@ const ProductPage = () => {
 
       <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
         <h2 className="text-xl font-bold mb-4">Product Details 🧾</h2>
-        <ProductAttributes rawAttributes={rawAttributes} />
+        <ProductAttributes attributes={attributes} />
       </div>
     </section>
   )

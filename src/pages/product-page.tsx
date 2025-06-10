@@ -9,6 +9,7 @@ import {
   clearProduct,
 } from '../store/slices/product-slice'
 import ProductAttributes from '../features/product/components/product-attributes'
+import ImageSlider from '../features/product/components/image-slider'
 
 const ProductPage = () => {
   const { id: slug } = useParams()
@@ -71,22 +72,7 @@ const ProductPage = () => {
       <p className="text-gray-600 text-lg mb-6">{description}</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {images ? (
-          images.length > 0 ? (
-            images.map((img, i) => (
-              <img
-                key={i}
-                src={img.url}
-                alt={img.label ?? `Product image ${i + 1}`}
-                className="w-full aspect-square object-cover rounded-lg shadow-sm"
-              />
-            ))
-          ) : (
-            <p className="text-gray-500">No images available</p>
-          )
-        ) : (
-          <p className="text-gray-500">Loading images...</p>
-        )}
+        <ImageSlider images={images ?? []} />
       </div>
 
       <div className="text-xl font-semibold flex items-center gap-3 mb-6">

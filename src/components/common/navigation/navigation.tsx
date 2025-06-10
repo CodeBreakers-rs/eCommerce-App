@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import Logo from './logo'
-import NavLinks from './navLinks'
-import UserDropdown from './userDropdown'
-import HamburgerButton from './hamburgerButton'
+import NavLinks from './nav-links'
+import UserDropdown from './user-dropdown'
+import HamburgerButton from '../tests/hamburger-button'
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

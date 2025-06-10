@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAppSelector, useAppDispatch } from '../../../store/hooks'
 import { logout } from '../../../store/slices/auth-slice'
-import { useClickOutside } from '../../../hooks/useClickOutside'
+import { useClickOutside } from '../../../hooks/use-click-outside'
 
 const UserDropdown = () => {
   const [open, setOpen] = useState(false)

@@ -68,7 +68,7 @@ const ProductPage = () => {
 
   return (
     <section className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">{name}</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">{name}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <div className="flex flex-col justify-around items-center">
           <p className="text-lg text-left">{description}</p>

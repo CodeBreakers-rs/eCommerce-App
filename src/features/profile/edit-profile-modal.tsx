@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import type { EditProfileModalProps, Address } from '../../types/customer'
 import type { Address as SDKAddress } from '@commercetools/platform-sdk'
+import {
+  isValidEmail,
+  isValidName,
+  isValidBirthDate,
+  isValidStreet,
+  isValidCity,
+  isValidPostalCode,
+  isValidCountry,
+} from '../../utils/validators'
 
 export const EditProfileModal = ({
   customer,
@@ -27,18 +36,53 @@ export const EditProfileModal = ({
   }
 
   const handleSubmit = async () => {
+    if (!isValidName(firstName) || !isValidName(lastName)) {
+      alert('Please enter a valid first and last name.')
+      return
+    }
+    if (!isValidEmail(email)) {
+      alert('Please enter a valid email address.')
+      return
+    }
+    if (!isValidBirthDate(dateOfBirth)) {
+      alert('You must be at least 13 years old.')
+      return
+    }
+
+    for (const address of addresses) {
+      if (
+        !isValidStreet(address.streetName || '') ||
+        !isValidCity(address.city || '') ||
+        !isValidCountry(address.country || '', ['United States', 'Canada']) ||
+        !isValidPostalCode(address.postalCode || '', address.country || '')
+      ) {
+        alert('Please correct the address fields.')
+        return
+      }
+    }
+    if (!customer.version && customer.version !== 0) {
+      alert('Customer version is missing. Cannot update.')
+      return
+    }
     setIsSaving(true)
+    try {
+      await onSave({
+        version: customer.version,
+        firstName,
+        lastName,
+        dateOfBirth,
+        email,
+        addresses,
+      })
 
-    await onSave({
-      version: customer.version,
-      firstName,
-      lastName,
-      dateOfBirth,
-      addresses,
-    })
-
-    setIsSaving(false)
-    onClose()
+      console.log('Customer in modal:', customer)
+      onClose()
+    } catch (err) {
+      console.error('Update failed:', err)
+      alert('Update failed. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (

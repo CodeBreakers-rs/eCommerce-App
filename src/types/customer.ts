@@ -3,7 +3,15 @@ import type {
   Address as SDKAddress,
 } from '@commercetools/platform-sdk'
 
-export type CustomerType = {
+export type AuthState = {
+  isLoggedIn: boolean
+  customer: SDKCustomer | null
+  token: string | null
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
+}
+
+export type CustomerDraftPayload = {
   email: string
   password: string
   firstName?: string
@@ -15,6 +23,7 @@ export type CustomerType = {
 }
 
 export type Address = {
+  id?: string
   streetName: string
   city: string
   postalCode: string
@@ -41,13 +50,14 @@ export interface CustomerProfile {
   firstName?: string
   lastName?: string
   email: string
-  dateOfBirth?: string;
+  dateOfBirth?: string
   addresses?: SDKAddress[]
 }
 
 export interface EditProfileModalProps {
   customer: SDKCustomer
-  onSave: (updatedCustomer: CustomerUpdatePayload) => Promise<void>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onSave: (_data: CustomerUpdatePayload) => Promise<void>
   onClose: () => void
 }
 
@@ -58,9 +68,12 @@ export type CustomerUpdatePayload = {
   email?: string
   dateOfBirth?: string
   addresses?: SDKAddress[]
-} 
+}
 
-export type BasicProfile = Pick<CustomerProfile, 'firstName' | 'lastName' | 'email' | 'dateOfBirth' | 'addresses'>;
+export type BasicProfile = Pick<
+  CustomerProfile,
+  'firstName' | 'lastName' | 'email' | 'dateOfBirth' | 'addresses'
+>
 
 export type CustomerProfileType = {
   email: string

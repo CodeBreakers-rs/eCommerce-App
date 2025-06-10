@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '../store/hooks'
 import { useDispatch } from 'react-redux'
-import { setCustomerData } from '../store/slices/customerSlice'
+import { setCustomerData, login } from '../store/slices/auth-slice'
 import { updateCustomerProfile } from '../features/profile/services/customer-service'
 import type { CustomerUpdatePayload } from '../types/customer'
-import type { Customer as SDKCustomer } from '@commercetools/platform-sdk'
 import { EditProfileModal } from '../features/profile/edit-profile-modal'
 
 const ProfilePage = () => {
   const dispatch = useDispatch()
-  const customer = useAppSelector(
-    (state) => state.auth.customer,
-  ) as SDKCustomer | null
+  const customer = useAppSelector((state) => state.auth.customer)
   const token = useAppSelector((state) => state.auth.token)
 
   const [defaultShippingId, setDefaultShippingId] = useState<string | null>(
@@ -33,13 +30,14 @@ const ProfilePage = () => {
       }
 
       const newCustomerData = await updateCustomerProfile(token, updatePayload)
-
+      dispatch(login({ customer: newCustomerData, token }))
       dispatch(
         setCustomerData({
           token,
-          customer: newCustomerData as SDKCustomer,
+          customer: newCustomerData,
         }),
       )
+      console.log('Updated customer version:', newCustomerData.version)
       setStatusMessage('Profile updated successfully!')
       setIsEditMode(false)
     } catch (error) {
@@ -52,6 +50,7 @@ const ProfilePage = () => {
     if (customer) {
       setDefaultShippingId(customer.defaultShippingAddressId || null)
       setDefaultBillingId(customer.defaultBillingAddressId || null)
+      console.log('Customer version:', customer.version)
     }
   }, [customer])
 
@@ -122,12 +121,6 @@ const ProfilePage = () => {
                       <span className="font-medium">City:</span>{' '}
                       {address.city || '—'}
                     </p>
-                    {address.region && (
-                      <p>
-                        <span className="font-medium">State:</span>{' '}
-                        {address.region}
-                      </p>
-                    )}
                     <p>
                       <span className="font-medium">ZIP Code:</span>{' '}
                       {address.postalCode || '—'}
@@ -156,12 +149,14 @@ const ProfilePage = () => {
           </ul>
         )}
 
-        {isEditMode && (
-          <EditProfileModal
-            customer={customer}
-            onSave={handleProfileSave}
-            onClose={() => setIsEditMode(false)}
-          />
+        {isEditMode && customer && (
+          <>
+            <EditProfileModal
+              customer={customer}
+              onSave={handleProfileSave}
+              onClose={() => setIsEditMode(false)}
+            />
+          </>
         )}
       </section>
     </div>

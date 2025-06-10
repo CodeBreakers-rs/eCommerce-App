@@ -1,4 +1,5 @@
-import type { CustomerType } from '../../../types/customer'
+import type { Customer } from '@commercetools/platform-sdk'
+import type { CustomerDraftPayload } from '../../../types/customer'
 import { getCustomerProfile } from '../../profile/services/customer-service'
 
 const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
@@ -10,13 +11,36 @@ const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
 const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers`
 const API_TOKEN_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
 
-export async function loginUser(email: string, password: string) {
+export async function loginUser(
+  email: string,
+  password: string,
+): Promise<{
+  token: string
+  customer: Customer
+}> {
   const tokenData = await loginWithPassword(email, password)
   const customer = await getCustomerProfile(tokenData.access_token)
 
+  console.log('Sending login request with:', {
+    url: API_TOKEN_URL,
+    body: {
+      grant_type: 'password',
+      username: email,
+      password: password,
+      scope: [
+        `view_published_products:${PROJECT_KEY}`,
+        `manage_my_orders:${PROJECT_KEY}`,
+        `manage_my_profile:${PROJECT_KEY}`,
+      ].join(' '),
+    },
+  })
+  if (!customer) {
+    throw new Error('Failed to fetch customer profile')
+  }
+
   return {
     token: tokenData.access_token,
-    customer,
+    customer: customer as Customer,
   }
 }
 
@@ -43,7 +67,7 @@ export async function getClientAccessToken() {
 }
 
 export function sanitizeCustomerDraft(
-  draft: CustomerType,
+  draft: CustomerDraftPayload,
 ): Record<string, unknown> {
   const cleaned: Record<string, unknown> = {}
 
@@ -57,7 +81,7 @@ export function sanitizeCustomerDraft(
   return cleaned
 }
 
-export async function registerCustomer(customerDraft: CustomerType) {
+export async function registerCustomer(customerDraft: CustomerDraftPayload) {
   const token = await getClientAccessToken()
 
   const sanitized = sanitizeCustomerDraft(customerDraft)

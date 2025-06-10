@@ -8,7 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { loginUser } from '../services/authService'
 import './regForm.css'
-import type { CustomerType } from '../../../types/customer'
+import type { Customer } from '@commercetools/platform-sdk'
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch()
@@ -45,10 +45,12 @@ export const LoginForm = () => {
 
     try {
       const result = await loginUser(email, password)
-      dispatch(login({
-      token: result.token,
-      customer: result.customer as CustomerType,
-    }))
+      dispatch(
+        login({
+          token: result.token,
+          customer: result.customer as Customer,
+        }),
+      )
       console.log('Customer data:', result.customer)
     } catch (error: any) {
       const message = error.message || 'Login failed'

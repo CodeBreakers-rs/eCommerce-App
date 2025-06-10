@@ -16,7 +16,10 @@ import {
   isValidPostalCode,
   isValidCountry,
 } from '../../../utils/validators'
-import type { CustomerType, FormDataType } from '../../../types/customer'
+import type {
+  CustomerDraftPayload,
+  FormDataType,
+} from '../../../types/customer'
 
 const validCountries = ['United States', 'Canada']
 
@@ -152,7 +155,7 @@ export const RegForm = () => {
       })
     }
 
-    const customerFormData: CustomerType = {
+    const customerFormData: CustomerDraftPayload = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
@@ -174,7 +177,7 @@ export const RegForm = () => {
     )
 
     try {
-      const result = await registerCustomer(sanitized as CustomerType)
+      const result = await registerCustomer(sanitized as CustomerDraftPayload)
       console.log('Registration successful:', result)
       const loginResult = await loginUser(
         customerFormData.email,
@@ -182,7 +185,7 @@ export const RegForm = () => {
       )
       dispatch(
         login({
-          customer: loginResult.customer as CustomerType,
+          customer: loginResult.customer,
           token: loginResult.token,
         }),
       )

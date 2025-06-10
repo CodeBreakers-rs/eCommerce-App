@@ -2,13 +2,13 @@ import { useState } from 'react'
 import Logo from './logo'
 import NavLinks from './nav-links'
 import UserDropdown from './user-dropdown'
-import HamburgerButton from '../tests/hamburger-button'
+import HamburgerButton from './hamburger-button'
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <nav className="border-gray-200 dark:bg-gray-900">
+    <nav className="dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Logo />
 

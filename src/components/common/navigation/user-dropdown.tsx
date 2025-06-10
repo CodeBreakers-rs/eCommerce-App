@@ -37,7 +37,7 @@ const UserDropdown = () => {
         className="flex text-sm bg-[#483528] rounded-full focus:ring-4 focus:ring-white dark:focus:ring-white hover:scale-110 transition-transform duration-200 cursor-pointer"
       >
         <span className="sr-only">Open customer menu</span>
-        <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold">
+        <div className="w-8 h-8 rounded-full bg-[#483528] flex items-center justify-center text-white font-semibold">
           {initials}
         </div>
       </button>

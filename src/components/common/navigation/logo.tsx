@@ -4,7 +4,7 @@ import logo from '../../../assets/images/logo.png'
 const Logo = () => (
   <NavLink to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
     <img src={logo} className="h-8" alt="Logo" />
-    <span className="self-center text-3xl whitespace-nowrap dark:text-white">
+    <span className="self-center text-3xl whitespace-nowrap dark:text-white hover:scale-110 transition-transform duration-200 cursor-pointer">
       zefir.ca
     </span>
   </NavLink>

@@ -64,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
               )}
             </div>
           ) : (
-            <p className="text-md font-bold text-green-700">
+            <p className="text-md font-bold">
               {originalPrice} {currency}
             </p>
           )}

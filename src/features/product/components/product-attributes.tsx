@@ -70,10 +70,7 @@ const ProductAttributes: React.FC<Props> = ({ attributes }) => {
   return (
     <div className="space-y-6">
       {Object.entries(grouped).map(([section, attrs]) => (
-        <div
-          key={section}
-          className={`p-4 rounded-lg bg-white border border-gray-200 shadow-sm`}
-        >
+        <div key={section} className={`p-4 rounded-lg shadow-sm`}>
           <h3 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-300 pb-1">
             {section}
           </h3>

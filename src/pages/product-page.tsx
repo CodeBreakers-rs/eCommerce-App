@@ -105,14 +105,14 @@ const ProductPage = () => {
             )}
           </>
         ) : (
-          <span className="text-green-700">
+          <span>
             {originalPrice} {currency}
           </span>
         )}
       </div>
 
-      <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-        <h2 className="text-xl font-bold mb-4">Product Details 🧾</h2>
+      <div className="p-6">
+        <h2 className="text-xl font-bold mb-4 uppercase">Product Details</h2>
         <ProductAttributes attributes={attributes} />
       </div>
     </section>

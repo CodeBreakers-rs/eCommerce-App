@@ -1,0 +1,36 @@
+import { useState } from 'react'
+import Logo from './logo'
+import NavLinks from './navLinks'
+import UserDropdown from './userDropdown'
+import HamburgerButton from './hamburgerButton'
+
+const Navigation = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  return (
+    <nav className="border-gray-200 dark:bg-gray-900">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <Logo />
+
+        <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <UserDropdown />
+          <HamburgerButton
+            isMenuOpen={isMenuOpen}
+            onToggle={() => setIsMenuOpen((prev) => !prev)}
+          />
+        </div>
+
+        <div
+          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
+            isMenuOpen ? '' : 'hidden'
+          }`}
+          id="navbar-user"
+        >
+          <NavLinks />
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+export default Navigation

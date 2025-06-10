@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, useNavigate } from 'react-router-dom'
-import Navigation from '../common/navigation'
+import Navigation from '../common/navigation/navigation'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from '../../store/slices/auth-slice'

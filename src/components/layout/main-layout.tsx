@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import Navigation from '../common/navigation'
+import Navigation from '../common/navigation/navigation'
 
 const MainLayout = () => (
   <>

@@ -27,11 +27,7 @@ export const getCustomerProfile = async (
 
     const customer = (await response.json()) as BasicProfile
 
-    return {
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
-    }
+    return customer 
   } catch (error) {
     console.error('Error fetching profile:', error)
     return null

@@ -49,21 +49,38 @@ export const EditProfileModal = ({
       return
     }
 
-    for (const address of addresses) {
-      if (
-        !isValidStreet(address.streetName || '') ||
-        !isValidCity(address.city || '') ||
-        !isValidCountry(address.country || '', ['United States', 'Canada']) ||
-        !isValidPostalCode(address.postalCode || '', address.country || '')
-      ) {
-        alert('Please correct the address fields.')
-        return
-      }
-    }
-    if (!customer.version && customer.version !== 0) {
-      alert('Customer version is missing. Cannot update.')
-      return
-    }
+    const normalizeCountryName = (codeOrName: string): string => {
+  const map: Record<string, string> = {
+    CA: 'Canada',
+    US: 'United States',
+  }
+  return map[codeOrName.toUpperCase()] || codeOrName
+}
+
+for (const [i, address] of addresses.entries()) {
+  const normalizedCountry = normalizeCountryName(address.country || '')
+  const street = address.streetName || ''
+  const city = address.city || ''
+  const postalCode = address.postalCode || ''
+
+  const errors = []
+
+  if (!isValidStreet(street)) errors.push('street')
+  if (!isValidCity(city)) errors.push('city')
+  if (!isValidCountry(normalizedCountry, ['United States', 'Canada'])) errors.push('country')
+  if (!isValidPostalCode(postalCode, normalizedCountry)) errors.push('postal code')
+
+  if (errors.length > 0) {
+    console.warn(`Address ${i + 1} validation failed:`, { street, city, postalCode, country: normalizedCountry }, 'Errors:', errors)
+    alert('Please correct the address fields.')
+    return
+  }
+}
+
+if (customer.version === undefined || customer.version === null) {
+  alert('Customer version is missing. Cannot update.')
+  return
+}
     setIsSaving(true)
     try {
       await onSave({

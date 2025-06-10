@@ -48,6 +48,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (customer) {
+      console.log('Customer object from Redux:', customer)
+console.log('Customer version:', customer.version)
       setDefaultShippingId(customer.defaultShippingAddressId || null)
       setDefaultBillingId(customer.defaultBillingAddressId || null)
       console.log('Customer version:', customer.version)

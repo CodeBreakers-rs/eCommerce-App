@@ -27,7 +27,7 @@ export const getCustomerProfile = async (
 
     const customer = (await response.json()) as BasicProfile
 
-    return customer 
+    return customer
   } catch (error) {
     console.error('Error fetching profile:', error)
     return null
@@ -66,9 +66,38 @@ export async function updateCustomerProfile(
   }
 
   if (updateData.addresses !== undefined) {
-    actions.push({ action: 'setAddresses', addresses: updateData.addresses })
-  }
+    const validAddresses = updateData.addresses
+      .filter(
+        (addr) =>
+          addr.streetName && addr.city && addr.country && addr.postalCode,
+      )
+      .map((addr, index) => ({
+        key: `address-${index}`,
+        streetName: addr.streetName,
+        city: addr.city,
+        postalCode: addr.postalCode,
+        country: addr.country,
+      }))
 
+    if (validAddresses.length > 0) {
+      actions.push({
+        action: 'setAddresses',
+        addresses: validAddresses,
+      })
+    }
+  }
+  console.log(
+    'Final JSON body to be sent:',
+    JSON.stringify(
+      {
+        version: updateData.version,
+        actions,
+      },
+      null,
+      2,
+    ),
+  )
+  console.log('Sanitized actions:', JSON.stringify(actions, null, 2))
   const response = await fetch(`${API_ME_URL}`, {
     method: 'POST',
     headers: {

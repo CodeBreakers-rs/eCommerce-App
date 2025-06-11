@@ -25,6 +25,14 @@ export const EditProfileModal = ({
   )
   const [isSaving, setIsSaving] = useState(false)
 
+  const normalizeCountryName = (codeOrName: string): string => {
+    const map: Record<string, string> = {
+      CA: 'Canada',
+      US: 'United States',
+    }
+    return map[codeOrName.toUpperCase()] || codeOrName
+  }
+
   const handleAddressChange = (
     index: number,
     field: keyof Address,
@@ -32,6 +40,24 @@ export const EditProfileModal = ({
   ) => {
     const updated = [...addresses]
     updated[index] = { ...updated[index], [field]: value }
+    setAddresses(updated)
+  }
+
+  const handleAddAddress = () => {
+    setAddresses((prev) => [
+      ...prev,
+      {
+        key: `address-${prev.length}`,
+        streetName: '',
+        city: '',
+        postalCode: '',
+        country: '',
+      },
+    ])
+  }
+
+  const handleRemoveAddress = (index: number) => {
+    const updated = addresses.filter((_, i) => i !== index)
     setAddresses(updated)
   }
 
@@ -48,39 +74,45 @@ export const EditProfileModal = ({
       alert('You must be at least 13 years old.')
       return
     }
+    for (const [i, address] of addresses.entries()) {
+      const normalizedCountry = normalizeCountryName(address.country || '')
+      const street = address.streetName || ''
+      const city = address.city || ''
+      const postalCode = address.postalCode || ''
 
-    const normalizeCountryName = (codeOrName: string): string => {
-  const map: Record<string, string> = {
-    CA: 'Canada',
-    US: 'United States',
-  }
-  return map[codeOrName.toUpperCase()] || codeOrName
-}
+      const errors = []
 
-for (const [i, address] of addresses.entries()) {
-  const normalizedCountry = normalizeCountryName(address.country || '')
-  const street = address.streetName || ''
-  const city = address.city || ''
-  const postalCode = address.postalCode || ''
+      if (!isValidStreet(street)) errors.push('street')
+      if (!isValidCity(city)) errors.push('city')
+      if (!isValidCountry(normalizedCountry, ['United States', 'Canada']))
+        errors.push('country')
+      if (!isValidPostalCode(postalCode, normalizedCountry))
+        errors.push('postal code')
 
-  const errors = []
+      if (errors.length > 0) {
+        console.warn(
+          `Address ${i + 1} validation failed:`,
+          { street, city, postalCode, country: normalizedCountry },
+          'Errors:',
+          errors,
+        )
+        alert('Please correct the address fields.')
+        return
+      }
+    }
+    if (customer.version === undefined || customer.version === null) {
+      alert('Customer version is missing. Cannot update.')
+      return
+    }
 
-  if (!isValidStreet(street)) errors.push('street')
-  if (!isValidCity(city)) errors.push('city')
-  if (!isValidCountry(normalizedCountry, ['United States', 'Canada'])) errors.push('country')
-  if (!isValidPostalCode(postalCode, normalizedCountry)) errors.push('postal code')
+    const sanitizedAddresses = addresses.map((addr, index) => ({
+      key: addr.key || `address-${index}`,
+      streetName: addr.streetName,
+      city: addr.city,
+      postalCode: addr.postalCode,
+      country: addr.country,
+    }))
 
-  if (errors.length > 0) {
-    console.warn(`Address ${i + 1} validation failed:`, { street, city, postalCode, country: normalizedCountry }, 'Errors:', errors)
-    alert('Please correct the address fields.')
-    return
-  }
-}
-
-if (customer.version === undefined || customer.version === null) {
-  alert('Customer version is missing. Cannot update.')
-  return
-}
     setIsSaving(true)
     try {
       await onSave({
@@ -89,7 +121,7 @@ if (customer.version === undefined || customer.version === null) {
         lastName,
         dateOfBirth,
         email,
-        addresses,
+        addresses: sanitizedAddresses,
       })
 
       console.log('Customer in modal:', customer)
@@ -242,8 +274,25 @@ if (customer.version === undefined || customer.version === null) {
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
               </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveAddress(index)}
+                className="mt-2 px-3 py-1 text-sm text-red-600 border border-red-300 rounded hover:bg-red-100 transition"
+              >
+                Remove Address
+              </button>
             </div>
           ))}
+        </div>
+        <div className="flex justify-end"></div>
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={handleAddAddress}
+            className="px-4 py-2 rounded-lg bg-green-600 text-blacsk hover:bg-green-700 transition"
+          >
+            Add Address
+          </button>
         </div>
 
         <div className="mt-8 flex justify-end gap-4">

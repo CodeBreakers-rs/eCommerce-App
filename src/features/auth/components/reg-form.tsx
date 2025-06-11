@@ -366,7 +366,7 @@ export const RegForm = () => {
       <button
         type="submit"
         disabled={isButtonDisabled || Object.keys(errors).length > 0}
-        className={`w-full py-2 px-4 rounded font-semibold text-white transition ${
+        className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
           isButtonDisabled || Object.keys(errors).length > 0
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700'

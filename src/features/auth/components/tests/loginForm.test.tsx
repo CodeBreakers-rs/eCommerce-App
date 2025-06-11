@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { LoginForm } from '../loginForm'
+import { LoginForm } from '../login-form'
 import authReducer from '../../../../store/slices/auth-slice'
 
 function renderWithStore(ui: React.ReactElement) {

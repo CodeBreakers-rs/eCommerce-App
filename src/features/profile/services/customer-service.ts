@@ -38,88 +38,84 @@ export async function updateCustomerProfile(
   accessToken: string,
   updateData: Partial<CustomerUpdatePayload> & { version: number },
 ): Promise<SDKCustomer> {
-  const token = store.getState().auth.token
-  console.log('Update payload:', updateData)
-
-  if (typeof updateData.version !== 'number') {
-    throw new Error('Missing customer version for update')
+  if (!accessToken) throw new Error('Missing access token')
+  if (typeof updateData.version !== 'number' || isNaN(updateData.version)) {
+    throw new Error(`Invalid or missing customer version: ${updateData.version}`)
   }
-  console.log('Using token:', accessToken)
-  const actions = []
+
+  const actions: object[] = []
 
   if (updateData.firstName !== undefined) {
-    actions.push({ action: 'changeFirstName', firstName: updateData.firstName })
-  }
+  actions.push({ action: 'setFirstName', firstName: updateData.firstName })
+}
 
-  if (updateData.lastName !== undefined) {
-    actions.push({ action: 'changeLastName', lastName: updateData.lastName })
-  }
+if (updateData.lastName !== undefined) {
+  actions.push({ action: 'setLastName', lastName: updateData.lastName })
+}
+
   if (updateData.email !== undefined) {
     actions.push({ action: 'changeEmail', email: updateData.email })
   }
 
   if (updateData.dateOfBirth !== undefined) {
-    actions.push({
-      action: 'setDateOfBirth',
-      dateOfBirth: updateData.dateOfBirth,
-    })
+    actions.push({ action: 'setDateOfBirth', dateOfBirth: updateData.dateOfBirth })
   }
 
-  if (updateData.addresses !== undefined) {
+  if (updateData.addresses && updateData.addresses.length > 0) {
     const validAddresses = updateData.addresses
-      .filter(
-        (addr) =>
-          addr.streetName && addr.city && addr.country && addr.postalCode,
-      )
+      .filter(addr => addr.streetName && addr.city && addr.country && addr.postalCode)
       .map((addr, index) => ({
-        key: `address-${index}`,
-        streetName: addr.streetName,
-        city: addr.city,
-        postalCode: addr.postalCode,
-        country: addr.country,
+        ...addr,
+        key: addr.key || `address-${index}`,
       }))
 
-    if (validAddresses.length > 0) {
+    validAddresses.forEach((addr) => {
       actions.push({
-        action: 'setAddresses',
-        addresses: validAddresses,
+        action: 'addAddress',
+        address: addr,
+      })
+    })
+
+    if (updateData.defaultShippingAddressKey) {
+      actions.push({
+        action: 'setDefaultShippingAddress',
+        addressKey: updateData.defaultShippingAddressKey,
+      })
+    }
+
+    if (updateData.defaultBillingAddressKey) {
+      actions.push({
+        action: 'setDefaultBillingAddress',
+        addressKey: updateData.defaultBillingAddressKey,
       })
     }
   }
-  console.log(
-    'Final JSON body to be sent:',
-    JSON.stringify(
-      {
-        version: updateData.version,
-        actions,
-      },
-      null,
-      2,
-    ),
-  )
-  console.log('Sanitized actions:', JSON.stringify(actions, null, 2))
+
+  if (actions.length === 0) {
+    throw new Error('No valid update actions were provided')
+  }
+
+  const body = {
+    version: updateData.version,
+    actions,
+  }
+
+  console.log('Update Payload:', JSON.stringify(body, null, 2))
+
   const response = await fetch(`${API_ME_URL}`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      version: updateData.version,
-      actions,
-    }),
+    body: JSON.stringify(body),
   })
 
   if (!response.ok) {
-    console.log(response)
-    const error = await response.json()
-    throw new Error(
-      error.message ||
-        JSON.stringify(error) ||
-        'Failed to update customer profile',
-    )
+    const error = await response.json().catch(() => ({}))
+    console.error('Update failed:', error)
+    throw new Error(error.message || 'Failed to update customer profile')
   }
 
-  const updatedCustomer = await response.json()
-  return updatedCustomer
+  return await response.json()
 }

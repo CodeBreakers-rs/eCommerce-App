@@ -56,7 +56,6 @@ export interface CustomerProfile {
 
 export interface EditProfileModalProps {
   customer: SDKCustomer
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onSave: (_data: CustomerUpdatePayload) => Promise<void>
   onClose: () => void
 }
@@ -67,7 +66,9 @@ export type CustomerUpdatePayload = {
   lastName?: string
   email?: string
   dateOfBirth?: string
-  addresses?: SDKAddress[]
+  addresses?: Array<SDKAddress & { key: string }> 
+  defaultShippingAddressKey?: string
+  defaultBillingAddressKey?: string
 }
 
 export type BasicProfile = Pick<

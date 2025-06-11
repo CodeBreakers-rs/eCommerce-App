@@ -68,33 +68,35 @@ const ProductPage = () => {
 
   return (
     <section className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">{name}</h1>
-      <p className="text-gray-600 text-lg mb-6">{description}</p>
-
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">{name}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <ImageSlider images={images ?? []} />
-      </div>
-
-      <div className="text-xl font-semibold flex items-center gap-3 mb-6">
-        {discountedPrice ? (
-          <>
-            <span className="text-base line-through text-gray-400">
-              {originalPrice} {currency}
-            </span>
-            <span className="text-red-600 px-1">
-              {discountedPrice} {currency}
-            </span>
-            {discountPercentage !== null && (
-              <span className="inline-block text-xs font-semibold text-white bg-red-500 px-2 py-0.5 rounded-full">
-                -{discountPercentage}%
+        <div className="flex flex-col justify-around items-center">
+          <p className="text-lg text-left">{description}</p>
+          <div className="text-xl flex items-center gap-3">
+            {discountedPrice ? (
+              <div className="flex flex-col justify-around items-center">
+                <span className="text-base line-through text-gray-400">
+                  {originalPrice} {currency}
+                </span>
+                <span className="text-red-600 font-semibold px-1 pb-4">
+                  {discountedPrice} {currency}
+                </span>
+                {discountPercentage !== null && (
+                  <span className="inline-block text-base font-semibold text-white bg-red-500 px-2 py-0.5 rounded-full">
+                    -{discountPercentage}%
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span>
+                {originalPrice} {currency}
               </span>
             )}
-          </>
-        ) : (
-          <span>
-            {originalPrice} {currency}
-          </span>
-        )}
+          </div>
+        </div>
+        <div>
+          <ImageSlider images={images ?? []} />
+        </div>
       </div>
 
       <div className="p-6">

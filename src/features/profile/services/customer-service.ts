@@ -3,7 +3,6 @@ import type {
   CustomerProfile,
   BasicProfile,
 } from '../../../types/customer'
-import { store } from '../../../store/index.ts'
 import type { Customer as SDKCustomer } from '@commercetools/platform-sdk'
 
 const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
@@ -40,30 +39,38 @@ export async function updateCustomerProfile(
 ): Promise<SDKCustomer> {
   if (!accessToken) throw new Error('Missing access token')
   if (typeof updateData.version !== 'number' || isNaN(updateData.version)) {
-    throw new Error(`Invalid or missing customer version: ${updateData.version}`)
+    throw new Error(
+      `Invalid or missing customer version: ${updateData.version}`,
+    )
   }
 
   const actions: object[] = []
 
   if (updateData.firstName !== undefined) {
-  actions.push({ action: 'setFirstName', firstName: updateData.firstName })
-}
+    actions.push({ action: 'setFirstName', firstName: updateData.firstName })
+  }
 
-if (updateData.lastName !== undefined) {
-  actions.push({ action: 'setLastName', lastName: updateData.lastName })
-}
+  if (updateData.lastName !== undefined) {
+    actions.push({ action: 'setLastName', lastName: updateData.lastName })
+  }
 
   if (updateData.email !== undefined) {
     actions.push({ action: 'changeEmail', email: updateData.email })
   }
 
   if (updateData.dateOfBirth !== undefined) {
-    actions.push({ action: 'setDateOfBirth', dateOfBirth: updateData.dateOfBirth })
+    actions.push({
+      action: 'setDateOfBirth',
+      dateOfBirth: updateData.dateOfBirth,
+    })
   }
 
   if (updateData.addresses && updateData.addresses.length > 0) {
     const validAddresses = updateData.addresses
-      .filter(addr => addr.streetName && addr.city && addr.country && addr.postalCode)
+      .filter(
+        (addr) =>
+          addr.streetName && addr.city && addr.country && addr.postalCode,
+      )
       .map((addr, index) => ({
         ...addr,
         key: addr.key || `address-${index}`,

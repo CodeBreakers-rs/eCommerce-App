@@ -38,7 +38,13 @@ describe('EditProfileModal', () => {
   })
 
   it('renders all fields with initial values', () => {
-    render(<EditProfileModal customer={mockCustomer} onSave={onSave} onClose={onClose} />)
+    render(
+      <EditProfileModal
+        customer={mockCustomer}
+        onSave={onSave}
+        onClose={onClose}
+      />,
+    )
 
     expect(screen.getByLabelText('First Name')).toHaveValue('Alice')
     expect(screen.getByLabelText('Last Name')).toHaveValue('Smith')
@@ -51,7 +57,13 @@ describe('EditProfileModal', () => {
   })
 
   it('updates input values and calls onSave and onClose', async () => {
-    render(<EditProfileModal customer={mockCustomer} onSave={onSave} onClose={onClose} />)
+    render(
+      <EditProfileModal
+        customer={mockCustomer}
+        onSave={onSave}
+        onClose={onClose}
+      />,
+    )
 
     fireEvent.change(screen.getByLabelText('First Name'), {
       target: { value: 'Bob' },
@@ -88,7 +100,13 @@ describe('EditProfileModal', () => {
   })
 
   it('calls onClose when cancel is clicked', () => {
-    render(<EditProfileModal customer={mockCustomer} onSave={onSave} onClose={onClose} />)
+    render(
+      <EditProfileModal
+        customer={mockCustomer}
+        onSave={onSave}
+        onClose={onClose}
+      />,
+    )
 
     fireEvent.click(screen.getByText('Cancel'))
 

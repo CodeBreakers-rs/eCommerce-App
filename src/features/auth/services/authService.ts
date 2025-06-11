@@ -34,7 +34,7 @@ export async function loginUser(
       ].join(' '),
     },
   })
-  console.log("Customer from API:", customer)
+  console.log('Customer from API:', customer)
   if (!customer) {
     throw new Error('Failed to fetch customer profile')
   }

@@ -66,7 +66,7 @@ export type CustomerUpdatePayload = {
   lastName?: string
   email?: string
   dateOfBirth?: string
-  addresses?: Array<SDKAddress & { key: string }> 
+  addresses?: Array<SDKAddress & { key: string }>
   defaultShippingAddressKey?: string
   defaultBillingAddressKey?: string
 }

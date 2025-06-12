@@ -322,7 +322,11 @@ export const EditProfileModal = ({
             Add Address
           </button>
         </div>
-
+        {formMessage && (
+          <div className="text-red-600 bg-red-100 border border-red-300 rounded p-2 my-3">
+            {formMessage}
+          </div>
+        )}
         <div className="mt-8 flex justify-end gap-4">
           <button
             onClick={onClose}
@@ -330,11 +334,6 @@ export const EditProfileModal = ({
           >
             Cancel
           </button>
-          {formMessage && (
-            <div className="text-red-600 bg-red-100 border border-red-300 rounded p-2 my-3">
-              {formMessage}
-            </div>
-          )}
           <button
             onClick={handleSubmit}
             disabled={isSaving}

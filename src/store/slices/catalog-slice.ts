@@ -6,7 +6,10 @@ import {
 import type { RootState } from '../index'
 import type { DessertProduct } from '../../types/dessert-product'
 
-import { fetchProducts } from '../../features/catalog/services/catalog-service'
+import {
+  fetchProducts,
+  fetchProductsByText,
+} from '../../features/catalog/services/catalog-service'
 
 export const loadProducts = createAsyncThunk<
   DessertProduct[],
@@ -22,6 +25,27 @@ export const loadProducts = createAsyncThunk<
 
   try {
     const data = await fetchProducts(token)
+    return data.results
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const searchProducts = createAsyncThunk<
+  DessertProduct[],
+  string,
+  { state: RootState }
+>('catalog/searchProducts', async (searchText, thunkAPI) => {
+  const state = thunkAPI.getState()
+  const token = state.auth.token
+
+  if (!token) {
+    return thunkAPI.rejectWithValue('No authentication token found')
+  }
+
+  try {
+    const data = await fetchProductsByText(token, searchText)
     return data.results
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
@@ -48,29 +72,46 @@ const catalogInitialState: CatalogState = {
   filters: {},
 }
 
+const handlePending = (state: CatalogState) => {
+  state.isLoading = true
+  state.error = null
+}
+
+const handleFulfilled = (
+  state: CatalogState,
+  action: PayloadAction<DessertProduct[]>,
+) => {
+  state.isLoading = false
+  state.products = action.payload
+}
+
+const handleRejected = (state: CatalogState, action: { payload: unknown }) => {
+  state.isLoading = false
+  state.error = action.payload as string
+}
+
 export const catalogSlice = createSlice({
   name: 'catalog',
   initialState: catalogInitialState,
   reducers: {
-    // Future: setFilters, setPage, etc.
+    setProducts: (state, action: PayloadAction<DessertProduct[]>) => {
+      state.products = action.payload
+    },
+    resetCatalog: (state) => {
+      state.products = []
+      state.error = null
+      state.isLoading = false
+    },
+    // future reducers like setFilters, setPage, etc.
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loadProducts.pending, (state) => {
-        state.isLoading = true
-        state.error = null
-      })
-      .addCase(
-        loadProducts.fulfilled,
-        (state, action: PayloadAction<DessertProduct[]>) => {
-          state.isLoading = false
-          state.products = action.payload
-        },
-      )
-      .addCase(loadProducts.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload as string
-      })
+      .addCase(loadProducts.pending, handlePending)
+      .addCase(loadProducts.fulfilled, handleFulfilled)
+      .addCase(loadProducts.rejected, handleRejected)
+      .addCase(searchProducts.pending, handlePending)
+      .addCase(searchProducts.fulfilled, handleFulfilled)
+      .addCase(searchProducts.rejected, handleRejected)
   },
 })
 
@@ -79,5 +120,7 @@ export const selectCatalogProducts = (state: RootState) =>
 export const selectCatalogLoading = (state: RootState) =>
   state.catalog.isLoading
 export const selectCatalogError = (state: RootState) => state.catalog.error
+
+export const { setProducts, resetCatalog } = catalogSlice.actions
 
 export default catalogSlice.reducer

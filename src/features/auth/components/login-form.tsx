@@ -50,7 +50,6 @@ export const LoginForm = () => {
           customer: result.customer as Customer,
         }),
       )
-      console.log('Customer data:', result.customer)
     } catch (error: any) {
       const message = error.message || 'Login failed'
       dispatch(loginFailed(message))
@@ -63,7 +62,6 @@ export const LoginForm = () => {
       onSubmit={handleSubmit}
       className="max-w-md mx-auto p-4 bg-white rounded shadow"
     >
-      {/* Email */}
       <div className="mb-4">
         <label htmlFor="email" className="block mb-1 font-medium">
           Email
@@ -88,7 +86,6 @@ export const LoginForm = () => {
         )}
       </div>
 
-      {/* Password */}
       <div className="mb-4">
         <label htmlFor="password" className="block mb-1 font-medium">
           Password
@@ -126,12 +123,10 @@ export const LoginForm = () => {
         )}
       </div>
 
-      {/* Error */}
       {loginError && (
         <div className="text-red-600 text-sm mb-4">{loginError}</div>
       )}
 
-      {/* Submit */}
       <button
         type="submit"
         disabled={!email.trim() || !password.trim()}
@@ -144,7 +139,6 @@ export const LoginForm = () => {
         Login
       </button>
 
-      {/* Success Message */}
       {auth.isLoggedIn && auth.customer && (
         <div className="mt-4 text-green-600 text-sm">
           Logged in as: <strong>{auth.customer.email}</strong>

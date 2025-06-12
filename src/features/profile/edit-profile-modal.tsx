@@ -24,6 +24,8 @@ export const EditProfileModal = ({
     customer.addresses ?? [],
   )
   const [isSaving, setIsSaving] = useState(false)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [formMessage, setFormMessage] = useState('')
 
   const normalizeCountryName = (codeOrName: string): string => {
     const map: Record<string, string> = {
@@ -61,49 +63,40 @@ export const EditProfileModal = ({
     setAddresses(updated)
   }
 
-  const handleSubmit = async () => {
-    if (!isValidName(firstName) || !isValidName(lastName)) {
-      alert('Please enter a valid first and last name.')
-      return
-    }
-    if (!isValidEmail(email)) {
-      alert('Please enter a valid email address.')
-      return
-    }
-    if (!isValidBirthDate(dateOfBirth)) {
-      alert('You must be at least 13 years old.')
-      return
-    }
-    for (const [i, address] of addresses.entries()) {
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {}
+
+    if (!isValidName(firstName)) newErrors.firstName = 'Invalid first name'
+    if (!isValidName(lastName)) newErrors.lastName = 'Invalid last name'
+    if (!isValidEmail(email)) newErrors.email = 'Invalid email address'
+    if (!isValidBirthDate(dateOfBirth))
+      newErrors.dateOfBirth = 'You must be at least 13 years old'
+
+    addresses.forEach((address, i) => {
       const normalizedCountry = normalizeCountryName(address.country || '')
-      const street = address.streetName || ''
-      const city = address.city || ''
-      const postalCode = address.postalCode || ''
+      const prefix = `address_${i}`
 
-      const errors = []
-
-      if (!isValidStreet(street)) errors.push('street')
-      if (!isValidCity(city)) errors.push('city')
+      if (!isValidStreet(address.streetName || ''))
+        newErrors[`${prefix}_street`] = 'Street cannot be empty'
+      if (!isValidCity(address.city || ''))
+        newErrors[`${prefix}_city`] = 'Invalid city'
       if (!isValidCountry(normalizedCountry, ['United States', 'Canada']))
-        errors.push('country')
-      if (!isValidPostalCode(postalCode, normalizedCountry))
-        errors.push('postal code')
+        newErrors[`${prefix}_country`] = 'Select a valid country'
+      if (!isValidPostalCode(address.postalCode || '', normalizedCountry))
+        newErrors[`${prefix}_postal`] = 'Invalid postal code'
+    })
 
-      if (errors.length > 0) {
-        console.warn(
-          `Address ${i + 1} validation failed:`,
-          { street, city, postalCode, country: normalizedCountry },
-          'Errors:',
-          errors,
-        )
-        alert('Please correct the address fields.')
-        return
-      }
-    }
     if (customer.version === undefined || customer.version === null) {
-      alert('Customer version is missing. Cannot update.')
-      return
+      newErrors.version = 'Customer version is missing. Cannot update.'
     }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async () => {
+    setFormMessage('')
+    if (!validateForm()) return
 
     const sanitizedAddresses = addresses.map((addr, index) => ({
       key: addr.key || `address-${index}`,
@@ -124,11 +117,10 @@ export const EditProfileModal = ({
         addresses: sanitizedAddresses,
       })
 
-      console.log('Customer in modal:', customer)
       onClose()
     } catch (err) {
       console.error('Update failed:', err)
-      alert('Update failed. Please try again.')
+      setFormMessage('Update failed. Please try again.')
     } finally {
       setIsSaving(false)
     }
@@ -155,6 +147,9 @@ export const EditProfileModal = ({
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.firstName && (
+              <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+            )}
           </div>
           <div>
             <label
@@ -171,6 +166,9 @@ export const EditProfileModal = ({
               onChange={(e) => setLastName(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.lastName && (
+              <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+            )}
           </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -184,6 +182,9 @@ export const EditProfileModal = ({
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
           <div>
             <label
@@ -200,6 +201,9 @@ export const EditProfileModal = ({
               onChange={(e) => setDateOfBirth(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.dateOfBirth && (
+              <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth}</p>
+            )}
           </div>
         </div>
 
@@ -225,6 +229,11 @@ export const EditProfileModal = ({
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
+                {errors[`address_${index}_street`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_street`]}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -241,6 +250,11 @@ export const EditProfileModal = ({
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
+                {errors[`address_${index}_city`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_city`]}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -257,6 +271,11 @@ export const EditProfileModal = ({
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
+                {errors[`address_${index}_postalCode`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_postalCode`]}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -265,14 +284,33 @@ export const EditProfileModal = ({
                 >
                   Country
                 </label>
-                <input
+                <select
                   id={`country-${index}`}
                   value={address.country}
                   onChange={(e) =>
                     handleAddressChange(index, 'country', e.target.value)
                   }
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                />
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
+                >
+                  <option value="">Select a country</option>
+                  <option value="US">United States</option>
+                  <option value="DE">Germany</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="FR">France</option>
+                  <option value="IT">Italy</option>
+                  <option value="ES">Spain</option>
+                  <option value="PL">Poland</option>
+                  <option value="NL">Netherlands</option>
+                  <option value="SE">Sweden</option>
+                  <option value="FI">Finland</option>
+                  <option value="CA">Canada</option>
+                  <option value="AU">Australia</option>
+                </select>
+                {errors[`address_${index}_country`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_country`]}
+                  </p>
+                )}
               </div>
               <button
                 type="button"
@@ -302,6 +340,11 @@ export const EditProfileModal = ({
           >
             Cancel
           </button>
+          {formMessage && (
+            <div className="text-red-600 bg-red-100 border border-red-300 rounded p-2 my-3">
+              {formMessage}
+            </div>
+          )}
           <button
             onClick={handleSubmit}
             disabled={isSaving}

@@ -171,10 +171,6 @@ export const RegForm = () => {
     }
 
     const sanitized = sanitizeCustomerDraft(customerFormData)
-    console.log(
-      'Sanitized registration payload:',
-      JSON.stringify(sanitized, null, 2),
-    )
 
     try {
       const result = await registerCustomer(sanitized as CustomerDraftPayload)

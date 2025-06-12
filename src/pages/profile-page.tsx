@@ -37,7 +37,6 @@ const ProfilePage = () => {
           customer: newCustomerData,
         }),
       )
-      console.log('Updated customer version:', newCustomerData.version)
       setStatusMessage('Profile updated successfully!')
       setIsEditMode(false)
     } catch (error) {
@@ -48,11 +47,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (customer) {
-      console.log('Customer object from Redux:', customer)
-      console.log('Customer version:', customer.version)
       setDefaultShippingId(customer.defaultShippingAddressId || null)
       setDefaultBillingId(customer.defaultBillingAddressId || null)
-      console.log('Customer version:', customer.version)
     }
   }, [customer])
 

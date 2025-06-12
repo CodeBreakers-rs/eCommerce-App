@@ -21,20 +21,6 @@ export async function loginUser(
   const tokenData = await loginWithPassword(email, password)
   const customer = await getCustomerProfile(tokenData.access_token)
 
-  console.log('Sending login request with:', {
-    url: API_TOKEN_URL,
-    body: {
-      grant_type: 'password',
-      username: email,
-      password: password,
-      scope: [
-        `view_published_products:${PROJECT_KEY}`,
-        `manage_my_orders:${PROJECT_KEY}`,
-        `manage_my_profile:${PROJECT_KEY}`,
-      ].join(' '),
-    },
-  })
-  console.log('Customer from API:', customer)
   if (!customer) {
     throw new Error('Failed to fetch customer profile')
   }

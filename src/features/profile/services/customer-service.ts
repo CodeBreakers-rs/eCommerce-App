@@ -107,8 +107,6 @@ export async function updateCustomerProfile(
     actions,
   }
 
-  console.log('Update Payload:', JSON.stringify(body, null, 2))
-
   const response = await fetch(`${API_ME_URL}`, {
     method: 'POST',
     headers: {

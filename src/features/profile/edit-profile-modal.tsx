@@ -294,17 +294,7 @@ export const EditProfileModal = ({
                 >
                   <option value="">Select a country</option>
                   <option value="US">United States</option>
-                  <option value="DE">Germany</option>
-                  <option value="GB">United Kingdom</option>
-                  <option value="FR">France</option>
-                  <option value="IT">Italy</option>
-                  <option value="ES">Spain</option>
-                  <option value="PL">Poland</option>
-                  <option value="NL">Netherlands</option>
-                  <option value="SE">Sweden</option>
-                  <option value="FI">Finland</option>
                   <option value="CA">Canada</option>
-                  <option value="AU">Australia</option>
                 </select>
                 {errors[`address_${index}_country`] && (
                   <p className="text-red-500 text-sm mt-1">

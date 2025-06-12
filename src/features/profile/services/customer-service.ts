@@ -35,7 +35,10 @@ export const getCustomerProfile = async (
 
 export async function updateCustomerProfile(
   accessToken: string,
-  updateData: Partial<CustomerUpdatePayload> & { version: number },
+  updateData: Partial<CustomerUpdatePayload> & {
+    version: number
+    existingAddresses?: { id: string; key: string }[]
+  },
 ): Promise<SDKCustomer> {
   if (!accessToken) throw new Error('Missing access token')
   if (typeof updateData.version !== 'number' || isNaN(updateData.version)) {
@@ -49,15 +52,12 @@ export async function updateCustomerProfile(
   if (updateData.firstName !== undefined) {
     actions.push({ action: 'setFirstName', firstName: updateData.firstName })
   }
-
   if (updateData.lastName !== undefined) {
     actions.push({ action: 'setLastName', lastName: updateData.lastName })
   }
-
   if (updateData.email !== undefined) {
     actions.push({ action: 'changeEmail', email: updateData.email })
   }
-
   if (updateData.dateOfBirth !== undefined) {
     actions.push({
       action: 'setDateOfBirth',
@@ -66,21 +66,47 @@ export async function updateCustomerProfile(
   }
 
   if (updateData.addresses && updateData.addresses.length > 0) {
-    const validAddresses = updateData.addresses
-      .filter(
-        (addr) =>
-          addr.streetName && addr.city && addr.country && addr.postalCode,
-      )
-      .map((addr, index) => ({
-        ...addr,
-        key: addr.key || `address-${index}`,
-      }))
+    const validAddresses = updateData.addresses.filter(
+      (addr) => addr.streetName && addr.city && addr.country && addr.postalCode,
+    )
+
+    const seenKeys = new Set<string>()
+    const seenIds = new Set<string>()
 
     validAddresses.forEach((addr) => {
-      actions.push({
-        action: 'addAddress',
-        address: addr,
-      })
+      if (!addr.key) return
+      if (seenKeys.has(addr.key)) return
+      seenKeys.add(addr.key)
+
+      const baseAddress = {
+        streetName: addr.streetName,
+        city: addr.city,
+        country: addr.country,
+        postalCode: addr.postalCode,
+        key: addr.key,
+      }
+
+      if (addr.id && !seenIds.has(addr.id)) {
+        seenIds.add(addr.id)
+        actions.push({
+          action: 'changeAddress',
+          addressId: addr.id,
+          address: baseAddress,
+        })
+      } else {
+        actions.push({
+          action: 'addAddress',
+          address: baseAddress,
+        })
+      }
+    })
+
+    const previous = updateData.existingAddresses || []
+    const updatedKeys = validAddresses.map((a) => a.key)
+    previous.forEach(({ id, key }) => {
+      if (key && !updatedKeys.includes(key)) {
+        actions.push({ action: 'removeAddress', addressId: id })
+      }
     })
 
     if (updateData.defaultShippingAddressKey) {

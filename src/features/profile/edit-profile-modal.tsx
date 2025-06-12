@@ -83,7 +83,7 @@ export const EditProfileModal = ({
       if (!isValidCountry(normalizedCountry, ['United States', 'Canada']))
         newErrors[`${prefix}_country`] = 'Select a valid country'
       if (!isValidPostalCode(address.postalCode || '', normalizedCountry))
-        newErrors[`${prefix}_postal`] = 'Invalid postal code'
+        newErrors[`${prefix}_postalCode`] = 'Invalid postal code'
     })
 
     if (customer.version === undefined || customer.version === null) {
@@ -99,6 +99,7 @@ export const EditProfileModal = ({
     if (!validateForm()) return
 
     const sanitizedAddresses = addresses.map((addr, index) => ({
+      id: addr.id,
       key: addr.key || `address-${index}`,
       streetName: addr.streetName,
       city: addr.city,

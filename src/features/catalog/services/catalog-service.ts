@@ -1,27 +1,36 @@
-const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
-const API_BASE_URL = import.meta.env.VITE_CT_API_URL
+import {
+  API_BASE_URL,
+  PROJECT_KEY,
+} from '../../../services/commercetools-constants'
+import { getValidToken } from '../../../services/get-token'
+
 const API_PRODUCTS_SEARCH_URL = `${API_BASE_URL}/${PROJECT_KEY}/product-projections/search`
 
 import type { DessertProduct } from '../../../types/dessert-product'
 
-const query = new URLSearchParams({
-  staged: 'false',
-  limit: '12',
-  sort: 'id desc',
-}).toString()
+const getDefaultQuery = () =>
+  new URLSearchParams({
+    staged: 'false',
+    limit: '12',
+    sort: 'id desc',
+  }).toString()
 
 export const fetchProducts = async (
-  token: string,
+  authToken: string | null,
 ): Promise<{ results: DessertProduct[] }> => {
-  const response = await fetch(`${API_PRODUCTS_SEARCH_URL}?${query}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
+  const token = await getValidToken(authToken)
+
+  const response = await fetch(
+    `${API_PRODUCTS_SEARCH_URL}?${getDefaultQuery()}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 
   if (!response.ok) {
-    console.log(response)
     throw new Error(`Failed to fetch products: ${response.status}`)
   }
 
@@ -29,18 +38,14 @@ export const fetchProducts = async (
 }
 
 export const fetchProductsByText = async (
-  token: string,
   searchText: string,
+  authToken: string | null,
 ): Promise<{ results: DessertProduct[] }> => {
-  const cleanedText = searchText.trim().toLowerCase()
-  const length = cleanedText.length
+  const token = await getValidToken(authToken)
 
-  let fuzzyLevel = '0'
-  if (length > 5) {
-    fuzzyLevel = '2'
-  } else if (length >= 3) {
-    fuzzyLevel = '1'
-  }
+  const cleanedText = searchText.trim().toLowerCase()
+  const fuzzyLevel =
+    cleanedText.length > 5 ? '2' : cleanedText.length >= 3 ? '1' : '0'
 
   const query = new URLSearchParams({
     staged: 'false',

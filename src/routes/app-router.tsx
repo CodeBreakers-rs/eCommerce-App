@@ -19,6 +19,8 @@ const AppRouter = () => (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<MainPage />} />
+        <Route path="/catalog" element={<CatalogPage />} />
+        <Route path="/product/:id" element={<ProductPage />} />
         <Route
           path="/login"
           element={
@@ -33,22 +35,6 @@ const AppRouter = () => (
             <RedirectIfAuth>
               <RegistrationPage />
             </RedirectIfAuth>
-          }
-        />
-        <Route
-          path="/catalog"
-          element={
-            <ProtectedRoute>
-              <CatalogPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/product/:id"
-          element={
-            <ProtectedRoute>
-              <ProductPage />
-            </ProtectedRoute>
           }
         />
         <Route

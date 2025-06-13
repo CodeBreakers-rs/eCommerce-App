@@ -20,7 +20,6 @@ const SearchInput = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       const trimmedQuery = debouncedQuery.trim()
-      if (!token) return
 
       setError(null)
 
@@ -29,7 +28,7 @@ const SearchInput = () => {
           const data = await fetchProducts(token)
           dispatch(setProducts(data.results))
         } else {
-          const data = await fetchProductsByText(token, trimmedQuery)
+          const data = await fetchProductsByText(trimmedQuery, token)
           dispatch(setProducts(data.results))
         }
       } catch (err) {

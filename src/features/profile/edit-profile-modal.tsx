@@ -67,11 +67,9 @@ export const EditProfileModal = ({
     const newErrors: { [key: string]: string } = {}
 
     if (!isValidName(firstName))
-      newErrors.firstName =
-        'Name should starts with capital letter and shouldn`t include digits'
+      newErrors.firstName = 'Name shouldn`t include digits'
     if (!isValidName(lastName))
-      newErrors.lastName =
-        'Name should starts with capital letter and shouldn`t include digits'
+      newErrors.lastName = 'Name shouldn`t include digits'
     if (!isValidEmail(email)) newErrors.email = 'Invalid email address'
     if (!isValidBirthDate(dateOfBirth))
       newErrors.dateOfBirth = 'You must be at least 13 years old'

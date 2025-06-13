@@ -87,11 +87,9 @@ export const RegForm = () => {
       newErrors.password =
         'Password must be at least 8 characters, include upper/lowercase, number and one special character'
     if (!isValidName(data.firstName))
-      newErrors.firstName =
-        'Name should starts with capital letter and shouldn`t include digits'
+      newErrors.firstName = 'Name shouldn`t include digits'
     if (!isValidName(data.lastName))
-      newErrors.lastName =
-        'Name should starts with capital letter and shouldn`t include digits'
+      newErrors.lastName = 'Name shouldn`t include digits'
     if (!isValidBirthDate(data.birthDate))
       newErrors.birthDate = 'You must be at least 13 years old'
     if (!isValidStreet(data.street)) newErrors.street = 'Street cannot be empty'

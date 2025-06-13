@@ -7,7 +7,7 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import { describe, it, expect } from 'vitest'
 
 describe('NavLinks', () => {
-  it('renders Main, Login, Register and Catalog links when not logged in', () => {
+  it('renders necessary links when not logged in', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: { auth: { ...authInitialState, isLoggedIn: false } },
@@ -23,10 +23,11 @@ describe('NavLinks', () => {
     expect(screen.getByText('Login')).toBeInTheDocument()
     expect(screen.getByText('Register')).toBeInTheDocument()
     expect(screen.queryByText('Catalog')).toBeInTheDocument()
-    expect(screen.queryByText('About')).not.toBeInTheDocument()
+    expect(screen.queryByText('Cart')).toBeInTheDocument()
+    expect(screen.queryByText('About')).toBeInTheDocument()
   })
 
-  it('renders Main, Catalog, and About links when logged in', () => {
+  it('renders necessary links when logged in', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: { auth: { ...authInitialState, isLoggedIn: true } },
@@ -40,6 +41,7 @@ describe('NavLinks', () => {
     )
     expect(screen.getByText('Main')).toBeInTheDocument()
     expect(screen.getByText('Catalog')).toBeInTheDocument()
+    expect(screen.queryByText('Cart')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
     expect(screen.queryByText('Login')).not.toBeInTheDocument()
     expect(screen.queryByText('Register')).not.toBeInTheDocument()

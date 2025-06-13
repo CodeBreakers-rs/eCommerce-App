@@ -10,14 +10,10 @@ export const loadProductBySlug = createAsyncThunk<
   string,
   { state: RootState }
 >('product/loadBySlug', async (slug: string, thunkAPI) => {
-  const state = thunkAPI.getState()
-  const token = state.auth.token
-
-  if (!token) {
-    return thunkAPI.rejectWithValue('No authentication token found')
-  }
-
   try {
+    const state = thunkAPI.getState()
+    const token = state.auth.token
+
     const data = await fetchProductBySlug(slug, locale, token)
     return data
   } catch (err) {

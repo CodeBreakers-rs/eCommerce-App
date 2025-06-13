@@ -19,10 +19,6 @@ export const loadProducts = createAsyncThunk<
   const state = thunkAPI.getState()
   const token = state.auth.token
 
-  if (!token) {
-    return thunkAPI.rejectWithValue('No authentication token found')
-  }
-
   try {
     const data = await fetchProducts(token)
     return data.results
@@ -40,12 +36,8 @@ export const searchProducts = createAsyncThunk<
   const state = thunkAPI.getState()
   const token = state.auth.token
 
-  if (!token) {
-    return thunkAPI.rejectWithValue('No authentication token found')
-  }
-
   try {
-    const data = await fetchProductsByText(token, searchText)
+    const data = await fetchProductsByText(searchText, token)
     return data.results
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

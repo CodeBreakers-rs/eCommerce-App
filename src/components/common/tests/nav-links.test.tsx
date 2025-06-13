@@ -7,7 +7,7 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import { describe, it, expect } from 'vitest'
 
 describe('NavLinks', () => {
-  it('renders Main, Login, and Register links when not logged in', () => {
+  it('renders Main, Login, Register and Catalog links when not logged in', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: { auth: { ...authInitialState, isLoggedIn: false } },
@@ -22,7 +22,7 @@ describe('NavLinks', () => {
     expect(screen.getByText('Main')).toBeInTheDocument()
     expect(screen.getByText('Login')).toBeInTheDocument()
     expect(screen.getByText('Register')).toBeInTheDocument()
-    expect(screen.queryByText('Catalog')).not.toBeInTheDocument()
+    expect(screen.queryByText('Catalog')).toBeInTheDocument()
     expect(screen.queryByText('About')).not.toBeInTheDocument()
   })
 

@@ -21,6 +21,8 @@ const AppRouter = () => (
         <Route path="/" element={<MainPage />} />
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/basket" element={<BasketPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/login"
           element={
@@ -42,22 +44,6 @@ const AppRouter = () => (
           element={
             <ProtectedRoute>
               <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/basket"
-          element={
-            <ProtectedRoute>
-              <BasketPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <ProtectedRoute>
-              <AboutPage />
             </ProtectedRoute>
           }
         />

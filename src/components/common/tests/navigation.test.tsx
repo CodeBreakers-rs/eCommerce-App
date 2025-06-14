@@ -5,13 +5,19 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import Navigation from '../navigation/navigation'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
+import type { Customer as SDKCustomer } from '@commercetools/platform-sdk'
 
-const customer = {
+const mockCustomer: SDKCustomer = {
+  id: '12345',
+  version: 1,
+  createdAt: new Date().toISOString(),
+  lastModifiedAt: new Date().toISOString(),
+  email: 'jane.smith@example.com',
   firstName: 'Jane',
   lastName: 'Smith',
-  email: 'jane.smith@example.com',
-  password: 'test-password',
-}
+  isEmailVerified: true,
+  addresses: [],
+} as unknown as SDKCustomer
 
 describe('Navigation', () => {
   it('renders logo, nav links, and hamburger button', () => {
@@ -59,7 +65,7 @@ describe('Navigation', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: {
-        auth: { ...authInitialState, isLoggedIn: true, customer },
+        auth: { ...authInitialState, isLoggedIn: true, customer: mockCustomer },
       },
     })
     render(
@@ -69,7 +75,10 @@ describe('Navigation', () => {
         </MemoryRouter>
       </Provider>,
     )
+    screen.debug()
 
-    expect(screen.getByText('JS')).toBeInTheDocument()
+    expect(
+      screen.getByText((_, el) => el?.textContent === 'JS'),
+    ).toBeInTheDocument()
   })
 })

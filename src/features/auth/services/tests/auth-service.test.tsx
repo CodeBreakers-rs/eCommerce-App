@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
-import * as authService from '../authService'
+import * as authService from '../auth-service'
 
 globalThis.fetch = vi.fn()
 

@@ -6,7 +6,7 @@ import {
   loginFailed,
 } from '../../../store/slices/auth-slice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
-import { loginUser } from '../services/authService'
+import { loginUser } from '../services/auth-service'
 import type { Customer } from '@commercetools/platform-sdk'
 
 export const LoginForm = () => {

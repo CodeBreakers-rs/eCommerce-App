@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import { describe, it, expect, vi } from 'vitest'
+import { mockCustomer } from '../../../features/profile/services/mock-customer'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -12,13 +13,6 @@ vi.mock('react-router-dom', async () => {
 })
 
 import UserDropdown from '../navigation/user-dropdown'
-
-const customer = {
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'john.doe@example.com',
-  password: 'test-password',
-}
 
 describe('UserDropdown', () => {
   it('does not render if not logged in or customer is missing', () => {
@@ -42,7 +36,7 @@ describe('UserDropdown', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: {
-        auth: { ...authInitialState, isLoggedIn: true, customer },
+        auth: { ...authInitialState, isLoggedIn: true, customer: mockCustomer },
       },
     })
     render(
@@ -53,11 +47,13 @@ describe('UserDropdown', () => {
       </Provider>,
     )
 
-    expect(screen.getByText('JD')).toBeInTheDocument()
+    expect(
+      screen.getByText((_, el) => el?.textContent?.trim() === 'JS'),
+    ).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button'))
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
-    expect(screen.getByText('john.doe@example.com')).toBeInTheDocument()
+    expect(screen.getByText('Jane Smith')).toBeInTheDocument()
+    expect(screen.getByText('jane.smith@example.com')).toBeInTheDocument()
     expect(screen.getByText(/Profile/)).toBeInTheDocument()
     expect(screen.getByText(/Cart/)).toBeInTheDocument()
     expect(screen.getByText(/Logout/)).toBeInTheDocument()
@@ -67,7 +63,7 @@ describe('UserDropdown', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: {
-        auth: { ...authInitialState, isLoggedIn: true, customer },
+        auth: { ...authInitialState, isLoggedIn: true, customer: mockCustomer },
       },
     })
     const removeItemSpy = vi.spyOn(window.localStorage.__proto__, 'removeItem')

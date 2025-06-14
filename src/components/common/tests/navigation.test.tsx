@@ -5,19 +5,7 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import Navigation from '../navigation/navigation'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
-import type { Customer as SDKCustomer } from '@commercetools/platform-sdk'
-
-const mockCustomer: SDKCustomer = {
-  id: '12345',
-  version: 1,
-  createdAt: new Date().toISOString(),
-  lastModifiedAt: new Date().toISOString(),
-  email: 'jane.smith@example.com',
-  firstName: 'Jane',
-  lastName: 'Smith',
-  isEmailVerified: true,
-  addresses: [],
-} as unknown as SDKCustomer
+import { mockCustomer } from '../../../features/profile/services/mock-customer'
 
 describe('Navigation', () => {
   it('renders logo, nav links, and hamburger button', () => {
@@ -75,7 +63,6 @@ describe('Navigation', () => {
         </MemoryRouter>
       </Provider>,
     )
-    screen.debug()
 
     expect(
       screen.getByText((_, el) => el?.textContent === 'JS'),

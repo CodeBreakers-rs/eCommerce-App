@@ -1,4 +1,4 @@
-import { LoginForm } from '../features/auth/components/loginForm'
+import { LoginForm } from '../features/auth/components/login-form'
 
 const LoginPage = () => (
   <section>

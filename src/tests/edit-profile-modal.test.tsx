@@ -71,6 +71,9 @@ describe('EditProfileModal', () => {
     fireEvent.change(screen.getByLabelText('City'), {
       target: { value: 'Los Angeles' },
     })
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'bob@example.com' },
+    })
 
     fireEvent.click(screen.getByText('Save'))
 
@@ -80,15 +83,15 @@ describe('EditProfileModal', () => {
           version: 1,
           firstName: 'Bob',
           lastName: 'Smith',
+          email: 'bob@example.com',
           dateOfBirth: '1990-01-01',
           addresses: [
-            {
-              id: 'addr-1',
+            expect.objectContaining({
               streetName: 'Main St',
               city: 'Los Angeles',
               postalCode: '10001',
               country: 'US',
-            },
+            }),
           ],
         }),
       )

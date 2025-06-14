@@ -1,13 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { type CustomerType } from '../../types/customer'
-
-export type AuthState = {
-  isLoggedIn: boolean
-  customer: CustomerType | null
-  token: string | null
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: string | null
-}
+import type { CustomerState, AuthState } from '../../types/customer'
+import type { Customer } from '@commercetools/platform-sdk'
 
 export const authInitialState: AuthState = {
   isLoggedIn: false,
@@ -25,10 +18,7 @@ const authSlice = createSlice({
       state.status = 'loading'
       state.error = null
     },
-    login(
-      state,
-      action: PayloadAction<{ customer: CustomerType; token: string }>,
-    ) {
+    login(state, action: PayloadAction<{ customer: Customer; token: string }>) {
       state.isLoggedIn = true
       state.customer = action.payload.customer
       state.token = action.payload.token
@@ -48,6 +38,31 @@ const authSlice = createSlice({
     },
   },
 })
+
+const initialState: CustomerState = {
+  token: null,
+  customer: null,
+}
+
+const customerSlice = createSlice({
+  name: 'customer',
+  initialState,
+  reducers: {
+    setCustomerData: (
+      state,
+      action: PayloadAction<{ token: string; customer: Customer }>,
+    ) => {
+      state.token = action.payload.token
+      state.customer = action.payload.customer
+    },
+    clearCustomerData: (state) => {
+      state.token = null
+      state.customer = null
+    },
+  },
+})
+
+export const { setCustomerData, clearCustomerData } = customerSlice.actions
 
 export const { loginStarted, login, loginFailed, logout } = authSlice.actions
 export default authSlice.reducer

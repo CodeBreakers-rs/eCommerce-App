@@ -1,4 +1,4 @@
-import type { AuthState } from './slices/auth-slice'
+import type { AuthState } from './../types/customer'
 
 const AUTH_STATE_KEY = 'auth'
 

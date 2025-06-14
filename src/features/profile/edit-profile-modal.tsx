@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import type { EditProfileModalProps, Address } from '../../types/customer'
 import type { Address as SDKAddress } from '@commercetools/platform-sdk'
+import {
+  isValidEmail,
+  isValidName,
+  isValidBirthDate,
+  isValidStreet,
+  isValidCity,
+  isValidPostalCode,
+  isValidCountry,
+} from '../../utils/validators'
 
 export const EditProfileModal = ({
   customer,
@@ -15,6 +24,16 @@ export const EditProfileModal = ({
     customer.addresses ?? [],
   )
   const [isSaving, setIsSaving] = useState(false)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [formMessage, setFormMessage] = useState('')
+
+  const normalizeCountryName = (codeOrName: string): string => {
+    const map: Record<string, string> = {
+      CA: 'Canada',
+      US: 'United States',
+    }
+    return map[codeOrName.toUpperCase()] || codeOrName
+  }
 
   const handleAddressChange = (
     index: number,
@@ -26,19 +45,88 @@ export const EditProfileModal = ({
     setAddresses(updated)
   }
 
-  const handleSubmit = async () => {
-    setIsSaving(true)
+  const handleAddAddress = () => {
+    setAddresses((prev) => [
+      ...prev,
+      {
+        key: `address-${prev.length}`,
+        streetName: '',
+        city: '',
+        postalCode: '',
+        country: '',
+      },
+    ])
+  }
 
-    await onSave({
-      version: customer.version,
-      firstName,
-      lastName,
-      dateOfBirth,
-      addresses,
+  const handleRemoveAddress = (index: number) => {
+    const updated = addresses.filter((_, i) => i !== index)
+    setAddresses(updated)
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {}
+
+    if (!isValidName(firstName))
+      newErrors.firstName = 'Name shouldn`t include digits'
+    if (!isValidName(lastName))
+      newErrors.lastName = 'Name shouldn`t include digits'
+    if (!isValidEmail(email)) newErrors.email = 'Invalid email address'
+    if (!isValidBirthDate(dateOfBirth))
+      newErrors.dateOfBirth = 'You must be at least 13 years old'
+
+    addresses.forEach((address, i) => {
+      const normalizedCountry = normalizeCountryName(address.country || '')
+      const prefix = `address_${i}`
+
+      if (!isValidStreet(address.streetName || ''))
+        newErrors[`${prefix}_street`] = 'Street cannot be empty'
+      if (!isValidCity(address.city || ''))
+        newErrors[`${prefix}_city`] = 'Invalid city'
+      if (!isValidCountry(normalizedCountry, ['United States', 'Canada']))
+        newErrors[`${prefix}_country`] = 'Select a valid country'
+      if (!isValidPostalCode(address.postalCode || '', normalizedCountry))
+        newErrors[`${prefix}_postalCode`] = 'Invalid postal code'
     })
 
-    setIsSaving(false)
-    onClose()
+    if (customer.version === undefined || customer.version === null) {
+      newErrors.version = 'Customer version is missing. Cannot update.'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async () => {
+    setFormMessage('')
+    if (!validateForm()) return
+
+    const sanitizedAddresses = addresses.map((addr, index) => ({
+      id: addr.id,
+      key: addr.key || `address-${index}`,
+      streetName: addr.streetName,
+      city: addr.city,
+      postalCode: addr.postalCode,
+      country: addr.country,
+    }))
+
+    setIsSaving(true)
+    try {
+      await onSave({
+        version: customer.version,
+        firstName,
+        lastName,
+        dateOfBirth,
+        email,
+        addresses: sanitizedAddresses,
+      })
+
+      onClose()
+    } catch (err) {
+      console.error('Update failed:', err)
+      setFormMessage('Update failed. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -62,6 +150,9 @@ export const EditProfileModal = ({
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.firstName && (
+              <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+            )}
           </div>
           <div>
             <label
@@ -78,6 +169,9 @@ export const EditProfileModal = ({
               onChange={(e) => setLastName(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.lastName && (
+              <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+            )}
           </div>
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -91,6 +185,9 @@ export const EditProfileModal = ({
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
           <div>
             <label
@@ -107,6 +204,9 @@ export const EditProfileModal = ({
               onChange={(e) => setDateOfBirth(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.dateOfBirth && (
+              <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth}</p>
+            )}
           </div>
         </div>
 
@@ -132,6 +232,11 @@ export const EditProfileModal = ({
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
+                {errors[`address_${index}_street`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_street`]}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -148,6 +253,11 @@ export const EditProfileModal = ({
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
+                {errors[`address_${index}_city`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_city`]}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -164,6 +274,11 @@ export const EditProfileModal = ({
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
+                {errors[`address_${index}_postalCode`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_postalCode`]}
+                  </p>
+                )}
               </div>
               <div>
                 <label
@@ -172,19 +287,49 @@ export const EditProfileModal = ({
                 >
                   Country
                 </label>
-                <input
+                <select
                   id={`country-${index}`}
                   value={address.country}
                   onChange={(e) =>
                     handleAddressChange(index, 'country', e.target.value)
                   }
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                />
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
+                >
+                  <option value="">Select a country</option>
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                </select>
+                {errors[`address_${index}_country`] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors[`address_${index}_country`]}
+                  </p>
+                )}
               </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveAddress(index)}
+                className="mt-2 px-3 py-1 text-sm text-red-600 border border-red-300 rounded hover:bg-red-100 transition"
+              >
+                Remove Address
+              </button>
             </div>
           ))}
         </div>
-
+        <div className="flex justify-end"></div>
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={handleAddAddress}
+            className="px-4 py-2 rounded-lg bg-green-600 text-blacsk hover:bg-green-700 transition"
+          >
+            Add Address
+          </button>
+        </div>
+        {formMessage && (
+          <div className="text-red-600 bg-red-100 border border-red-300 rounded p-2 my-3">
+            {formMessage}
+          </div>
+        )}
         <div className="mt-8 flex justify-end gap-4">
           <button
             onClick={onClose}

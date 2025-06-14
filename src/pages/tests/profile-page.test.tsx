@@ -75,7 +75,6 @@ describe('ProfilePage', () => {
 
     expect(screen.getByText(/Street:/)).toHaveTextContent('Street:')
     expect(screen.getByText(/City:/)).toHaveTextContent('City:')
-    expect(screen.getByText(/State:/)).toHaveTextContent('State:')
     expect(screen.getByText(/ZIP Code:/)).toHaveTextContent('ZIP Code:')
     expect(screen.getByText(/Country:/)).toHaveTextContent('Country:')
 

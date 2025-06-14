@@ -16,7 +16,10 @@ import {
   isValidPostalCode,
   isValidCountry,
 } from '../../../utils/validators'
-import type { CustomerType, FormDataType } from '../../../types/customer'
+import type {
+  CustomerDraftPayload,
+  FormDataType,
+} from '../../../types/customer'
 
 const validCountries = ['United States', 'Canada']
 
@@ -83,8 +86,10 @@ export const RegForm = () => {
     if (!isValidPassword(data.password))
       newErrors.password =
         'Password must be at least 8 characters, include upper/lowercase, number and one special character'
-    if (!isValidName(data.firstName)) newErrors.firstName = 'Invalid first name'
-    if (!isValidName(data.lastName)) newErrors.lastName = 'Invalid last name'
+    if (!isValidName(data.firstName))
+      newErrors.firstName = 'Name shouldn`t include digits'
+    if (!isValidName(data.lastName))
+      newErrors.lastName = 'Name shouldn`t include digits'
     if (!isValidBirthDate(data.birthDate))
       newErrors.birthDate = 'You must be at least 13 years old'
     if (!isValidStreet(data.street)) newErrors.street = 'Street cannot be empty'
@@ -152,7 +157,7 @@ export const RegForm = () => {
       })
     }
 
-    const customerFormData: CustomerType = {
+    const customerFormData: CustomerDraftPayload = {
       email: formData.email,
       password: formData.password,
       firstName: formData.firstName,
@@ -168,13 +173,9 @@ export const RegForm = () => {
     }
 
     const sanitized = sanitizeCustomerDraft(customerFormData)
-    console.log(
-      'Sanitized registration payload:',
-      JSON.stringify(sanitized, null, 2),
-    )
 
     try {
-      const result = await registerCustomer(sanitized as CustomerType)
+      const result = await registerCustomer(sanitized as CustomerDraftPayload)
       console.log('Registration successful:', result)
       const loginResult = await loginUser(
         customerFormData.email,
@@ -182,7 +183,7 @@ export const RegForm = () => {
       )
       dispatch(
         login({
-          customer: loginResult.customer as CustomerType,
+          customer: loginResult.customer,
           token: loginResult.token,
         }),
       )
@@ -363,7 +364,7 @@ export const RegForm = () => {
       <button
         type="submit"
         disabled={isButtonDisabled || Object.keys(errors).length > 0}
-        className={`w-full py-2 px-4 rounded font-semibold text-white transition ${
+        className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
           isButtonDisabled || Object.keys(errors).length > 0
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700'

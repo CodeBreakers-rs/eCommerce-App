@@ -19,6 +19,10 @@ const AppRouter = () => (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<MainPage />} />
+        <Route path="/catalog" element={<CatalogPage />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/basket" element={<BasketPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/login"
           element={
@@ -36,42 +40,10 @@ const AppRouter = () => (
           }
         />
         <Route
-          path="/catalog"
-          element={
-            <ProtectedRoute>
-              <CatalogPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/product/:id"
-          element={
-            <ProtectedRoute>
-              <ProductPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/profile"
           element={
             <ProtectedRoute>
               <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/basket"
-          element={
-            <ProtectedRoute>
-              <BasketPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <ProtectedRoute>
-              <AboutPage />
             </ProtectedRoute>
           }
         />

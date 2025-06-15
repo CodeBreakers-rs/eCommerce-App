@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { authInitialState } from './slices/auth-slice'
+import catalogReducer from './slices/catalog-slice'
+import productReducer from './slices/product-slice'
 import { loadAuthState, saveAuthState } from './local-storage'
 
 const preloadedAuthState = loadAuthState() ?? authInitialState
@@ -7,6 +9,8 @@ const preloadedAuthState = loadAuthState() ?? authInitialState
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    catalog: catalogReducer,
+    product: productReducer,
   },
   preloadedState: {
     auth: preloadedAuthState,

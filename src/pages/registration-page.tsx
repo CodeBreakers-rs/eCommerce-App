@@ -1,4 +1,4 @@
-import { RegForm } from '../features/auth/components/regForm'
+import { RegForm } from '../features/auth/components/reg-form'
 
 const RegistrationPage = () => (
   <section>

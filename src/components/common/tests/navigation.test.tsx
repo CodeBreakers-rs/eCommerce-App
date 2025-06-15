@@ -5,7 +5,7 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import Navigation from '../navigation/navigation'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
-import { mockCustomer } from '../../../features/profile/services/mock-customer'
+import { mockCustomer } from '../../../tests/mock-data'
 
 describe('Navigation', () => {
   it('renders logo, nav links, and hamburger button', () => {

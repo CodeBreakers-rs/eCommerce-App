@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import { describe, it, expect, vi } from 'vitest'
-import { mockCustomer } from '../../../features/profile/services/mock-customer'
+import { mockCustomer } from '../../../tests/mock-data'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {

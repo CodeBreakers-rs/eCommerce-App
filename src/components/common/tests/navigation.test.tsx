@@ -5,13 +5,7 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import Navigation from '../navigation/navigation'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
-
-const customer = {
-  firstName: 'Jane',
-  lastName: 'Smith',
-  email: 'jane.smith@example.com',
-  password: 'test-password',
-}
+import { mockCustomer } from '../../../tests/mock-data'
 
 describe('Navigation', () => {
   it('renders logo, nav links, and hamburger button', () => {
@@ -59,7 +53,7 @@ describe('Navigation', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: {
-        auth: { ...authInitialState, isLoggedIn: true, customer },
+        auth: { ...authInitialState, isLoggedIn: true, customer: mockCustomer },
       },
     })
     render(
@@ -70,6 +64,8 @@ describe('Navigation', () => {
       </Provider>,
     )
 
-    expect(screen.getByText('JS')).toBeInTheDocument()
+    expect(
+      screen.getByText((_, el) => el?.textContent === 'JS'),
+    ).toBeInTheDocument()
   })
 })

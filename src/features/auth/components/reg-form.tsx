@@ -5,7 +5,7 @@ import {
   registerCustomer,
   loginUser,
   sanitizeCustomerDraft,
-} from '../services/authService'
+} from '../services/auth-service'
 import {
   isValidEmail,
   isValidPassword,

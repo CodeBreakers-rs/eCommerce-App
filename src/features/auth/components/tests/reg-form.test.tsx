@@ -4,7 +4,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { RegForm } from '../reg-form'
-import * as authService from '../../services/authService'
+import * as authService from '../../services/auth-service'
 import authReducer from '../../../../store/slices/auth-slice'
 
 function renderWithStore(ui: React.ReactElement) {

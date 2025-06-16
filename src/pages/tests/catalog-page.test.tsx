@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import CatalogPage from '../catalog-page'
 import * as hooks from '../../store/hooks'
 import * as catalogSlice from '../../store/slices/catalog-slice'
+import * as cartSlice from '../../store/slices/cart-slice'
 
 const mockProducts = [
   {
@@ -38,7 +39,7 @@ vi.mock('../../store/hooks', async () => {
   }
 })
 
-vi.mock('../store/slices/catalog-slice', async () => {
+vi.mock('../../store/slices/catalog-slice', async () => {
   const actual = await vi.importActual<
     typeof import('../../store/slices/catalog-slice')
   >('../../store/slices/catalog-slice')
@@ -61,6 +62,7 @@ describe('CatalogPage', () => {
       if (selectorFn === catalogSlice.selectCatalogProducts) return []
       if (selectorFn === catalogSlice.selectCatalogLoading) return false
       if (selectorFn === catalogSlice.selectCatalogError) return null
+      if (selectorFn === cartSlice.selectCartItems) return []
     })
 
     render(
@@ -77,6 +79,7 @@ describe('CatalogPage', () => {
       if (selectorFn === catalogSlice.selectCatalogProducts) return []
       if (selectorFn === catalogSlice.selectCatalogLoading) return true
       if (selectorFn === catalogSlice.selectCatalogError) return null
+      if (selectorFn === cartSlice.selectCartItems) return []
     })
 
     render(
@@ -93,6 +96,7 @@ describe('CatalogPage', () => {
       if (selectorFn === catalogSlice.selectCatalogLoading) return false
       if (selectorFn === catalogSlice.selectCatalogError)
         return 'Something went wrong'
+      if (selectorFn === cartSlice.selectCartItems) return []
     })
 
     render(
@@ -103,11 +107,12 @@ describe('CatalogPage', () => {
     expect(screen.getByText(/error: something went wrong/i)).toBeInTheDocument()
   })
 
-  it('renders products', () => {
+  it('renders products with enabled Add to Cart buttons', () => {
     ;(hooks.useAppSelector as Mock).mockImplementation((selectorFn) => {
       if (selectorFn === catalogSlice.selectCatalogProducts) return mockProducts
       if (selectorFn === catalogSlice.selectCatalogLoading) return false
       if (selectorFn === catalogSlice.selectCatalogError) return null
+      if (selectorFn === cartSlice.selectCartItems) return []
     })
 
     render(
@@ -118,7 +123,32 @@ describe('CatalogPage', () => {
 
     expect(screen.getByText('Apple Zefir')).toBeInTheDocument()
     expect(screen.getByText('Cranberry Marshmallow')).toBeInTheDocument()
-    expect(screen.getByAltText('Apple Zefir')).toBeInTheDocument()
-    expect(screen.getByAltText('Cranberry Marshmallow')).toBeInTheDocument()
+    expect(
+      screen.getAllByRole('button', { name: /add to cart/i }),
+    ).toHaveLength(2)
+    screen
+      .getAllByRole('button', { name: /add to cart/i })
+      .forEach((btn) => expect(btn).toBeEnabled())
+  })
+
+  it('disables Add to Cart button for product in cart', () => {
+    ;(hooks.useAppSelector as Mock).mockImplementation((selectorFn) => {
+      if (selectorFn === catalogSlice.selectCatalogProducts) return mockProducts
+      if (selectorFn === catalogSlice.selectCatalogLoading) return false
+      if (selectorFn === catalogSlice.selectCatalogError) return null
+      if (selectorFn === cartSlice.selectCartItems) return ['apple-zefir']
+    })
+
+    render(
+      <MemoryRouter>
+        <CatalogPage />
+      </MemoryRouter>,
+    )
+
+    const buttons = screen.getAllByRole('button', { name: /add to cart/i })
+
+    expect(buttons[0]).toBeDisabled()
+
+    expect(buttons[1]).toBeEnabled()
   })
 })

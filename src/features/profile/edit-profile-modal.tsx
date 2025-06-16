@@ -10,9 +10,12 @@ import {
   isValidPostalCode,
   isValidCountry,
 } from '../../utils/validators'
+import { ChangePasswordModal } from './change-password-modal'
+
 
 export const EditProfileModal = ({
   customer,
+  token,
   onSave,
   onClose,
 }: EditProfileModalProps) => {
@@ -26,6 +29,15 @@ export const EditProfileModal = ({
   const [isSaving, setIsSaving] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [formMessage, setFormMessage] = useState('')
+  const [isShownPasswordModal, isSetShownPasswordModal] = useState(false)
+
+  const handleOpenPasswordModal = () => {
+    isSetShownPasswordModal(true)
+  }
+
+  const handleClosePasswordModal = () => {
+    isSetShownPasswordModal(false)
+  }
 
   const normalizeCountryName = (codeOrName: string): string => {
     const map: Record<string, string> = {
@@ -133,6 +145,13 @@ export const EditProfileModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
         <h2 className="text-2xl font-semibold mb-6">Edit Profile</h2>
+
+       <button
+          onClick={handleOpenPasswordModal}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Change Password
+        </button>
 
         <div className="space-y-4">
           <div>
@@ -346,6 +365,12 @@ export const EditProfileModal = ({
           </button>
         </div>
       </div>
+      {isShownPasswordModal && (
+        <ChangePasswordModal
+          token={token}
+          onClose={handleClosePasswordModal}
+        />
+      )}
     </div>
   )
 }

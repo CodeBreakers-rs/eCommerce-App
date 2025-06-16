@@ -164,6 +164,7 @@ const ProfilePage = () => {
           <>
             <EditProfileModal
               customer={customer}
+              token={token!}
               onSave={handleProfileSave}
               onClose={() => setIsEditMode(false)}
             />

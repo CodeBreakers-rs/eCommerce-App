@@ -13,13 +13,16 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [isShownPassword, setIsShownPasswords] = useState(false)
+
+  const togglePasswordVisibility = () => setIsShownPasswords((prev) => !prev)
 
   const validate = () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       return 'All fields are required'
     }
     if (newPassword.length < 8) {
-      return 'Password must be at least 8 characters'
+      return 'Password must be at least 8 characters, include upper/lowercase, number and one special character'
     }
     if (newPassword !== confirmPassword) {
       return 'Passwords do not match'
@@ -65,26 +68,35 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
         ) : (
           <div className="space-y-4">
             <input
-              type="password"
+              type={isShownPassword ? 'text' : 'password'}
               placeholder="Current Password"
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
             <input
-              type="password"
+              type={isShownPassword ? 'text' : 'password'}
               placeholder="New Password"
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <input
-              type="password"
+              type={isShownPassword ? 'text' : 'password'}
               placeholder="Confirm New Password"
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
+
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isShownPassword}
+                onChange={togglePasswordVisibility}
+              />
+              Show Passwords
+            </label>
 
             {error && (
               <p className="text-red-500 text-sm text-center">{error}</p>

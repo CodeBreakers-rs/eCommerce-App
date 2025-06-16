@@ -68,6 +68,8 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
         ) : (
           <div className="space-y-4">
             <input
+              id="current-password"
+              data-testid="current-password"
               type={isShownPassword ? 'text' : 'password'}
               placeholder="Current Password"
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -75,6 +77,8 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
             <input
+              id="new-password"
+              data-testid="new-password"
               type={isShownPassword ? 'text' : 'password'}
               placeholder="New Password"
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -82,6 +86,8 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <input
+              id="confirm-password"
+              data-testid="confirm-password"
               type={isShownPassword ? 'text' : 'password'}
               placeholder="Confirm New Password"
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -91,6 +97,8 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
 
             <label className="flex items-center gap-2 text-sm">
               <input
+                id="toggle-password-visibility"
+                data-testid="toggle-password-visibility"
                 type="checkbox"
                 checked={isShownPassword}
                 onChange={togglePasswordVisibility}

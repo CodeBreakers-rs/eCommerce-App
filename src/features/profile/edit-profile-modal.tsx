@@ -12,7 +12,6 @@ import {
 } from '../../utils/validators'
 import { ChangePasswordModal } from './change-password-modal'
 
-
 export const EditProfileModal = ({
   customer,
   token,
@@ -146,7 +145,7 @@ export const EditProfileModal = ({
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
         <h2 className="text-2xl font-semibold mb-6">Edit Profile</h2>
 
-       <button
+        <button
           onClick={handleOpenPasswordModal}
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
@@ -366,10 +365,7 @@ export const EditProfileModal = ({
         </div>
       </div>
       {isShownPasswordModal && (
-        <ChangePasswordModal
-          token={token}
-          onClose={handleClosePasswordModal}
-        />
+        <ChangePasswordModal token={token} onClose={handleClosePasswordModal} />
       )}
     </div>
   )

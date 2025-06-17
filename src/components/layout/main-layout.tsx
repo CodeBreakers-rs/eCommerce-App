@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom'
-import Navigation from '../common/navigation/navigation'
+import Header from '../common/navigation/header'
 
 const MainLayout = () => (
   <>
-    <Navigation />
+    <Header />
     <main>
       <Outlet />
     </main>

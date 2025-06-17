@@ -4,7 +4,7 @@ import NavLinks from './nav-links'
 import UserDropdown from './user-dropdown'
 import HamburgerButton from './hamburger-button'
 
-const Navigation = () => {
+const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
@@ -33,4 +33,4 @@ const Navigation = () => {
   )
 }
 
-export default Navigation
+export default Header

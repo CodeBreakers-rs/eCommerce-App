@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { changeCustomerPassword } from './services/password-service'
 import { getCustomerProfile } from '../../features/profile/services/customer-service'
+import { useClickOutside } from '../../hooks/use-click-outside'
 
 type Props = {
   token: string
@@ -14,6 +15,9 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [isShownPassword, setIsShownPasswords] = useState(false)
+
+  const modalRef = useRef<HTMLDivElement | null>(null)
+  useClickOutside(modalRef, onClose)
 
   const togglePasswordVisibility = () => setIsShownPasswords((prev) => !prev)
 
@@ -56,7 +60,10 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div
+        ref={modalRef}
+        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
+      >
         <h2 className="text-xl font-bold mb-4 text-center">
           Change Password 🔒
         </h2>

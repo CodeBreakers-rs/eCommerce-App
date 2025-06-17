@@ -15,7 +15,7 @@ import {
   initialForm,
   validCountries,
 } from '../../../utils/form-utils'
-import regFormImg from '../../../assets/images/reg-form.jpg'
+import regFormImg from '../../../assets/images/login-reg.png'
 
 const countryNameToCode: Record<string, string> = {
   Canada: 'CA',
@@ -259,11 +259,11 @@ export const RegForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6ebdf] px-4">
-      <div className="max-w-4xl w-full bg-[#f6ebdf] flex flex-col md:flex-row items-center justify-center">
-        <div className="w-full max-w-md p-8">
+      <div className="flex flex-col md:flex-row items-stretch w-full max-w-6xl bg-[#f6ebdf]">
+        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
           <form
             onSubmit={handleSubmit}
-            className="max-w-md mx-auto p-4 space-y-4 bg-#f7ebdd shadow rounded"
+            className="max-w-md mx-auto p-4 space-y-4 bg-[#fdf7f2] shadow rounded"
           >
             <h1 className="text-3xl font-bold text-[#40312d] mb-2">
               Create an account

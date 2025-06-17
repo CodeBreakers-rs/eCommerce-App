@@ -15,6 +15,7 @@ import {
   initialForm,
   validCountries,
 } from '../../../utils/form-utils'
+import regFormImg from '../../../assets/images/reg-form.jpg'
 
 const countryNameToCode: Record<string, string> = {
   Canada: 'CA',
@@ -33,6 +34,7 @@ export const RegForm = () => {
   const [defaultShipping, setDefaultShipping] = useState(false)
   const [defaultBilling, setDefaultBilling] = useState(false)
   const [useSameAddress, setUseSameAddress] = useState(true)
+  const [isShownPassword, setIsShowPassword] = useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -174,27 +176,50 @@ export const RegForm = () => {
     type: string = 'text',
   ) => (
     <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
+      <label
+        htmlFor={name}
+        className="block text-sm font-semibold text-[#40312d] mb-1"
+      >
+        {label.toUpperCase()}
       </label>
-      <input
-        type={type}
-        id={name}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        className={`mt-1 block w-full rounded border-2 px-3 py-2 focus:outline-none transition ${
-          hasSubmitted && errors[name]
-            ? 'border-red-500 bg-red-50'
-            : 'border-gray-300 focus:border-blue-500'
-        }`}
-        aria-describedby={`${name}-error`}
-        aria-invalid={!!errors[name]}
-      />
+      {type === 'password' ? (
+        <div className="relative">
+          <input
+            type={isShownPassword ? 'text' : 'password'}
+            id={name}
+            name={name}
+            value={formData[name]}
+            onChange={handleChange}
+            className={`w-full rounded-full border px-4 py-2 pr-10 text-[#40312d] bg-transparent ${
+              hasSubmitted && errors[name]
+                ? 'border-red-500'
+                : 'border-[#40312d33]'
+            }`}
+          />
+          <button
+            type="button"
+            onClick={() => setIsShowPassword(!isShownPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            {isShownPassword ? '🙈' : '👁️'}
+          </button>
+        </div>
+      ) : (
+        <input
+          type={type}
+          id={name}
+          name={name}
+          value={formData[name]}
+          onChange={handleChange}
+          className={`w-full rounded-full border px-4 py-2 text-[#40312d] focus:outline-none focus:ring-2 focus:ring-[#40312d] bg-transparent placeholder:text-[#40312d88] ${
+            hasSubmitted && errors[name]
+              ? 'border-red-500'
+              : 'border-[#40312d33]'
+          }`}
+        />
+      )}{' '}
       {hasSubmitted && errors[name] && (
-        <span id={`${name}-error`} className="text-red-600 text-sm mt-1 block">
-          ⚠️ {errors[name]}
-        </span>
+        <p className="text-red-600 text-xs mt-1">{errors[name]}</p>
       )}
     </div>
   )
@@ -233,86 +258,109 @@ export const RegForm = () => {
   )
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-4 space-y-4 bg-white shadow rounded"
-    >
-      {message && (
-        <p className="text-green-600 font-medium text-sm">{message}</p>
-      )}
-      {errorMessage && (
-        <p className="text-red-600 font-medium whitespace-pre-line text-sm">
-          {errorMessage}
-        </p>
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-[#f6ebdf] px-4">
+      <div className="max-w-4xl w-full bg-[#f6ebdf] flex flex-col md:flex-row items-center justify-center">
+        <div className="w-full max-w-md p-8">
+          <form
+            onSubmit={handleSubmit}
+            className="max-w-md mx-auto p-4 space-y-4 bg-#f7ebdd shadow rounded"
+          >
+            <h1 className="text-3xl font-bold text-[#40312d] mb-2">
+              Create an account
+            </h1>
+            <p className="text-sm text-[#40312dbb] mb-6">Let’s get started!</p>
+            {message && (
+              <p className="text-green-600 font-medium text-sm">{message}</p>
+            )}
+            {errorMessage && (
+              <p className="text-red-600 font-medium whitespace-pre-line text-sm">
+                {errorMessage}
+              </p>
+            )}
 
-      {renderInput('email', 'Email', 'email')}
-      {renderInput('password', 'Password', 'password')}
-      {renderInput('firstName', 'First Name')}
-      {renderInput('lastName', 'Last Name')}
-      {renderInput('birthDate', 'Birth Date', 'date')}
+            {renderInput('email', 'Email', 'email')}
+            {renderInput('password', 'Password', 'password')}
+            {renderInput('firstName', 'First Name')}
+            {renderInput('lastName', 'Last Name')}
+            {renderInput('birthDate', 'Birth Date', 'date')}
 
-      <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 mb-4">
-        <label>
-          <input
-            type="checkbox"
-            checked={defaultShipping}
-            onChange={() => setDefaultShipping(!defaultShipping)}
-            className="mr-2"
-          />{' '}
-          Default Shipping
-        </label>
-        <label className="inline-flex items-center text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={defaultBilling}
-            onChange={() => setDefaultBilling(!defaultBilling)}
-            className="mr-2"
-          />{' '}
-          Default Billing
-        </label>
-        <label className="inline-flex items-center text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={useSameAddress}
-            onChange={() => setUseSameAddress(!useSameAddress)}
-            className="mr-2"
-          />{' '}
-          Use same address
-        </label>
+            <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 mb-4">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={defaultShipping}
+                  onChange={() => setDefaultShipping(!defaultShipping)}
+                  className="mr-2"
+                />{' '}
+                Default Shipping
+              </label>
+              <label className="inline-flex items-center text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={defaultBilling}
+                  onChange={() => setDefaultBilling(!defaultBilling)}
+                  className="mr-2"
+                />{' '}
+                Default Billing
+              </label>
+              <label className="inline-flex items-center text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={useSameAddress}
+                  onChange={() => setUseSameAddress(!useSameAddress)}
+                  className="mr-2"
+                />{' '}
+                Use same address
+              </label>
+            </div>
+
+            <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
+              Shipping Address
+            </h3>
+            {renderInput('street', 'Street')}
+            {renderInput('city', 'City')}
+            {renderInput('postalCode', 'Postal Code')}
+            {renderSelect('country', 'Country')}
+
+            {!useSameAddress && (
+              <>
+                <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
+                  Billing Address
+                </h3>
+                {renderInput('billingStreet', 'Street')}
+                {renderInput('billingCity', 'City')}
+                {renderInput('billingPostalCode', 'Postal Code')}
+                {renderSelect('billingCountry', 'Billing Country')}
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={isButtonDisabled || Object.keys(errors).length > 0}
+              className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
+                isButtonDisabled || Object.keys(errors).length > 0
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            >
+              Register
+            </button>
+            <p className="text-sm text-center mt-4 text-[#40312d]">
+              Already have an account?{' '}
+              <a href="/login" className="font-semibold underline">
+                Log in
+              </a>
+            </p>
+          </form>
+        </div>
+        <div className="hidden md:flex w-full max-w-lg justify-center items-center p-6">
+          <img
+            src={regFormImg}
+            alt="Registration Illustration"
+            className="w-full h-auto max-h-[480px] object-contain"
+          />
+        </div>
       </div>
-
-      <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
-        Shipping Address
-      </h3>
-      {renderInput('street', 'Street')}
-      {renderInput('city', 'City')}
-      {renderInput('postalCode', 'Postal Code')}
-      {renderSelect('country', 'Country')}
-
-      {!useSameAddress && (
-        <>
-          <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
-            Billing Address
-          </h3>
-          {renderInput('billingStreet', 'Street')}
-          {renderInput('billingCity', 'City')}
-          {renderInput('billingPostalCode', 'Postal Code')}
-          {renderSelect('billingCountry', 'Billing Country')}
-        </>
-      )}
-
-      <button
-        type="submit"
-        disabled={isButtonDisabled || Object.keys(errors).length > 0}
-        className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
-          isButtonDisabled || Object.keys(errors).length > 0
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'
-        }`}
-      >
-        Register
-      </button>
-    </form>
+    </div>
   )
 }

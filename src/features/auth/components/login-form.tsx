@@ -61,7 +61,7 @@ export const LoginForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6ebdf] px-4">
       <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-6xl">
-        <div className="w-full md:w-1/2 p-8">
+        <div className="w-full md:w-1/3 p-8">
           <h1 className="text-3xl font-bold text-[#3c2c27] mb-2">
             Welcome again!
           </h1>
@@ -166,7 +166,7 @@ export const LoginForm = () => {
           </form>
         </div>
 
-        <div className="hidden md:flex w-full md:w-1/2 justify-center items-center p-6">
+        <div className="hidden md:flex w-full md:w-2/3 justify-center items-center p-6">
           <img
             src={regFormImg}
             alt="Login illustration"

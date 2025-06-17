@@ -260,7 +260,7 @@ export const RegForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6ebdf] px-4">
       <div className="flex flex-col md:flex-row items-stretch w-full max-w-6xl bg-[#f6ebdf]">
-        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+        <div className="w-full md:w-1/3 p-8 flex flex-col justify-center">
           <form
             onSubmit={handleSubmit}
             className="max-w-md mx-auto p-4 space-y-4 bg-[#fdf7f2] shadow rounded"
@@ -290,7 +290,7 @@ export const RegForm = () => {
                   type="checkbox"
                   checked={defaultShipping}
                   onChange={() => setDefaultShipping(!defaultShipping)}
-                  className="mr-2"
+                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
                 />{' '}
                 Default Shipping
               </label>
@@ -299,7 +299,7 @@ export const RegForm = () => {
                   type="checkbox"
                   checked={defaultBilling}
                   onChange={() => setDefaultBilling(!defaultBilling)}
-                  className="mr-2"
+                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
                 />{' '}
                 Default Billing
               </label>
@@ -308,7 +308,7 @@ export const RegForm = () => {
                   type="checkbox"
                   checked={useSameAddress}
                   onChange={() => setUseSameAddress(!useSameAddress)}
-                  className="mr-2"
+                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
                 />{' '}
                 Use same address
               </label>
@@ -339,8 +339,8 @@ export const RegForm = () => {
               disabled={isButtonDisabled || Object.keys(errors).length > 0}
               className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
                 isButtonDisabled || Object.keys(errors).length > 0
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'
+                  ? 'bg-gray-400 hover:bg-[#e6d3bd] cursor-not-allowed'
+                  : 'bg-blue-600 hover:[#3c2c21]'
               }`}
             >
               Register
@@ -353,11 +353,11 @@ export const RegForm = () => {
             </p>
           </form>
         </div>
-        <div className="hidden md:flex w-full max-w-lg justify-center items-center p-6">
+        <div className="hidden md:flex w-full md:w-2/3 justify-center items-center p-6">
           <img
             src={regFormImg}
             alt="Registration Illustration"
-            className="w-full h-auto max-h-[480px] object-contain"
+            className="w-full h-auto max-h-[600px] object-contain"
           />
         </div>
       </div>

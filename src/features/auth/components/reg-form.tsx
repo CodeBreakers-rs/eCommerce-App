@@ -15,7 +15,6 @@ import {
   initialForm,
   validCountries,
 } from '../../../utils/form-utils'
-import regFormImg from '../../../assets/images/login-reg.png'
 
 const countryNameToCode: Record<string, string> = {
   Canada: 'CA',
@@ -175,7 +174,7 @@ export const RegForm = () => {
     label: string,
     type: string = 'text',
   ) => (
-    <div className="mb-4">
+    <div className="mb-1">
       <label
         htmlFor={name}
         className="block text-sm font-semibold text-[#40312d] mb-1"
@@ -225,7 +224,7 @@ export const RegForm = () => {
   )
 
   const renderSelect = (name: keyof FormDataType, label: string) => (
-    <div className="mb-4">
+    <div className="mb-1">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
@@ -258,107 +257,121 @@ export const RegForm = () => {
   )
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f6ebdf] px-4">
-      <div className="flex flex-col md:flex-row items-stretch w-full max-w-6xl bg-[#f6ebdf]">
-        <div className="w-full md:w-1/3 p-8 flex flex-col justify-center">
+    <div className="flex items-center justify-center bg-[#f6ebdf] px-4 py-6">
+      <div className="flex  items-stretch">
+        <div className="bg-[#fdf7f2] shadow rounded p-6 flex flex-col">
           <form
             onSubmit={handleSubmit}
-            className="max-w-md mx-auto p-4 space-y-4 bg-[#fdf7f2] shadow rounded"
+            className="bg-[#fdf7f2] shadow rounded p-6 h-[90vh] w-full flex flex-col justify-between"
           >
-            <h1 className="text-3xl font-bold text-[#40312d] mb-2">
-              Create an account
-            </h1>
-            <p className="text-sm text-[#40312dbb] mb-6">Let’s get started!</p>
-            {message && (
-              <p className="text-green-600 font-medium text-sm">{message}</p>
-            )}
-            {errorMessage && (
-              <p className="text-red-600 font-medium whitespace-pre-line text-sm">
-                {errorMessage}
-              </p>
-            )}
-
-            {renderInput('email', 'Email', 'email')}
-            {renderInput('password', 'Password', 'password')}
-            {renderInput('firstName', 'First Name')}
-            {renderInput('lastName', 'Last Name')}
-            {renderInput('birthDate', 'Birth Date', 'date')}
-
-            <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 mb-4">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={defaultShipping}
-                  onChange={() => setDefaultShipping(!defaultShipping)}
-                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
-                />{' '}
-                Default Shipping
-              </label>
-              <label className="inline-flex items-center text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={defaultBilling}
-                  onChange={() => setDefaultBilling(!defaultBilling)}
-                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
-                />{' '}
-                Default Billing
-              </label>
-              <label className="inline-flex items-center text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={useSameAddress}
-                  onChange={() => setUseSameAddress(!useSameAddress)}
-                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
-                />{' '}
-                Use same address
-              </label>
+            <div className="text-center mb-4">
+              <h1 className="text-3xl font-bold text-[#40312d]">
+                Create an account
+              </h1>
+              <p className="text-sm text-[#40312dbb]">Let’s get started!</p>
+              {message && (
+                <p className="text-green-600 font-medium text-sm">{message}</p>
+              )}
+              {errorMessage && (
+                <p className="text-red-600 font-medium whitespace-pre-line text-sm">
+                  {errorMessage}
+                </p>
+              )}
             </div>
 
-            <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
-              Shipping Address
-            </h3>
-            {renderInput('street', 'Street')}
-            {renderInput('city', 'City')}
-            {renderInput('postalCode', 'Postal Code')}
-            {renderSelect('country', 'Country')}
-
-            {!useSameAddress && (
-              <>
-                <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
-                  Billing Address
+            <div className="flex flex-1 gap-6 overflow-y-auto">
+              <div className="flex-1 space-y-2">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Main Form
                 </h3>
-                {renderInput('billingStreet', 'Street')}
-                {renderInput('billingCity', 'City')}
-                {renderInput('billingPostalCode', 'Postal Code')}
-                {renderSelect('billingCountry', 'Billing Country')}
-              </>
-            )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {renderInput('email', 'Email', 'email')}
+                  {renderInput('password', 'Password', 'password')}
+                  {renderInput('firstName', 'First Name')}
+                  {renderInput('lastName', 'Last Name')}
+                  {renderInput('birthDate', 'Birth Date', 'date')}
+                </div>
 
-            <button
-              type="submit"
-              disabled={isButtonDisabled || Object.keys(errors).length > 0}
-              className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
-                isButtonDisabled || Object.keys(errors).length > 0
-                  ? 'bg-gray-400 hover:bg-[#e6d3bd] cursor-not-allowed'
-                  : 'bg-blue-600 hover:[#3c2c21]'
-              }`}
-            >
-              Register
-            </button>
-            <p className="text-sm text-center mt-4 text-[#40312d]">
-              Already have an account?{' '}
-              <a href="/login" className="font-semibold underline">
-                Log in
-              </a>
-            </p>
+                <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0">
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      checked={defaultShipping}
+                      onChange={() => setDefaultShipping(!defaultShipping)}
+                      className="form-checkbox h-4 w-4 accent-[#40312d] mr-2"
+                    />
+                    Default Shipping
+                  </label>
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      checked={defaultBilling}
+                      onChange={() => setDefaultBilling(!defaultBilling)}
+                      className="form-checkbox h-4 w-4 accent-[#40312d] mr-2"
+                    />
+                    Default Billing
+                  </label>
+                  <label className="text-sm">
+                    <input
+                      type="checkbox"
+                      checked={useSameAddress}
+                      onChange={() => setUseSameAddress(!useSameAddress)}
+                      className="form-checkbox h-4 w-4 accent-[#40312d] mr-2"
+                    />
+                    Use same address
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Shipping Address
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    {renderInput('street', 'Street')}
+                    {renderInput('city', 'City')}
+                    {renderInput('postalCode', 'Postal Code')}
+                    {renderSelect('country', 'Country')}
+                  </div>
+                </div>
+
+                {!useSameAddress && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Billing Address
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                      {renderInput('billingStreet', 'Street')}
+                      {renderInput('billingCity', 'City')}
+                      {renderInput('billingPostalCode', 'Postal Code')}
+                      {renderSelect('billingCountry', 'Billing Country')}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={isButtonDisabled || Object.keys(errors).length > 0}
+                className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
+                  isButtonDisabled || Object.keys(errors).length > 0
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
+              >
+                Register
+              </button>
+              <p className="text-sm text-center mt-4 text-[#40312d]">
+                Already have an account?{' '}
+                <a href="/login" className="font-semibold underline">
+                  Log in
+                </a>
+              </p>
+            </div>
           </form>
-        </div>
-        <div className="hidden md:flex w-full md:w-2/3 justify-center items-center p-6">
-          <img
-            src={regFormImg}
-            alt="Registration Illustration"
-            className="w-full h-auto max-h-[600px] object-contain"
-          />
         </div>
       </div>
     </div>

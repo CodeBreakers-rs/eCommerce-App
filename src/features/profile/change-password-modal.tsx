@@ -120,7 +120,7 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
             <div className="flex justify-between">
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                className="px-4 py-2 bg-gray-400 hover:bg-[#40312d] text-white rounded transition"
               >
                 Save
               </button>

@@ -147,7 +147,7 @@ export const EditProfileModal = ({
 
         <button
           onClick={handleOpenPasswordModal}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="mt-4 px-4 py-2 bg-gray-400 hover:bg-[#40312d] text-white rounded"
         >
           Change Password
         </button>
@@ -338,7 +338,7 @@ export const EditProfileModal = ({
           <button
             type="button"
             onClick={handleAddAddress}
-            className="px-4 py-2 rounded-lg bg-green-600 text-blacsk hover:bg-green-700 transition"
+            className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-[#40312d] text-white transition"
           >
             Add Address
           </button>
@@ -351,14 +351,14 @@ export const EditProfileModal = ({
         <div className="mt-8 flex justify-end gap-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            className="px-4 py-2 rounded-lg border border-red-300 text-red-600 hover:bg-gray-100 transition"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={isSaving}
-            className="px-4 py-2 rounded-lg bg-blue-600 text-black hover:bg-blue-700 transition"
+            className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-[#40312d] text-white transition"
           >
             {isSaving ? 'Saving...' : 'Save'}
           </button>

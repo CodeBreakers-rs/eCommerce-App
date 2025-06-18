@@ -41,6 +41,7 @@ describe('EditProfileModal', () => {
     render(
       <EditProfileModal
         customer={mockCustomer}
+        token="mock-token-123"
         onSave={onSave}
         onClose={onClose}
       />,
@@ -60,6 +61,7 @@ describe('EditProfileModal', () => {
     render(
       <EditProfileModal
         customer={mockCustomer}
+        token="mock-token-123"
         onSave={onSave}
         onClose={onClose}
       />,
@@ -103,6 +105,7 @@ describe('EditProfileModal', () => {
     render(
       <EditProfileModal
         customer={mockCustomer}
+        token="mock-token-123"
         onSave={onSave}
         onClose={onClose}
       />,

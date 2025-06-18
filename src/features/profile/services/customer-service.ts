@@ -1,17 +1,10 @@
-import type {
-  CustomerUpdatePayload,
-  CustomerProfile,
-  BasicProfile,
-} from '../../../types/customer'
+import type { CustomerUpdatePayload } from '../../../types/customer'
 import type { Customer as SDKCustomer } from '@commercetools/platform-sdk'
-
-const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
-const API_BASE_URL = import.meta.env.VITE_CT_API_URL
-const API_ME_URL = `${API_BASE_URL}/${PROJECT_KEY}/me`
+import { API_ME_URL } from '../../../services/commercetools-constants'
 
 export const getCustomerProfile = async (
   token: string,
-): Promise<CustomerProfile | null> => {
+): Promise<SDKCustomer | null> => {
   try {
     const response = await fetch(`${API_ME_URL}`, {
       headers: {
@@ -24,7 +17,7 @@ export const getCustomerProfile = async (
       throw new Error('Failed to fetch customer profile')
     }
 
-    const customer = (await response.json()) as BasicProfile
+    const customer = (await response.json()) as SDKCustomer
 
     return customer
   } catch (error) {

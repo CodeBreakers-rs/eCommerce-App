@@ -22,12 +22,12 @@ describe('LoginForm', () => {
     expect(
       screen.getByLabelText('Password', { selector: 'input' }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument()
   })
 
   it('disables login button when fields are empty', () => {
     renderWithStore(<LoginForm />)
-    const button = screen.getByRole('button', { name: /login/i })
+    const button = screen.getByRole('button', { name: /log in/i })
     expect(button).toBeDisabled()
   })
 
@@ -39,7 +39,7 @@ describe('LoginForm', () => {
     fireEvent.change(screen.getByLabelText('Password', { selector: 'input' }), {
       target: { value: 'Password123!' },
     })
-    expect(screen.getByRole('button', { name: /login/i })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /log in/i })).toBeEnabled()
   })
 
   it('toggles password visibility', () => {
@@ -47,7 +47,7 @@ describe('LoginForm', () => {
     const passwordInput = screen.getByLabelText('Password', {
       selector: 'input',
     })
-    const toggleButton = screen.getByRole('checkbox')
+    const toggleButton = screen.getByLabelText(/toggle password visibility/i)
 
     expect(passwordInput).toHaveAttribute('type', 'password')
     fireEvent.click(toggleButton)
@@ -62,10 +62,10 @@ describe('LoginForm', () => {
       target: { value: 'bad-email' },
     })
     fireEvent.change(screen.getByLabelText('Password', { selector: 'input' }), {
-      target: { value: '123' },
+      target: { value: 'Password123!' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /login/i }))
+    fireEvent.click(screen.getByRole('button', { name: /log in/i }))
 
     expect(screen.getByText(/Email/i)).toBeInTheDocument()
     expect(

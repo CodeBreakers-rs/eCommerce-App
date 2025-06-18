@@ -22,7 +22,7 @@ describe('Header', () => {
         </MemoryRouter>
       </Provider>,
     )
-    expect(screen.getByRole('header')).toBeInTheDocument()
+    expect(screen.getByRole('navigation')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /main/i })).toBeInTheDocument()
     expect(screen.getByRole('button')).toBeInTheDocument()
   })
@@ -42,7 +42,7 @@ describe('Header', () => {
       </Provider>,
     )
     const hamburger = screen.getByRole('button')
-    const navLinks = screen.getByRole('list')
+    const navLinks = screen.getByRole('navigation')
     expect(navLinks.parentElement?.className).toContain('hidden')
 
     fireEvent.click(hamburger)

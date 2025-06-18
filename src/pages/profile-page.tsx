@@ -5,6 +5,7 @@ import { setCustomerData, login } from '../store/slices/auth-slice'
 import { updateCustomerProfile } from '../features/profile/services/customer-service'
 import type { CustomerUpdatePayload } from '../types/customer'
 import { EditProfileModal } from '../features/profile/edit-profile-modal'
+import { ChangePasswordModal } from '../features/profile/change-password-modal'
 
 const ProfilePage = () => {
   const dispatch = useDispatch()
@@ -17,6 +18,7 @@ const ProfilePage = () => {
   const [defaultBillingId, setDefaultBillingId] = useState<string | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [isShownPasswordModal, isSetShownPasswordModal] = useState(false)
 
   const handleProfileSave = async (updatedCustomer: CustomerUpdatePayload) => {
     setStatusMessage(null)
@@ -76,7 +78,18 @@ const ProfilePage = () => {
       >
         Edit Profile
       </button>
-
+      <button
+        onClick={() => isSetShownPasswordModal(true)}
+        className="mb-4 px-4 py-2 rounded-lg bg-blue-600 text-black hover:bg-blue-700 transition"
+      >
+        Change Password 🔑
+      </button>
+      {isShownPasswordModal && (
+        <ChangePasswordModal
+          token={token!}
+          onClose={() => isSetShownPasswordModal(false)}
+        />
+      )}
       <section className="mb-8 bg-white p-6 rounded-2xl shadow">
         <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
         <div className="space-y-2 text-gray-700">
@@ -151,6 +164,7 @@ const ProfilePage = () => {
           <>
             <EditProfileModal
               customer={customer}
+              token={token!}
               onSave={handleProfileSave}
               onClose={() => setIsEditMode(false)}
             />

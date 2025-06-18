@@ -1,15 +1,14 @@
 import type { Customer } from '@commercetools/platform-sdk'
 import type { CustomerDraftPayload } from '../../../types/customer'
 import { getCustomerProfile } from '../../profile/services/customer-service'
-
-const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
-const CLIENT_ID = import.meta.env.VITE_CT_CLIENT_ID
-const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
-const API_BASE_URL = import.meta.env.VITE_CT_API_URL
-const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
-
-const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers`
-const API_TOKEN_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
+import {
+  AUTH_URL,
+  CLIENT_ID,
+  CLIENT_SECRET,
+  PROJECT_KEY,
+  SIGNUP_URL,
+  TOKEN_URL,
+} from '../../../services/commercetools-constants'
 
 export async function loginUser(
   email: string,
@@ -32,7 +31,7 @@ export async function loginUser(
 }
 
 export async function getClientAccessToken() {
-  const response = await fetch(`${AUTH_BASE_URL}/oauth/token`, {
+  const response = await fetch(`${AUTH_URL}/oauth/token`, {
     method: 'POST',
     headers: {
       Authorization: `Basic ${encodeCredentials(CLIENT_ID, CLIENT_SECRET)}`,
@@ -73,7 +72,7 @@ export async function registerCustomer(customerDraft: CustomerDraftPayload) {
 
   const sanitized = sanitizeCustomerDraft(customerDraft)
 
-  const response = await fetch(API_SIGNUP_URL, {
+  const response = await fetch(SIGNUP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -99,7 +98,7 @@ const encodeCredentials = (clientId: string, clientSecret: string) =>
   btoa(`${clientId}:${clientSecret}`)
 
 export async function loginWithPassword(email: string, password: string) {
-  const tokenRes = await fetch(API_TOKEN_URL, {
+  const tokenRes = await fetch(TOKEN_URL, {
     method: 'POST',
     headers: {
       Authorization: `Basic ${encodeCredentials(CLIENT_ID, CLIENT_SECRET)}`,

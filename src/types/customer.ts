@@ -56,6 +56,7 @@ export interface CustomerProfile {
 
 export interface EditProfileModalProps {
   customer: SDKCustomer
+  token: string
   onSave: (_data: CustomerUpdatePayload) => Promise<void>
   onClose: () => void
 }

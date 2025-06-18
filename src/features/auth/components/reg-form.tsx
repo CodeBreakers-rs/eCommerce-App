@@ -6,22 +6,16 @@ import {
   loginUser,
   sanitizeCustomerDraft,
 } from '../services/auth-service'
-import {
-  isValidEmail,
-  isValidPassword,
-  isValidName,
-  isValidBirthDate,
-  isValidStreet,
-  isValidCity,
-  isValidPostalCode,
-  isValidCountry,
-} from '../../../utils/validators'
 import type {
   CustomerDraftPayload,
   FormDataType,
 } from '../../../types/customer'
-
-const validCountries = ['United States', 'Canada']
+import {
+  validate,
+  initialForm,
+  validCountries,
+} from '../../../utils/form-utils'
+import regFormImg from '../../../assets/images/login-reg.png'
 
 const countryNameToCode: Record<string, string> = {
   Canada: 'CA',
@@ -30,22 +24,6 @@ const countryNameToCode: Record<string, string> = {
 
 export const RegForm = () => {
   const dispatch = useAppDispatch()
-
-  const initialForm: FormDataType = {
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    birthDate: '',
-    street: '',
-    city: '',
-    postalCode: '',
-    country: '',
-    billingStreet: '',
-    billingCity: '',
-    billingPostalCode: '',
-    billingCountry: '',
-  }
 
   const [formData, setFormData] = useState<FormDataType>(initialForm)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -56,6 +34,7 @@ export const RegForm = () => {
   const [defaultShipping, setDefaultShipping] = useState(false)
   const [defaultBilling, setDefaultBilling] = useState(false)
   const [useSameAddress, setUseSameAddress] = useState(true)
+  const [isShownPassword, setIsShowPassword] = useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -63,48 +42,10 @@ export const RegForm = () => {
     const { name, value } = e.target
     const updatedForm = { ...formData, [name]: value }
     setFormData(updatedForm)
-    if (hasSubmitted) validate(updatedForm)
-  }
-
-  const validateBillingFields = (data: FormDataType) => {
-    const billingErrors: { [key: string]: string } = {}
-    if (!isValidStreet(data.billingStreet))
-      billingErrors.billingStreet = 'Billing street cannot be empty'
-    if (!isValidCity(data.billingCity))
-      billingErrors.billingCity = 'Invalid billing city'
-    if (!isValidPostalCode(data.billingPostalCode, data.billingCountry))
-      billingErrors.billingPostalCode = 'Invalid billing postal code'
-    if (!isValidCountry(data.billingCountry, validCountries))
-      billingErrors.billingCountry = 'Select a valid billing country'
-    return billingErrors
-  }
-
-  const validate = (data: FormDataType) => {
-    const newErrors: { [key: string]: string } = {}
-
-    if (!isValidEmail(data.email)) newErrors.email = 'Invalid email format'
-    if (!isValidPassword(data.password))
-      newErrors.password =
-        'Password must be at least 8 characters, include upper/lowercase, number and one special character'
-    if (!isValidName(data.firstName))
-      newErrors.firstName = 'Name shouldn`t include digits'
-    if (!isValidName(data.lastName))
-      newErrors.lastName = 'Name shouldn`t include digits'
-    if (!isValidBirthDate(data.birthDate))
-      newErrors.birthDate = 'You must be at least 13 years old'
-    if (!isValidStreet(data.street)) newErrors.street = 'Street cannot be empty'
-    if (!isValidCity(data.city)) newErrors.city = 'Invalid city'
-    if (!isValidPostalCode(data.postalCode, data.country))
-      newErrors.postalCode = 'Invalid postal code'
-    if (!isValidCountry(data.country, validCountries))
-      newErrors.country = 'Select a valid country'
-
-    if (!useSameAddress) {
-      Object.assign(newErrors, validateBillingFields(data))
+    if (hasSubmitted) {
+      const validationErrors = validate(updatedForm, useSameAddress)
+      setErrors(validationErrors)
     }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   useEffect(() => {
@@ -136,7 +77,9 @@ export const RegForm = () => {
     setMessage('')
     setErrorMessage('')
 
-    if (!validate(formData)) return
+    const validationErrors = validate(formData, useSameAddress)
+    setErrors(validationErrors)
+    if (Object.keys(validationErrors).length > 0) return
 
     const addresses = [
       {
@@ -233,27 +176,50 @@ export const RegForm = () => {
     type: string = 'text',
   ) => (
     <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
+      <label
+        htmlFor={name}
+        className="block text-sm font-semibold text-[#40312d] mb-1"
+      >
+        {label.toUpperCase()}
       </label>
-      <input
-        type={type}
-        id={name}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        className={`mt-1 block w-full rounded border-2 px-3 py-2 focus:outline-none transition ${
-          hasSubmitted && errors[name]
-            ? 'border-red-500 bg-red-50'
-            : 'border-gray-300 focus:border-blue-500'
-        }`}
-        aria-describedby={`${name}-error`}
-        aria-invalid={!!errors[name]}
-      />
+      {type === 'password' ? (
+        <div className="relative">
+          <input
+            type={isShownPassword ? 'text' : 'password'}
+            id={name}
+            name={name}
+            value={formData[name]}
+            onChange={handleChange}
+            className={`w-full rounded-full border px-4 py-2 pr-10 text-[#40312d] bg-transparent ${
+              hasSubmitted && errors[name]
+                ? 'border-red-500'
+                : 'border-[#40312d33]'
+            }`}
+          />
+          <button
+            type="button"
+            onClick={() => setIsShowPassword(!isShownPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            {isShownPassword ? '🙈' : '👁️'}
+          </button>
+        </div>
+      ) : (
+        <input
+          type={type}
+          id={name}
+          name={name}
+          value={formData[name]}
+          onChange={handleChange}
+          className={`w-full rounded-full border px-4 py-2 text-[#40312d] focus:outline-none focus:ring-2 focus:ring-[#40312d] bg-transparent placeholder:text-[#40312d88] ${
+            hasSubmitted && errors[name]
+              ? 'border-red-500'
+              : 'border-[#40312d33]'
+          }`}
+        />
+      )}{' '}
       {hasSubmitted && errors[name] && (
-        <span id={`${name}-error`} className="text-red-600 text-sm mt-1 block">
-          ⚠️ {errors[name]}
-        </span>
+        <p className="text-red-600 text-xs mt-1">{errors[name]}</p>
       )}
     </div>
   )
@@ -292,86 +258,109 @@ export const RegForm = () => {
   )
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-4 space-y-4 bg-white shadow rounded"
-    >
-      {message && (
-        <p className="text-green-600 font-medium text-sm">{message}</p>
-      )}
-      {errorMessage && (
-        <p className="text-red-600 font-medium whitespace-pre-line text-sm">
-          {errorMessage}
-        </p>
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-[#f6ebdf] px-4">
+      <div className="flex flex-col md:flex-row items-stretch w-full max-w-6xl bg-[#f6ebdf]">
+        <div className="w-full md:w-1/3 p-8 flex flex-col justify-center">
+          <form
+            onSubmit={handleSubmit}
+            className="max-w-md mx-auto p-4 space-y-4 bg-[#fdf7f2] shadow rounded"
+          >
+            <h1 className="text-3xl font-bold text-[#40312d] mb-2">
+              Create an account
+            </h1>
+            <p className="text-sm text-[#40312dbb] mb-6">Let’s get started!</p>
+            {message && (
+              <p className="text-green-600 font-medium text-sm">{message}</p>
+            )}
+            {errorMessage && (
+              <p className="text-red-600 font-medium whitespace-pre-line text-sm">
+                {errorMessage}
+              </p>
+            )}
 
-      {renderInput('email', 'Email', 'email')}
-      {renderInput('password', 'Password', 'password')}
-      {renderInput('firstName', 'First Name')}
-      {renderInput('lastName', 'Last Name')}
-      {renderInput('birthDate', 'Birth Date', 'date')}
+            {renderInput('email', 'Email', 'email')}
+            {renderInput('password', 'Password', 'password')}
+            {renderInput('firstName', 'First Name')}
+            {renderInput('lastName', 'Last Name')}
+            {renderInput('birthDate', 'Birth Date', 'date')}
 
-      <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 mb-4">
-        <label>
-          <input
-            type="checkbox"
-            checked={defaultShipping}
-            onChange={() => setDefaultShipping(!defaultShipping)}
-            className="mr-2"
-          />{' '}
-          Default Shipping
-        </label>
-        <label className="inline-flex items-center text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={defaultBilling}
-            onChange={() => setDefaultBilling(!defaultBilling)}
-            className="mr-2"
-          />{' '}
-          Default Billing
-        </label>
-        <label className="inline-flex items-center text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={useSameAddress}
-            onChange={() => setUseSameAddress(!useSameAddress)}
-            className="mr-2"
-          />{' '}
-          Use same address
-        </label>
+            <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 mb-4">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={defaultShipping}
+                  onChange={() => setDefaultShipping(!defaultShipping)}
+                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
+                />{' '}
+                Default Shipping
+              </label>
+              <label className="inline-flex items-center text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={defaultBilling}
+                  onChange={() => setDefaultBilling(!defaultBilling)}
+                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
+                />{' '}
+                Default Billing
+              </label>
+              <label className="inline-flex items-center text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={useSameAddress}
+                  onChange={() => setUseSameAddress(!useSameAddress)}
+                  className="form-checkbox h-4 w-4 text-[#40312d] accent-[#40312d] focus:ring-0 mr-2"
+                />{' '}
+                Use same address
+              </label>
+            </div>
+
+            <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
+              Shipping Address
+            </h3>
+            {renderInput('street', 'Street')}
+            {renderInput('city', 'City')}
+            {renderInput('postalCode', 'Postal Code')}
+            {renderSelect('country', 'Country')}
+
+            {!useSameAddress && (
+              <>
+                <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
+                  Billing Address
+                </h3>
+                {renderInput('billingStreet', 'Street')}
+                {renderInput('billingCity', 'City')}
+                {renderInput('billingPostalCode', 'Postal Code')}
+                {renderSelect('billingCountry', 'Billing Country')}
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={isButtonDisabled || Object.keys(errors).length > 0}
+              className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
+                isButtonDisabled || Object.keys(errors).length > 0
+                  ? 'bg-gray-400 hover:bg-[#e6d3bd] cursor-not-allowed'
+                  : 'bg-blue-600 hover:[#3c2c21]'
+              }`}
+            >
+              Register
+            </button>
+            <p className="text-sm text-center mt-4 text-[#40312d]">
+              Already have an account?{' '}
+              <a href="/login" className="font-semibold underline">
+                Log in
+              </a>
+            </p>
+          </form>
+        </div>
+        <div className="hidden md:flex w-full md:w-2/3 justify-center items-center p-6">
+          <img
+            src={regFormImg}
+            alt="Registration Illustration"
+            className="w-full h-auto max-h-[600px] object-contain"
+          />
+        </div>
       </div>
-
-      <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
-        Shipping Address
-      </h3>
-      {renderInput('street', 'Street')}
-      {renderInput('city', 'City')}
-      {renderInput('postalCode', 'Postal Code')}
-      {renderSelect('country', 'Country')}
-
-      {!useSameAddress && (
-        <>
-          <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">
-            Billing Address
-          </h3>
-          {renderInput('billingStreet', 'Street')}
-          {renderInput('billingCity', 'City')}
-          {renderInput('billingPostalCode', 'Postal Code')}
-          {renderSelect('billingCountry', 'Billing Country')}
-        </>
-      )}
-
-      <button
-        type="submit"
-        disabled={isButtonDisabled || Object.keys(errors).length > 0}
-        className={`w-full py-2 px-4 rounded font-semibold text-black transition ${
-          isButtonDisabled || Object.keys(errors).length > 0
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'
-        }`}
-      >
-        Register
-      </button>
-    </form>
+    </div>
   )
 }

@@ -8,7 +8,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <nav className="dark:bg-gray-900">
+    <header className="dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Logo />
 
@@ -29,7 +29,7 @@ const Header = () => {
           <NavLinks />
         </div>
       </div>
-    </nav>
+    </header>
   )
 }
 

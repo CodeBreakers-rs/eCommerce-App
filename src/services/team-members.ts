@@ -1,5 +1,5 @@
-import serge from '../assets/images/serge.jpg'
-import olga from '../assets/images/olga.jpg'
+import teamlead from '../assets/images/team-lead.jpg'
+import developer from '../assets/images/developer.jpg'
 
 export const teamMembers = [
   {
@@ -9,7 +9,7 @@ export const teamMembers = [
     contributions:
       'Implemented frontend architecture, responsive UI layout, and authentication system.',
     github: 'https://github.com/olgakharkevich',
-    image: olga,
+    image: developer,
   },
   {
     name: 'Sergei Keidzh',
@@ -18,6 +18,6 @@ export const teamMembers = [
     contributions:
       'Led team coordination, implemented product catalog and animations.',
     github: 'https://github.com/Sergecage',
-    image: serge,
+    image: teamlead,
   },
 ]

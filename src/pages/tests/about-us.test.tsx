@@ -1,26 +1,53 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, vi, expect } from 'vitest'
 import AboutUs from '../about-us-page'
+import rsLogo from '../../assets/svg/logo-rs-school (1).svg'
 
-describe('AboutUs Component', () => {
-  it('renders heading and RS School link', () => {
+vi.mock('../../assets/svg/rs-logo.svg', () => ({
+  default: rsLogo,
+}))
+
+vi.mock('../../services/team-members', () => ({
+  teamMembers: [
+    {
+      name: 'Sergei Keidzh',
+      role: 'Frontend Developer',
+      bio: 'Frontend developer since 2022, experienced in React, Redux, and modern JS tools.',
+      image: '/some-image.jpg',
+      github: 'https://github.com/sergeikeidzh',
+    },
+  ],
+}))
+
+describe('AboutUs component', () => {
+  it('renders RS School section with logo', () => {
     render(<AboutUs />)
+
     expect(screen.getByText(/RS School program/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /RS School/i })).toHaveAttribute(
-      'href',
-      'https://rs.school/',
-    )
-  })
-
-  it('renders RS School logo', () => {
-    render(<AboutUs />)
     const logo = screen.getByAltText(/RS School Logo/i)
     expect(logo).toBeInTheDocument()
   })
 
-  it('renders team members with GitHub links', () => {
+  it('renders each team member with their name, bio, and GitHub link', () => {
     render(<AboutUs />)
-    const githubLinks = screen.getAllByRole('link', { name: /Github Logo/i })
-    expect(githubLinks.length).toBeGreaterThan(0)
+
+    const name = screen.getByText('Sergei Keidzh')
+    expect(name).toBeInTheDocument()
+
+    const role = screen.getByText('Frontend Developer')
+    expect(role).toBeInTheDocument()
+
+    expect(
+      screen.getAllByText(/Frontend developer since/i)[0],
+    ).toBeInTheDocument()
+
+    const githubLink = screen.getByRole('link', {
+      name: /Sergei Keidzh/i,
+    })
+
+    expect(githubLink).toHaveAttribute(
+      'href',
+      'https://github.com/sergeikeidzh',
+    )
   })
 })

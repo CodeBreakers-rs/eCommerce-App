@@ -1,5 +1,5 @@
 import Serge from '../assets/images/Serge.jpg'
-import Img from '../assets/images/login-reg.png'
+import Olga from '../assets/images/Olga.jpg'
 
 export const teamMembers = [
   {
@@ -9,7 +9,7 @@ export const teamMembers = [
     contributions:
       'Implemented frontend architecture, responsive UI layout, and authentication system.',
     github: 'https://github.com/olgakharkevich',
-    image: Img,
+    image: Olga,
   },
   {
     name: 'Sergei Keidzh',

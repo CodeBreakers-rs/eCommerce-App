@@ -1,4 +1,4 @@
-import teamlead from '../assets/images/team-lead.jpg'
+import teamlead from '../assets/images/developer1.png'
 import developer from '../assets/images/developer.jpg'
 
 export const teamMembers = [

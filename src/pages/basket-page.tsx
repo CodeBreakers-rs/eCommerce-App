@@ -4,49 +4,68 @@ import recommended2 from '../assets/images/recommend-2.png'
 
 const BasketPage = () => {
   const [quantity, setQuantity] = useState(1)
+  const [removed, setRemoved] = useState(false)
+
   const price = 14.5
   const total = price * quantity
   const minOrder = 20
+
+  const handleRemove = () => {
+    setQuantity(0)
+    setRemoved(true)
+  }
 
   return (
     <div className="bg-[#f6ebdf] text-[#40312d] px-4 py-10">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
         <div>
           <h2 className="text-3xl font-bold mb-6">Cart</h2>
-          <div className="space-y-4">
-            <div>
-              <div className="uppercase text-sm tracking-wide">
-                Apple-Cranberry 9
-              </div>
-              <div className="flex items-center justify-between">
-                <span>${price.toFixed(2)}</span>
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  >
-                    ➖
-                  </button>
-                  <span>{quantity}</span>
-                  <button onClick={() => setQuantity((q) => q + 1)}>➕</button>
+          {!removed ? (
+            <div className="space-y-4">
+              <div>
+                <button
+                  onClick={handleRemove}
+                  className="w-2xs text-1xl text-black-600 bg-[#ded2c5] rounded-full mt-2 mb-2 hover:bg-[#bdbab7] cursor-pointer"
+                >
+                  Remove from Cart
+                </button>
+                <div className="uppercase text-sm tracking-wide">
+                  Apple-Cranberry 9
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>${price.toFixed(2)}</span>
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    >
+                      ➖
+                    </button>
+                    <span>{quantity}</span>
+                    <button onClick={() => setQuantity((q) => q + 1)}>
+                      ➕
+                    </button>
+                  </div>
                 </div>
               </div>
+              <div className="flex justify-between">
+                <span className="uppercase">Box 1</span>
+                <span>1</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="uppercase">Delivery</span>
+                <span>Free</span>
+              </div>
+              <div className="flex justify-between font-semibold mt-6">
+                <span>Total</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+              {total < minOrder && (
+                <p className="text-sm mt-2 uppercase">Not enough to order</p>
+              )}
             </div>
-            <div className="flex justify-between">
-              <span className="uppercase">Box 1</span>
-              <span>1</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="uppercase">Delivery</span>
-              <span>Free</span>
-            </div>
-            <div className="flex justify-between font-semibold mt-6">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
-            {total < minOrder && (
-              <p className="text-sm mt-2 uppercase">Not enough to order</p>
-            )}
-          </div>
+          ) : (
+            <p className="text-gray-500 italic">Cart is empty</p>
+          )}
           <div className="mt-8">
             <label className="flex items-center gap-3 text-sm font-medium">
               <input type="checkbox" className="accent-[#40312d]" />I agree to

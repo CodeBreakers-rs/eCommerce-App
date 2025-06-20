@@ -7,7 +7,11 @@ export type AuthState = {
   isLoggedIn: boolean
   customer: SDKCustomer | null
   token: string | null
+  tokenExpiresAt: string | null
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  anonToken: string | null
+  anonTokenExpiresAt: string | null
+  anonymousId: string | null
   error: string | null
 }
 

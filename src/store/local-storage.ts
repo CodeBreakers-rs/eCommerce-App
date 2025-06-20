@@ -6,7 +6,20 @@ export const loadAuthState = (): AuthState | undefined => {
   try {
     const serializedState = localStorage.getItem(AUTH_STATE_KEY)
     if (!serializedState) return undefined
-    return JSON.parse(serializedState) as AuthState
+
+    const parsedState = JSON.parse(serializedState) as Partial<AuthState>
+
+    return {
+      isLoggedIn: parsedState.isLoggedIn ?? false,
+      customer: parsedState.customer ?? null,
+      token: parsedState.token ?? null,
+      tokenExpiresAt: parsedState.tokenExpiresAt ?? null,
+      status: parsedState.status ?? 'idle',
+      anonToken: parsedState.anonToken ?? null,
+      anonTokenExpiresAt: parsedState.anonTokenExpiresAt ?? null,
+      anonymousId: parsedState.anonymousId ?? null,
+      error: parsedState.error ?? null,
+    }
   } catch (err) {
     console.warn('Failed to load auth state from localStorage:', err)
     return undefined

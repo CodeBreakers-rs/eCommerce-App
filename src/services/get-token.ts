@@ -1,3 +1,4 @@
+import { safeFetchJson, type TokenResponse } from '../types/api-response'
 import {
   AUTH_URL,
   CLIENT_ID,
@@ -30,7 +31,7 @@ export const fetchAnonymousToken = async (): Promise<string> => {
     throw new Error(`Failed to get anonymous token: ${response.status}`)
   }
 
-  const data = await response.json()
+  const data: TokenResponse = await safeFetchJson(response)
   anonToken = data.access_token
 
   if (!anonToken) {

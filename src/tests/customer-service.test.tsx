@@ -22,7 +22,7 @@ describe('getCustomerProfile', () => {
 
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockCustomer,
+      json: () => Promise.resolve(mockCustomer),
     })
 
     const result = await getCustomerProfile('mockAccessToken')
@@ -32,8 +32,8 @@ describe('getCustomerProfile', () => {
       expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer mockAccessToken',
-        }),
-      }),
+        }) as unknown,
+      }) as unknown,
     )
 
     expect(result).toEqual(mockCustomer)
@@ -44,7 +44,7 @@ describe('getCustomerProfile', () => {
 
     mockFetch.mockResolvedValueOnce({
       ok: false,
-      json: async () => ({}),
+      json: () => Promise.resolve({}),
     })
 
     const result = await getCustomerProfile('badToken')

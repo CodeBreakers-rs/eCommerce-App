@@ -19,29 +19,27 @@ describe('ChangePasswordModal', () => {
   it('toggles password visibility', () => {
     render(<ChangePasswordModal token={token} onClose={mockOnClose} />)
 
-    const currentInput = screen.getByTestId(
-      'current-password',
-    ) as HTMLInputElement
-    const newInput = screen.getByTestId('new-password') as HTMLInputElement
-    const confirmInput = screen.getByTestId(
-      'confirm-password',
-    ) as HTMLInputElement
-    const toggleCheckbox = screen.getByTestId('toggle-password-visibility')
+    const currentInput = screen.getByPlaceholderText('Current Password')
+    const newInput = screen.getByPlaceholderText('New Password')
+    const confirmInput = screen.getByPlaceholderText('Confirm New Password')
+    const toggleCheckbox = screen.getByRole('checkbox', {
+      name: /show passwords/i,
+    })
 
-    expect(currentInput.type).toBe('password')
-    expect(newInput.type).toBe('password')
-    expect(confirmInput.type).toBe('password')
+    expect((currentInput as HTMLInputElement).type).toBe('password')
+    expect((newInput as HTMLInputElement).type).toBe('password')
+    expect((confirmInput as HTMLInputElement).type).toBe('password')
 
     fireEvent.click(toggleCheckbox)
 
-    expect(currentInput.type).toBe('text')
-    expect(newInput.type).toBe('text')
-    expect(confirmInput.type).toBe('text')
+    expect((currentInput as HTMLInputElement).type).toBe('text')
+    expect((newInput as HTMLInputElement).type).toBe('text')
+    expect((confirmInput as HTMLInputElement).type).toBe('text')
 
     fireEvent.click(toggleCheckbox)
 
-    expect(currentInput.type).toBe('password')
-    expect(newInput.type).toBe('password')
-    expect(confirmInput.type).toBe('password')
+    expect((currentInput as HTMLInputElement).type).toBe('password')
+    expect((newInput as HTMLInputElement).type).toBe('password')
+    expect((confirmInput as HTMLInputElement).type).toBe('password')
   })
 })

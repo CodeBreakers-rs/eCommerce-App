@@ -18,7 +18,7 @@ const UserDropdown = () => {
   const handleLogout = () => {
     dispatch(logout())
     localStorage.removeItem('auth')
-    navigate('/login')
+    void navigate('/login')
   }
 
   if (!isLoggedIn || !customer) return null

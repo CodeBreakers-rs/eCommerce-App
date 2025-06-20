@@ -15,6 +15,7 @@ import {
   initialForm,
   validCountries,
 } from '../../../utils/form-utils'
+import { isApiError } from '../../../types/api-response'
 
 const countryNameToCode: Record<string, string> = {
   Canada: 'CA',
@@ -117,8 +118,7 @@ export const RegForm = () => {
     const sanitized = sanitizeCustomerDraft(customerFormData)
 
     try {
-      const result = await registerCustomer(sanitized as CustomerDraftPayload)
-      console.log('Registration successful:', result)
+      await registerCustomer(sanitized as CustomerDraftPayload)
       const loginResult = await loginUser(
         customerFormData.email,
         customerFormData.password,
@@ -134,38 +134,44 @@ export const RegForm = () => {
       setDefaultBilling(false)
       setErrors({})
       setHasSubmitted(false)
-    } catch (error: any) {
-      const statusCode = error.statusCode || error.status || 500
-      const errorList = error.response?.data?.errors || []
-      const fallbackMessage = error.message || 'Something went wrong'
+    } catch (error: unknown) {
+      if (isApiError(error)) {
+        const statusCode = error.statusCode || error.status || 500
+        const errorList = error.response?.data?.errors || []
+        const fallbackMessage = error.message || 'Something went wrong'
 
-      let formattedMessage = `Error ${statusCode}: `
+        let formattedMessage = `Error ${statusCode}: `
 
-      switch (statusCode) {
-        case 400:
-          formattedMessage +=
-            errorList.map((e: any) => `• ${e.message}`).join('\n') ||
-            fallbackMessage
-          break
-        case 401:
-          formattedMessage += 'Unauthorized. Please log in again.'
-          break
-        case 403:
-          formattedMessage += 'Access denied.'
-          break
-        case 409:
-          formattedMessage += 'An account with this email already exists.'
-          break
-        case 500:
-        case 502:
-        case 503:
-          formattedMessage += 'Server error. Please try again later.'
-          break
-        default:
-          formattedMessage += fallbackMessage
+        switch (statusCode) {
+          case 400:
+            formattedMessage +=
+              errorList.map((e) => `• ${e.message}`).join('\n') ||
+              fallbackMessage
+            break
+          case 401:
+            formattedMessage += 'Unauthorized. Please log in again.'
+            break
+          case 403:
+            formattedMessage += 'Access denied.'
+            break
+          case 409:
+            formattedMessage += 'An account with this email already exists.'
+            break
+          case 500:
+          case 502:
+          case 503:
+            formattedMessage += 'Server error. Please try again later.'
+            break
+          default:
+            formattedMessage += fallbackMessage
+        }
+
+        setErrorMessage(formattedMessage)
+      } else if (error instanceof Error) {
+        setErrorMessage(`Unexpected error: ${error.message}`)
+      } else {
+        setErrorMessage('An unknown error occurred')
       }
-
-      setErrorMessage(formattedMessage)
     }
   }
 
@@ -216,7 +222,7 @@ export const RegForm = () => {
               : 'border-[#40312d33]'
           }`}
         />
-      )}{' '}
+      )}
       {hasSubmitted && errors[name] && (
         <p className="text-red-600 text-xs mt-1">{errors[name]}</p>
       )}
@@ -261,7 +267,9 @@ export const RegForm = () => {
       <div className="flex  items-stretch">
         <div className="bg-[#fdf7f2] shadow rounded p-6 flex flex-col">
           <form
-            onSubmit={handleSubmit}
+            onSubmit={(e) => {
+              void handleSubmit(e)
+            }}
             className="bg-[#fdf7f2] shadow rounded p-6 h-[90vh] w-full flex flex-col justify-between"
           >
             <div className="text-center mb-4">

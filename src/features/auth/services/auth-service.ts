@@ -9,6 +9,11 @@ import {
   SIGNUP_URL,
   TOKEN_URL,
 } from '../../../services/commercetools-constants'
+import {
+  safeFetchJson,
+  type ErrorResponse,
+  type TokenResponse,
+} from '../../../types/api-response'
 
 export async function loginUser(
   email: string,
@@ -26,11 +31,11 @@ export async function loginUser(
 
   return {
     token: tokenData.access_token,
-    customer: customer as Customer,
+    customer,
   }
 }
 
-export async function getClientAccessToken() {
+export async function getClientAccessToken(): Promise<string> {
   const response = await fetch(`${AUTH_URL}/oauth/token`, {
     method: 'POST',
     headers: {
@@ -44,12 +49,12 @@ export async function getClientAccessToken() {
   })
 
   if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || 'Failed to get access token')
+    const error = (await response.json().catch(() => ({}))) as ErrorResponse
+    throw new Error(error.message ?? 'Failed to get access token')
   }
 
-  const customerData = await response.json()
-  return customerData.access_token
+  const tokenData = await safeFetchJson<TokenResponse>(response)
+  return tokenData.access_token
 }
 
 export function sanitizeCustomerDraft(
@@ -57,8 +62,8 @@ export function sanitizeCustomerDraft(
 ): Record<string, unknown> {
   const cleaned: Record<string, unknown> = {}
 
-  for (const key in draft) {
-    const value = (draft as any)[key]
+  for (const key of Object.keys(draft)) {
+    const value = draft[key as keyof CustomerDraftPayload]
     if (value !== undefined && value !== null) {
       cleaned[key] = value
     }
@@ -67,9 +72,10 @@ export function sanitizeCustomerDraft(
   return cleaned
 }
 
-export async function registerCustomer(customerDraft: CustomerDraftPayload) {
+export async function registerCustomer(
+  customerDraft: CustomerDraftPayload,
+): Promise<Customer> {
   const token = await getClientAccessToken()
-
   const sanitized = sanitizeCustomerDraft(customerDraft)
 
   const response = await fetch(SIGNUP_URL, {
@@ -82,22 +88,21 @@ export async function registerCustomer(customerDraft: CustomerDraftPayload) {
   })
 
   if (!response.ok) {
-    const errorBody = await response.json()
-    throw {
-      statusCode: response.status,
-      message: errorBody.message || 'Registration failed',
-      errors: errorBody.errors || [],
-      error: errorBody.error || 'registration_error',
-    }
+    const errorBody = (await response.json().catch(() => ({}))) as ErrorResponse
+    const errorMessage = errorBody.message ?? 'Registration failed'
+    throw new Error(errorMessage)
   }
-
-  return await response.json()
+  const customer = await safeFetchJson<Customer>(response)
+  return customer
 }
 
-const encodeCredentials = (clientId: string, clientSecret: string) =>
+const encodeCredentials = (clientId: string, clientSecret: string): string =>
   btoa(`${clientId}:${clientSecret}`)
 
-export async function loginWithPassword(email: string, password: string) {
+export async function loginWithPassword(
+  email: string,
+  password: string,
+): Promise<TokenResponse> {
   const tokenRes = await fetch(TOKEN_URL, {
     method: 'POST',
     headers: {
@@ -117,11 +122,11 @@ export async function loginWithPassword(email: string, password: string) {
   })
 
   if (!tokenRes.ok) {
-    const err = await tokenRes.json().catch(() => ({}))
-    console.error('Login failed response:', err)
-    throw new Error(err.message || 'Login failed')
+    const error = (await tokenRes.json().catch(() => ({}))) as ErrorResponse
+    console.error('Login failed response:', error)
+    throw new Error(error.message ?? 'Login failed')
   }
 
-  const tokenData = await tokenRes.json()
+  const tokenData: TokenResponse = await safeFetchJson<TokenResponse>(tokenRes)
   return tokenData
 }

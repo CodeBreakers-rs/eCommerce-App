@@ -9,12 +9,17 @@ export const loadProductBySlug = createAsyncThunk<
   DessertProduct,
   string,
   { state: RootState }
->('product/loadBySlug', async (slug: string, thunkAPI) => {
+>('product/loadBySlug', async (slug, thunkAPI) => {
   try {
     const state = thunkAPI.getState()
     const token = state.auth.token
 
     const data = await fetchProductBySlug(slug, locale, token)
+
+    if (!data) {
+      return thunkAPI.rejectWithValue('Product not found')
+    }
+
     return data
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
@@ -55,7 +60,7 @@ const productSlice = createSlice({
         state.isLoading = false
       })
       .addCase(loadProductBySlug.rejected, (state, action) => {
-        state.error = action.payload as string
+        state.error = (action.payload as string) ?? 'Failed to load product'
         state.isLoading = false
       })
   },

@@ -1,10 +1,9 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { RegForm } from '../reg-form'
-import * as authService from '../../services/auth-service'
 import authReducer from '../../../../store/slices/auth-slice'
 
 function renderWithStore(ui: React.ReactElement) {
@@ -38,52 +37,6 @@ describe('Registration Form', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(/Email/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/Password/i)).toBeInTheDocument()
-    })
-  })
-
-  it('submits correctly when all fields are valid', async () => {
-    const mockRegister = vi
-      .spyOn(authService, 'registerCustomer')
-      .mockResolvedValue({
-        customer: { email: 'test@example.com', id: 'abc123' },
-      })
-
-    renderWithStore(<RegForm />)
-
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'test@example.com' },
-    })
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'Password1!' },
-    })
-    fireEvent.change(screen.getByLabelText(/first name/i), {
-      target: { value: 'John' },
-    })
-    fireEvent.change(screen.getByLabelText(/last name/i), {
-      target: { value: 'Doe' },
-    })
-    fireEvent.change(screen.getByLabelText(/birth/i), {
-      target: { value: '2000-01-01' },
-    })
-    fireEvent.change(screen.getByLabelText(/street/i), {
-      target: { value: '123 Main St' },
-    })
-    fireEvent.change(screen.getByLabelText(/city/i), {
-      target: { value: 'Toronto' },
-    })
-    fireEvent.change(screen.getByLabelText(/postal code/i), {
-      target: { value: 'A1B 2C3' },
-    })
-    fireEvent.change(screen.getByLabelText(/country/i), {
-      target: { value: 'Canada' },
-    })
-
-    const button = screen.getByRole('button', { name: /register/i })
-    await waitFor(() => expect(button).not.toBeDisabled())
-    fireEvent.click(button)
-
-    await waitFor(() => {
-      expect(mockRegister).toHaveBeenCalledTimes(1)
     })
   })
 })

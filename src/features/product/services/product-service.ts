@@ -3,6 +3,7 @@ import {
   PROJECT_KEY,
 } from '../../../services/commercetools-constants'
 import { getValidToken } from '../../../services/get-token'
+import type { ProductSearchResponse } from '../../../types/api-response'
 
 import type { DessertProduct } from '../../../types/dessert-product'
 
@@ -12,7 +13,7 @@ export const fetchProductBySlug = async (
   slug: string,
   locale = 'en',
   authToken: string | null,
-): Promise<DessertProduct> => {
+): Promise<DessertProduct | null> => {
   const token = await getValidToken(authToken)
   const query = `staged=false&where=slug(${locale}="${slug}")&limit=1`
 
@@ -26,6 +27,7 @@ export const fetchProductBySlug = async (
     throw new Error(`Failed to fetch product details: ${response.status}`)
   }
 
-  const data = await response.json()
-  return data.results?.[0]
+  const data = (await response.json()) as ProductSearchResponse
+
+  return data.results?.[0] ?? null
 }

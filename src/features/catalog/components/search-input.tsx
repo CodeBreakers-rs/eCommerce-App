@@ -38,7 +38,7 @@ const SearchInput = () => {
       }
     }
 
-    fetchSearchResults()
+    void fetchSearchResults()
   }, [debouncedQuery, dispatch, token])
 
   return (

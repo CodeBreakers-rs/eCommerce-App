@@ -23,14 +23,52 @@ const sectionMap: Record<string, string> = {
   covering: 'General',
   coverType: 'General',
   design: 'General',
-
   packageType: 'Packaging',
   packageSize: 'Packaging',
-
   ingredients: 'Dietary',
   isVegetarian: 'Dietary',
   shelfLife: 'Dietary',
   storageAdvice: 'Dietary',
+}
+
+const isLocalizedEnum = (val: unknown): val is { label: string } => {
+  if (typeof val !== 'object' || val === null) return false
+  if (!Object.prototype.hasOwnProperty.call(val, 'label')) return false
+  const label = (val as Record<string, unknown>).label
+  return typeof label === 'string'
+}
+
+const renderValue = (value: unknown) => {
+  if (value === null) {
+    return <span className="font-medium text-gray-400 italic">N/A</span>
+  }
+
+  if (Array.isArray(value) && value.every((v) => typeof v === 'string')) {
+    return (
+      <span className="font-medium">
+        {value.map((v, i) => (
+          <span key={i}>
+            {v}
+            {i < value.length - 1 ? ', ' : ''}
+          </span>
+        ))}
+      </span>
+    )
+  }
+
+  if (isLocalizedEnum(value)) {
+    return <span className="font-medium">{value.label}</span>
+  }
+
+  if (typeof value === 'boolean') {
+    return <span className="font-medium">{value ? 'Yes ✅' : 'No ❌'}</span>
+  }
+
+  if (typeof value === 'string') {
+    return <span className="font-medium">{value}</span>
+  }
+
+  return <span className="font-medium text-gray-400 italic">Unsupported</span>
 }
 
 const ProductAttributes: React.FC<Props> = ({ attributes }) => {
@@ -42,35 +80,10 @@ const ProductAttributes: React.FC<Props> = ({ attributes }) => {
     grouped[section].push(attr)
   })
 
-  const renderValue = (value: any) => {
-    if (Array.isArray(value)) {
-      return (
-        <span className="font-medium">
-          {value.map((v: string, i: number) => (
-            <span key={i}>
-              {v}
-              {i < value.length - 1 ? ', ' : ''}
-            </span>
-          ))}
-        </span>
-      )
-    }
-
-    if (typeof value === 'object' && value !== null && 'label' in value) {
-      return <span className="font-medium">{value.label}</span>
-    }
-
-    if (typeof value === 'boolean') {
-      return <span className="font-medium">{value ? 'Yes ✅' : 'No ❌'}</span>
-    }
-
-    return <span className="font-medium">{value}</span>
-  }
-
   return (
     <div className="space-y-6">
       {Object.entries(grouped).map(([section, attrs]) => (
-        <div key={section} className={`p-4 rounded-lg shadow-sm`}>
+        <div key={section} className="p-4 rounded-lg shadow-sm">
           <h3 className="text-lg font-bold text-gray-800 mb-3 border-b border-gray-300 pb-1">
             {section}
           </h3>

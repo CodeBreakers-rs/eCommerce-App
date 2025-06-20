@@ -36,11 +36,13 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
 
   const handleSubmit = async () => {
     const validationError = validate()
-    if (validationError) return setError(validationError)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
 
     try {
       const customer = await getCustomerProfile(token)
-
       if (!customer) {
         setError('Customer data is not available.')
         return
@@ -53,8 +55,12 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
       )
       setSuccess(true)
       setTimeout(onClose, 2000)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('An unexpected error occurred.')
+      }
     }
   }
 
@@ -119,7 +125,7 @@ export const ChangePasswordModal = ({ token, onClose }: Props) => {
 
             <div className="flex justify-between">
               <button
-                onClick={handleSubmit}
+                onClick={() => void handleSubmit()}
                 className="px-4 py-2 bg-gray-400 hover:bg-[#40312d] text-white rounded transition"
               >
                 Save

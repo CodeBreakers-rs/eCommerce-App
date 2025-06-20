@@ -34,7 +34,7 @@ export const fetchProducts = async (
     throw new Error(`Failed to fetch products: ${response.status}`)
   }
 
-  return await response.json()
+  return (await response.json()) as { results: DessertProduct[] }
 }
 
 export const fetchProductsByText = async (
@@ -69,5 +69,5 @@ export const fetchProductsByText = async (
     )
   }
 
-  return await response.json()
+  return (await response.json()) as { results: DessertProduct[] }
 }

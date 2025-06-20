@@ -19,7 +19,7 @@ const CatalogPage = () => {
   const locale = 'en'
 
   useEffect(() => {
-    dispatch(loadProducts())
+    void dispatch(loadProducts())
     return () => {
       dispatch(resetCatalog())
     }

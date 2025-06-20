@@ -20,7 +20,6 @@ export async function changeCustomerPassword(
   })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    throw new Error(errorData.message || 'Password change failed.')
+    throw new Error(`Password change failed: ${response.status}`)
   }
 }

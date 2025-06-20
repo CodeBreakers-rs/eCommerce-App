@@ -356,7 +356,9 @@ export const EditProfileModal = ({
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
+            onClick={() => {
+              void handleSubmit()
+            }}
             disabled={isSaving}
             className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-[#40312d] text-white transition"
           >

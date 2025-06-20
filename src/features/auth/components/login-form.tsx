@@ -7,8 +7,13 @@ import {
 } from '../../../store/slices/auth-slice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { loginUser } from '../services/auth-service'
-import type { Customer } from '@commercetools/platform-sdk'
 import regFormImg from '../../../assets/images/login-reg.png'
+
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message
+  if (typeof error === 'string') return error
+  return 'Login failed'
+}
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch()
@@ -35,27 +40,29 @@ export const LoginForm = () => {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setHasValidated(true)
-    setLoginError('')
+    void (async () => {
+      setHasValidated(true)
+      setLoginError('')
 
-    if (!validate()) return
-    dispatch(loginStarted())
+      if (!validate()) return
+      dispatch(loginStarted())
 
-    try {
-      const result = await loginUser(email, password)
-      dispatch(
-        login({
-          token: result.token,
-          customer: result.customer as Customer,
-        }),
-      )
-    } catch (error: any) {
-      const message = error.message || 'Login failed'
-      dispatch(loginFailed(message))
-      setLoginError(message)
-    }
+      try {
+        const result = await loginUser(email, password)
+        dispatch(
+          login({
+            token: result.token,
+            customer: result.customer,
+          }),
+        )
+      } catch (error: unknown) {
+        const message = getErrorMessage(error)
+        dispatch(loginFailed(message))
+        setLoginError(message)
+      }
+    })()
   }
 
   return (

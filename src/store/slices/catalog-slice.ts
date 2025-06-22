@@ -16,11 +16,8 @@ export const loadProducts = createAsyncThunk<
   void,
   { state: RootState }
 >('catalog/loadProducts', async (_, thunkAPI) => {
-  const state = thunkAPI.getState()
-  const token = state.auth.token
-
   try {
-    const data = await fetchProducts(token)
+    const data = await fetchProducts()
     return data.results
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
@@ -33,11 +30,8 @@ export const searchProducts = createAsyncThunk<
   string,
   { state: RootState }
 >('catalog/searchProducts', async (searchText, thunkAPI) => {
-  const state = thunkAPI.getState()
-  const token = state.auth.token
-
   try {
-    const data = await fetchProductsByText(searchText, token)
+    const data = await fetchProductsByText(searchText)
     return data.results
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

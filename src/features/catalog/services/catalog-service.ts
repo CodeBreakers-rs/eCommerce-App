@@ -2,7 +2,7 @@ import {
   API_BASE_URL,
   PROJECT_KEY,
 } from '../../../services/commercetools-constants'
-import { getValidToken } from '../../../services/get-token'
+import { getActiveToken } from '../../../services/token-service'
 
 const API_PRODUCTS_SEARCH_URL = `${API_BASE_URL}/${PROJECT_KEY}/product-projections/search`
 
@@ -15,11 +15,11 @@ const getDefaultQuery = () =>
     sort: 'id desc',
   }).toString()
 
-export const fetchProducts = async (
-  authToken: string | null,
-): Promise<{ results: DessertProduct[] }> => {
-  const token = await getValidToken(authToken)
-
+export const fetchProducts = async (): Promise<{
+  results: DessertProduct[]
+}> => {
+  const token = getActiveToken()
+  console.log(token)
   const response = await fetch(
     `${API_PRODUCTS_SEARCH_URL}?${getDefaultQuery()}`,
     {
@@ -39,9 +39,8 @@ export const fetchProducts = async (
 
 export const fetchProductsByText = async (
   searchText: string,
-  authToken: string | null,
 ): Promise<{ results: DessertProduct[] }> => {
-  const token = await getValidToken(authToken)
+  const token = getActiveToken()
 
   const cleanedText = searchText.trim().toLowerCase()
   const fuzzyLevel =

@@ -23,8 +23,8 @@ describe('NavLinks', () => {
     expect(screen.getByText('Login')).toBeInTheDocument()
     expect(screen.getByText('Register')).toBeInTheDocument()
     expect(screen.queryByText('Catalog')).toBeInTheDocument()
-    expect(screen.queryByText('Cart')).toBeInTheDocument()
     expect(screen.queryByText('About')).toBeInTheDocument()
+    expect(screen.getByText('🛒 Cart')).toBeInTheDocument()
   })
 
   it('renders necessary links when logged in', () => {
@@ -41,8 +41,8 @@ describe('NavLinks', () => {
     )
     expect(screen.getByText('Main')).toBeInTheDocument()
     expect(screen.getByText('Catalog')).toBeInTheDocument()
-    expect(screen.queryByText('Cart')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
+    expect(screen.getByText('🛒 Cart')).toBeInTheDocument()
     expect(screen.queryByText('Login')).not.toBeInTheDocument()
     expect(screen.queryByText('Register')).not.toBeInTheDocument()
   })

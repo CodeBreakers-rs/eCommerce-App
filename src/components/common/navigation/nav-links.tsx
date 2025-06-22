@@ -29,7 +29,6 @@ const NavLinks = () => {
       {renderNavLink('/', 'Main', true)}
       {renderNavLink('/catalog', 'Catalog')}
       {renderNavLink('/about', 'About')}
-      {renderNavLink('/basket', 'Cart')}
 
       {!isLoggedIn && (
         <>
@@ -37,6 +36,7 @@ const NavLinks = () => {
           {renderNavLink('/register', 'Register')}
         </>
       )}
+      {renderNavLink('/basket', '🛒 Cart')}
     </ul>
   )
 }

@@ -1,5 +1,5 @@
 import { teamMembers } from '../services/team-members'
-import rsLogo from '../assets/svg/logo-rs-school (1).svg'
+import rsLogo from '../assets/svg/logo-rs-school.svg'
 import GitHubLogo from '../assets/svg/icon-github.svg'
 
 const AboutUsPage = () => {

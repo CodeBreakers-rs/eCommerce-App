@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, vi, expect } from 'vitest'
 import AboutUs from '../about-us-page'
-import rsLogo from '../../assets/svg/logo-rs-school (1).svg'
+import rsLogo from '../../assets/svg/logo-rs-school.svg'
 
 vi.mock('../../assets/svg/rs-logo.svg', () => ({
   default: rsLogo,

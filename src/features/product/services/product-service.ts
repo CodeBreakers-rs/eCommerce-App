@@ -13,7 +13,7 @@ export const fetchProductBySlug = async (
   slug: string,
   locale = 'en',
 ): Promise<DessertProduct | null> => {
-  const token = getActiveToken()
+  const token = await getActiveToken()
   const query = `staged=false&where=slug(${locale}="${slug}")&limit=1`
 
   const response = await fetch(`${API_PRODUCT_SEARCH_URL}?${query}`, {

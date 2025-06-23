@@ -18,8 +18,7 @@ const getDefaultQuery = () =>
 export const fetchProducts = async (): Promise<{
   results: DessertProduct[]
 }> => {
-  const token = getActiveToken()
-  console.log(token)
+  const token = await getActiveToken()
   const response = await fetch(
     `${API_PRODUCTS_SEARCH_URL}?${getDefaultQuery()}`,
     {
@@ -40,7 +39,7 @@ export const fetchProducts = async (): Promise<{
 export const fetchProductsByText = async (
   searchText: string,
 ): Promise<{ results: DessertProduct[] }> => {
-  const token = getActiveToken()
+  const token = await getActiveToken()
 
   const cleanedText = searchText.trim().toLowerCase()
   const fuzzyLevel =

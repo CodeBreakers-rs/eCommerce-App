@@ -7,7 +7,7 @@ import {
 } from './commercetools-constants'
 import { encodeCredentials } from '../utils/encode-credentials'
 
-export const fetchCustomerToken = async (
+export const getCustomerToken = async (
   email: string,
   password: string,
 ): Promise<TokenResponse> => {

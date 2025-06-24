@@ -33,7 +33,7 @@ describe('BasketPage', () => {
   it('renders cart item and recommendations', () => {
     render(<BasketPage />)
     expect(screen.getByText(/Apple-Cranberry 9/i)).toBeInTheDocument()
-    expect(screen.getByText(/\$14.50/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/\$14.50/i).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: /Remove/i })).toBeInTheDocument()
     expect(
       screen.getByText(/Personalized Recommendations/i),

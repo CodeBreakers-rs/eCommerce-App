@@ -10,6 +10,7 @@ import {
   createCart,
   addLineItem,
 } from '../../features/basket/services/cart-service'
+import { PROJECT_KEY } from '../../services/commercetools-constants'
 
 import {
   clearCartStorage,
@@ -71,6 +72,47 @@ export const addProductToCart = createAsyncThunk<
   return updatedCart
 })
 
+export const removeFromCart = createAsyncThunk<
+  Cart,
+  string,
+  { state: RootState }
+>('cart/removeFromCart', async (lineItemId, { getState }) => {
+  const state = getState()
+  const cart = state.cart.cart
+  const token = state.auth.token ?? state.auth.anonToken
+
+  if (!cart || !token) {
+    throw new Error('Cart or token not available')
+  }
+
+  const response = await fetch(
+    `https://api.europe-west1.gcp.commercetools.com/${PROJECT_KEY}/carts/${cart.id}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: cart.version,
+        actions: [
+          {
+            action: 'removeLineItem',
+            lineItemId,
+          },
+        ],
+      }),
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to remove item from cart')
+  }
+
+  const updatedCart = (await response.json()) as Cart
+  return updatedCart
+})
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -109,11 +151,23 @@ const cartSlice = createSlice({
         state.cart = action.payload
         state.items = extractSlugsFromCart(action.payload)
         state.pendingProductSlug = null
+      })
+      .addCase(removeFromCart.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.cart = action.payload
+        state.items = extractSlugsFromCart(action.payload)
 
         saveCartToStorage({
           cartId: action.payload.id,
           items: state.items,
         })
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message ?? 'Failed to remove item from cart'
       })
       .addCase(addProductToCart.rejected, (state, action) => {
         state.status = 'failed'

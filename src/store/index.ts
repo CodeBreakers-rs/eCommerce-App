@@ -4,6 +4,7 @@ import catalogReducer from './slices/catalog-slice'
 import productReducer from './slices/product-slice'
 import cartReducer from './slices/cart-slice'
 import { loadAuthState, saveAuthState } from './local-storage'
+import { getIsLoggingOut } from './logout-flag'
 
 const preloadedAuthState = loadAuthState() ?? authInitialState
 
@@ -20,7 +21,9 @@ export const store = configureStore({
 })
 
 store.subscribe(() => {
-  saveAuthState(store.getState().auth)
+  if (!getIsLoggingOut()) {
+    saveAuthState(store.getState().auth)
+  }
 })
 
 export type AppStore = typeof store

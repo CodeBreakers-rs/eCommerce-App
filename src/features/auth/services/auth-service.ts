@@ -19,6 +19,7 @@ import { logout } from '../../../store/slices/auth-slice'
 import { clearCart } from '../../../store/slices/cart-slice'
 import { clearCartStorage } from '../../../store/cart-storage'
 import { clearAuthStorage } from '../../../store/local-storage'
+import { setIsLoggingOut } from '../../../store/logout-flag'
 
 export async function loginUser(
   email: string,
@@ -41,10 +42,15 @@ export async function loginUser(
 }
 
 export const handleLogout = () => {
+  setIsLoggingOut(true)
+
   store.dispatch(logout())
   clearAuthStorage()
+
   store.dispatch(clearCart())
   clearCartStorage()
+
+  setIsLoggingOut(false)
 }
 
 export async function getClientAccessToken(): Promise<string> {

@@ -6,7 +6,11 @@ export const authInitialState: AuthState = {
   isLoggedIn: false,
   customer: null,
   token: null,
+  tokenExpiresAt: null,
   status: 'idle',
+  anonToken: null,
+  anonTokenExpiresAt: null,
+  anonymousId: null,
   error: null,
 }
 
@@ -36,6 +40,23 @@ const authSlice = createSlice({
       state.status = 'idle'
       state.error = null
     },
+    setAnonAuth(
+      state,
+      action: PayloadAction<{
+        anonToken: string
+        anonTokenExpiresAt: string
+        anonymousId: string
+      }>,
+    ) {
+      state.anonToken = action.payload.anonToken
+      state.anonTokenExpiresAt = action.payload.anonTokenExpiresAt
+      state.anonymousId = action.payload.anonymousId
+    },
+    clearAnonAuth(state) {
+      state.anonToken = null
+      state.anonTokenExpiresAt = null
+      state.anonymousId = null
+    },
   },
 })
 
@@ -64,5 +85,12 @@ const customerSlice = createSlice({
 
 export const { setCustomerData, clearCustomerData } = customerSlice.actions
 
-export const { loginStarted, login, loginFailed, logout } = authSlice.actions
+export const {
+  loginStarted,
+  login,
+  loginFailed,
+  logout,
+  setAnonAuth,
+  clearAnonAuth,
+} = authSlice.actions
 export default authSlice.reducer

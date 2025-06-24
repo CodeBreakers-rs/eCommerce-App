@@ -1,8 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import type { DessertProduct } from '../../../types/dessert-product'
-import { useAppSelector } from '../../../store/hooks'
-import { selectCartItems } from '../../../store/slices/cart-slice'
+import { useAppSelector, useAppDispatch } from '../../../store/hooks'
+import {
+  selectCartItems,
+  selectPendingProductSlug,
+  addProductToCart,
+} from '../../../store/slices/cart-slice'
 
 type ProductCardProps = {
   product: DessertProduct
@@ -10,13 +14,17 @@ type ProductCardProps = {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
+  const dispatch = useAppDispatch()
+  const cartItems = useAppSelector(selectCartItems)
+  const pendingProductSlug = useAppSelector(selectPendingProductSlug)
+
   const imageUrl = product.masterVariant.images?.[0]?.url
   const name = product.name[locale]
   const description = product.description[locale]
   const slug = product.slug[locale]
-
-  const cartItems = useAppSelector(selectCartItems)
   const isInCart = cartItems.includes(slug)
+  const isPending = pendingProductSlug === slug
+  const isDisabled = isPending || cartItems.includes(slug)
 
   const priceObj = product.masterVariant.prices?.[0]?.value
   const discounted = product.masterVariant.prices?.[0]?.discounted?.value
@@ -37,6 +45,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
     discountedCents !== null
       ? Math.round(((originalCents - discountedCents) / originalCents) * 100)
       : null
+
+  const handleAddToCart = () => {
+    void dispatch(addProductToCart({ id: product.id, slug }))
+  }
 
   return (
     <div className="flex flex-col items-center justify-between h-full bg-white border-transparent rounded-xl shadow-md p-4 transition-all duration-300 transform hover:shadow-xl hover:scale-105 hover:bg-gray-50">
@@ -77,11 +89,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
       </Link>
 
       <button
-        className={`flex items-center justify-center w-1/2 cursor-pointer uppercase mt-2 py-3 px-2 rounded-full text-sm bg-[#f7ebdd] hover:bg-[#e6d3bd] hover:[#3c2c21] font-medium transition`}
-        disabled={isInCart}
+        className={`flex items-center justify-center w-1/2 cursor-pointer uppercase mt-2 py-3 px-2 rounded-full text-sm bg-[#f7ebdd] hover:bg-[#e6d3bd] hover:[#3c2c21] font-medium transition disabled:opacity-50`}
+        disabled={isDisabled}
         aria-label="Add to cart"
+        onClick={handleAddToCart}
       >
-        {isInCart ? 'In Cart' : 'Add to Cart'}
+        {isInCart ? 'In Cart' : isPending ? 'Adding...' : 'Add to Cart'}
       </button>
     </div>
   )

@@ -25,10 +25,10 @@ const SearchInput = () => {
 
       try {
         if (trimmedQuery === '') {
-          const data = await fetchProducts(token)
+          const data = await fetchProducts()
           dispatch(setProducts(data.results))
         } else {
-          const data = await fetchProductsByText(trimmedQuery, token)
+          const data = await fetchProductsByText(trimmedQuery)
           dispatch(setProducts(data.results))
         }
       } catch (err) {

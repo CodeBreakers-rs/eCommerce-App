@@ -4,7 +4,7 @@ import type { DessertProduct } from '../../../types/dessert-product'
 import { useAppSelector, useAppDispatch } from '../../../store/hooks'
 import {
   selectCartItems,
-  selectCartStatus,
+  selectPendingProductSlug,
   addProductToCart,
 } from '../../../store/slices/cart-slice'
 
@@ -16,15 +16,15 @@ type ProductCardProps = {
 const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
   const dispatch = useAppDispatch()
   const cartItems = useAppSelector(selectCartItems)
-  const cartStatus = useAppSelector(selectCartStatus)
+  const pendingProductSlug = useAppSelector(selectPendingProductSlug)
 
   const imageUrl = product.masterVariant.images?.[0]?.url
   const name = product.name[locale]
   const description = product.description[locale]
   const slug = product.slug[locale]
-
   const isInCart = cartItems.includes(slug)
-  const isLoading = cartStatus === 'loading'
+  const isPending = pendingProductSlug === slug
+  const isDisabled = isPending || cartItems.includes(slug)
 
   const priceObj = product.masterVariant.prices?.[0]?.value
   const discounted = product.masterVariant.prices?.[0]?.discounted?.value
@@ -47,8 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
       : null
 
   const handleAddToCart = () => {
-    console.log('add to card clicked')
-    void dispatch(addProductToCart(product))
+    void dispatch(addProductToCart({ id: product.id, slug }))
   }
 
   return (
@@ -91,11 +90,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, locale }) => {
 
       <button
         className={`flex items-center justify-center w-1/2 cursor-pointer uppercase mt-2 py-3 px-2 rounded-full text-sm bg-[#f7ebdd] hover:bg-[#e6d3bd] hover:[#3c2c21] font-medium transition disabled:opacity-50`}
-        disabled={isInCart || isLoading}
+        disabled={isDisabled}
         aria-label="Add to cart"
         onClick={handleAddToCart}
       >
-        {isInCart ? 'In Cart' : isLoading ? 'Adding...' : 'Add to Cart'}
+        {isInCart ? 'In Cart' : isPending ? 'Adding...' : 'Add to Cart'}
       </button>
     </div>
   )

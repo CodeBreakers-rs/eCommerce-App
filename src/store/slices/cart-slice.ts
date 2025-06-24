@@ -11,11 +11,7 @@ import {
   addLineItem,
 } from '../../features/basket/services/cart-service'
 
-import {
-  clearCartStorage,
-  loadCartFromStorage,
-  saveCartToStorage,
-} from '../cart-storage'
+import { loadCartFromStorage, saveCartToStorage } from '../cart-storage'
 
 const savedCart = loadCartFromStorage()
 
@@ -79,7 +75,6 @@ const cartSlice = createSlice({
       state.cart = null
       state.items = []
       state.pendingProductSlug = null
-      clearCartStorage()
     },
     setPendingProductSlug: (state, action: PayloadAction<string | null>) => {
       state.pendingProductSlug = action.payload

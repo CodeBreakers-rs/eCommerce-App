@@ -34,3 +34,11 @@ export const saveAuthState = (state: AuthState) => {
     console.warn('Failed to save auth state to localStorage:', err)
   }
 }
+
+export const clearAuthStorage = () => {
+  try {
+    localStorage.removeItem(AUTH_STATE_KEY)
+  } catch (err) {
+    console.warn('Failed to clear auth from localStorage:', err)
+  }
+}

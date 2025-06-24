@@ -14,6 +14,11 @@ import {
   type ErrorResponse,
   type TokenResponse,
 } from '../../../types/api-response'
+import { store } from '../../../store'
+import { logout } from '../../../store/slices/auth-slice'
+import { clearCart } from '../../../store/slices/cart-slice'
+import { clearCartStorage } from '../../../store/cart-storage'
+import { clearAuthStorage } from '../../../store/local-storage'
 
 export async function loginUser(
   email: string,
@@ -33,6 +38,13 @@ export async function loginUser(
     token: tokenData.access_token,
     customer,
   }
+}
+
+export const handleLogout = () => {
+  store.dispatch(logout())
+  clearAuthStorage()
+  store.dispatch(clearCart())
+  clearCartStorage()
 }
 
 export async function getClientAccessToken(): Promise<string> {

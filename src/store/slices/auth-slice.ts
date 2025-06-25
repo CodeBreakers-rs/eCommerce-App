@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { CustomerState, AuthState } from '../../types/customer'
 import type { Customer } from '@commercetools/platform-sdk'
+import type { RootState } from '../index'
 
 export const authInitialState: AuthState = {
   isLoggedIn: false,
@@ -13,6 +14,8 @@ export const authInitialState: AuthState = {
   anonymousId: null,
   error: null,
 }
+
+export const selectAnonToken = (state: RootState) => state.auth.anonToken
 
 const authSlice = createSlice({
   name: 'auth',

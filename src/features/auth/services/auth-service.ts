@@ -16,10 +16,11 @@ import {
 } from '../../../types/api-response'
 import { store } from '../../../store'
 import { logout } from '../../../store/slices/auth-slice'
-import { clearCart } from '../../../store/slices/cart-slice'
+import { clearCart, initializeCart } from '../../../store/slices/cart-slice'
 import { clearCartStorage } from '../../../store/cart-storage'
 import { clearAuthStorage } from '../../../store/local-storage'
 import { setIsLoggingOut } from '../../../store/logout-flag'
+import { clearAnonAuth } from '../../../store/slices/auth-slice'
 
 export async function loginUser(
   email: string,
@@ -34,6 +35,12 @@ export async function loginUser(
   if (!customer) {
     throw new Error('Failed to fetch customer profile')
   }
+
+  void store.dispatch(clearCart())
+  clearCartStorage()
+  void store.dispatch(clearAnonAuth())
+
+  void store.dispatch(initializeCart())
 
   return {
     token: tokenData.access_token,

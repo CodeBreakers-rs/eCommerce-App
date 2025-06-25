@@ -8,6 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { loginUser } from '../services/auth-service'
 import regFormImg from '../../../assets/images/login-reg.png'
+import { clearCart, initializeCart } from '../../../store/slices/cart-slice'
 
 const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) return error.message
@@ -57,6 +58,8 @@ export const LoginForm = () => {
             customer: result.customer,
           }),
         )
+        void dispatch(clearCart())
+        void dispatch(initializeCart())
       } catch (error: unknown) {
         const message = getErrorMessage(error)
         dispatch(loginFailed(message))

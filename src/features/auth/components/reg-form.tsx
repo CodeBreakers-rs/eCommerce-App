@@ -16,6 +16,7 @@ import {
   validCountries,
 } from '../../../utils/form-utils'
 import { isApiError } from '../../../types/api-response'
+import { clearCart, initializeCart } from '../../../store/slices/cart-slice'
 
 const countryNameToCode: Record<string, string> = {
   Canada: 'CA',
@@ -128,6 +129,8 @@ export const RegForm = () => {
           customer: loginResult.customer,
           token: loginResult.token,
         }),
+        dispatch(clearCart()),
+        dispatch(initializeCart()),
       )
       setFormData(initialForm)
       setDefaultShipping(false)

@@ -134,37 +134,6 @@ const BasketPage = () => {
               </button>
             </div>
           </div>
-          <div className="lg:w-1/3">
-            <h3 className="text-center text-lg font-semibold mb-4">
-              Personalized Recommendations
-            </h3>
-            <div className="grid grid-cols-1 gap-4">
-              <div className="rounded-2xl overflow-hidden shadow bg-[#6b4f43] text-white p-4 space-y-2">
-                <p className="text-sm">01</p>
-                <h4 className="text-lg font-semibold">Apple–Cranberry Pink</h4>
-                <p className="text-sm">
-                  Refined Zefir, half-coated milk chocolate, balancing fruity
-                  and apple.
-                </p>
-                <p className="text-base font-bold">$7.00</p>
-                <button className="text-[#6b4f43] bg-white rounded-full px-4 py-1 text-sm font-semibold">
-                  Add to cart
-                </button>
-              </div>
-
-              <div className="rounded-2xl overflow-hidden shadow bg-[#2f2b27] text-white p-4 space-y-2">
-                <p className="text-sm">02</p>
-                <h4 className="text-lg font-semibold">Apple–natural</h4>
-                <p className="text-sm">
-                  Delicate airy Zefir with pure fruity flavor, 4-piece box.
-                </p>
-                <p className="text-base font-bold">$11.00</p>
-                <button className="text-[#2f2b27] bg-white rounded-full px-4 py-1 text-sm font-semibold">
-                  Add to cart
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       ) : (
         <p className="text-gray-500 italic">Cart is empty</p>

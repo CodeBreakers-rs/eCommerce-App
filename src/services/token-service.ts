@@ -1,3 +1,5 @@
+import { store } from '../store'
+import { setAnonAuth } from '../store/slices/auth-slice'
 import { getStore } from '../store/store-accessor'
 import { getAnonToken } from './get-anon-token'
 
@@ -16,10 +18,8 @@ export const getActiveToken = async (): Promise<string> => {
     }
 
     const response = await getAnonToken()
+    store.dispatch(setAnonAuth(response))
 
-    state.auth.anonToken = response.anonToken
-    state.auth.anonTokenExpiresAt = response.anonTokenExpiresAt
-    state.auth.anonymousId = response.anonymousId
     return response.anonToken
   } catch {
     throw new Error('No valid token found')

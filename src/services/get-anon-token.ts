@@ -16,28 +16,24 @@ export const getAnonToken = async (): Promise<{
 
   const basicAuth = encodeCredentials(CLIENT_ID, CLIENT_SECRET)
 
-  const response = await fetch(
-    `${AUTH_URL}/oauth/${PROJECT_KEY}/anonymous/token`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'anonymous',
-        scope: `manage_my_carts:${PROJECT_KEY} manage_my_orders:${PROJECT_KEY} manage_my_profile:${PROJECT_KEY}`,
-        anonymous_id: newAnonymousId,
-      }),
+  const response = await fetch(`${AUTH_URL}/oauth/token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-  )
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      scope: `manage_project:${PROJECT_KEY}`,
+    }),
+  })
 
   if (!response.ok) {
     throw new Error(`Failed to get anonymous token: ${response.status}`)
   }
 
   const data: TokenResponse = await safeFetchJson(response)
-
+  console.log(data)
   const anonToken = data.access_token
   const anonTokenExpiresAt = new Date(
     Date.now() + data.expires_in * 1000,

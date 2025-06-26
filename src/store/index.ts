@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import authReducer, { authInitialState } from './slices/auth-slice'
+import authReducer, {
+  authInitialState,
+  getIsLoggingOut,
+} from './slices/auth-slice'
 import catalogReducer from './slices/catalog-slice'
 import productReducer from './slices/product-slice'
 import cartReducer from './slices/cart-slice'
 import { loadAuthState, saveAuthState } from './local-storage'
-import { getIsLoggingOut } from './logout-flag'
 
 const preloadedAuthState = loadAuthState() ?? authInitialState
 
@@ -21,8 +23,9 @@ export const store = configureStore({
 })
 
 store.subscribe(() => {
-  if (!getIsLoggingOut()) {
-    saveAuthState(store.getState().auth)
+  const state = store.getState()
+  if (!getIsLoggingOut(state)) {
+    saveAuthState(state.auth)
   }
 })
 

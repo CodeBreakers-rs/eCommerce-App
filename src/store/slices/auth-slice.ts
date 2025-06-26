@@ -15,8 +15,6 @@ export const authInitialState: AuthState = {
   error: null,
 }
 
-export const selectAnonToken = (state: RootState) => state.auth.anonToken
-
 const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
@@ -35,6 +33,9 @@ const authSlice = createSlice({
     loginFailed(state, action: PayloadAction<string>) {
       state.status = 'failed'
       state.error = action.payload
+    },
+    logoutStarted(state) {
+      state.status = 'loggingOut'
     },
     logout(state) {
       state.isLoggedIn = false
@@ -92,8 +93,15 @@ export const {
   loginStarted,
   login,
   loginFailed,
+  logoutStarted,
   logout,
   setAnonAuth,
   clearAnonAuth,
 } = authSlice.actions
+
+export const getIsLoggingOut = (state: RootState): boolean =>
+  state.auth.status === 'loggingOut'
+
+export const selectAnonToken = (state: RootState) => state.auth.anonToken
+
 export default authSlice.reducer

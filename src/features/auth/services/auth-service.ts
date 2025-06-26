@@ -15,11 +15,13 @@ import {
   type TokenResponse,
 } from '../../../types/api-response'
 import { store } from '../../../store'
-import { logout } from '../../../store/slices/auth-slice'
+import { logout, logoutStarted } from '../../../store/slices/auth-slice'
 import { clearCart, initializeCart } from '../../../store/slices/cart-slice'
 import { clearCartStorage } from '../../../store/cart-storage'
-import { clearAuthStorage } from '../../../store/local-storage'
-import { setIsLoggingOut } from '../../../store/logout-flag'
+import {
+  clearAnonAuthStorage,
+  clearAuthStorage,
+} from '../../../store/local-storage'
 import { clearAnonAuth } from '../../../store/slices/auth-slice'
 
 export async function loginUser(
@@ -39,6 +41,7 @@ export async function loginUser(
   void store.dispatch(clearCart())
   clearCartStorage()
   void store.dispatch(clearAnonAuth())
+  clearAnonAuthStorage()
 
   void store.dispatch(initializeCart())
 
@@ -47,17 +50,15 @@ export async function loginUser(
     customer,
   }
 }
-
 export const handleLogout = () => {
-  setIsLoggingOut(true)
+  store.dispatch(logoutStarted())
 
   store.dispatch(logout())
-  clearAuthStorage()
+  store.dispatch(clearAnonAuth())
 
+  clearAuthStorage()
   store.dispatch(clearCart())
   clearCartStorage()
-
-  setIsLoggingOut(false)
 }
 
 export async function getClientAccessToken(): Promise<string> {

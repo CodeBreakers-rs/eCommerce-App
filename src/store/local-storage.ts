@@ -42,3 +42,21 @@ export const clearAuthStorage = () => {
     console.warn('Failed to clear auth from localStorage:', err)
   }
 }
+
+export const clearAnonAuthStorage = () => {
+  try {
+    const state = loadAuthState()
+    if (!state) return
+
+    const updatedState: AuthState = {
+      ...state,
+      anonToken: null,
+      anonTokenExpiresAt: null,
+      anonymousId: null,
+    }
+
+    saveAuthState(updatedState)
+  } catch (err) {
+    console.warn('Failed to clear anonymous auth from localStorage:', err)
+  }
+}

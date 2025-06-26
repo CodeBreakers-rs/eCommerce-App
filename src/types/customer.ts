@@ -8,7 +8,7 @@ export type AuthState = {
   customer: SDKCustomer | null
   token: string | null
   tokenExpiresAt: string | null
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: 'idle' | 'loading' | 'succeeded' | 'failed' | 'loggingOut'
   anonToken: string | null
   anonTokenExpiresAt: string | null
   anonymousId: string | null

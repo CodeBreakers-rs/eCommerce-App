@@ -15,7 +15,7 @@ export const fetchActiveCart = async (): Promise<Cart | null> => {
   const token = await getActiveToken()
   const state = getStore().getState().auth
 
-  let response
+  let response: Response
 
   if (isLoggedIn()) {
     response = await fetch(`${API_ME_URL}/carts`, {
@@ -48,14 +48,11 @@ export const createCart = async (): Promise<Cart> => {
   const token = await getActiveToken()
   const state = getStore().getState().auth
 
-  type CartDraftBase = {
+  const cartDraft: {
     currency: string
     country: string
-  }
-
-  type CartDraftWithAnonymousId = CartDraftBase & { anonymousId?: string }
-
-  const cartDraft: CartDraftWithAnonymousId = {
+    anonymousId?: string
+  } = {
     currency: 'USD',
     country: 'US',
   }

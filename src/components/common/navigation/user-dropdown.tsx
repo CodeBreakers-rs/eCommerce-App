@@ -14,8 +14,8 @@ const UserDropdown = () => {
 
   useClickOutside(dropdownRef, () => setOpen(false))
 
-  const onLogout = () => {
-    handleLogout()
+  const onLogout = async () => {
+    await handleLogout()
     void navigate('/login')
   }
 
@@ -73,7 +73,7 @@ const UserDropdown = () => {
               <button
                 onClick={() => {
                   setOpen(false)
-                  onLogout()
+                  void onLogout()
                 }}
                 className={`w-full ${dropdownMenuItemClass}`}
               >

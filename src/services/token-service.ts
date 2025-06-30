@@ -1,27 +1,36 @@
-import { store } from '../store'
-import { setAnonAuth } from '../store/slices/auth-slice'
-import { getStore } from '../store/store-accessor'
-import { getAnonToken } from './get-anon-token'
+import { fetchAnonToken } from './get-anon-token'
+import {
+  getAnonTokenFromStorage,
+  setAnonTokenInStorage,
+  getCustomerTokenFromStorage,
+} from '../store/token-storage'
 
 export const getActiveToken = async (): Promise<string> => {
-  try {
-    const state = getStore().getState()
-
-    const { token, anonToken, anonTokenExpiresAt } = state.auth
-
-    if (token) return token
-
-    const now = new Date()
-
-    if (anonToken && anonTokenExpiresAt && new Date(anonTokenExpiresAt) > now) {
-      return anonToken
-    }
-
-    const response = await getAnonToken()
-    store.dispatch(setAnonAuth(response))
-
-    return response.anonToken
-  } catch {
-    throw new Error('No valid token found')
+  const { token: customerToken, expiresAt: customerExpiresAt } =
+    getCustomerTokenFromStorage()
+  if (
+    customerToken &&
+    customerExpiresAt &&
+    new Date(customerExpiresAt) > new Date()
+  ) {
+    return customerToken
   }
+
+  const { token: anonToken, expiresAt: anonTokenExpiresAt } =
+    getAnonTokenFromStorage()
+  if (
+    anonToken &&
+    anonTokenExpiresAt &&
+    new Date(anonTokenExpiresAt) > new Date()
+  ) {
+    return anonToken
+  }
+
+  const response = await fetchAnonToken()
+  setAnonTokenInStorage(
+    response.anonToken,
+    response.anonTokenExpiresAt,
+    response.anonymousId,
+  )
+  return response.anonToken
 }

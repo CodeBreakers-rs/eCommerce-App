@@ -1,16 +1,17 @@
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { initializeCart, selectCart } from '../store/slices/cart-slice'
+import { getCustomerTokenFromStorage } from '../store/token-storage'
 
 export const useInitializeCart = () => {
   const dispatch = useAppDispatch()
   const cart = useAppSelector(selectCart)
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
-  const anonToken = useAppSelector((state) => state.auth.anonToken)
+  const { token: customerToken } = getCustomerTokenFromStorage()
 
   useEffect(() => {
     if (!cart) {
       void dispatch(initializeCart())
     }
-  }, [cart, isLoggedIn, anonToken, dispatch])
+  }, [cart, isLoggedIn, customerToken, dispatch])
 }

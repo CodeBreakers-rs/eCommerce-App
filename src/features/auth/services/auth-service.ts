@@ -19,10 +19,10 @@ import { login, logout, logoutStarted } from '../../../store/slices/auth-slice'
 import { clearCart, initializeCart } from '../../../store/slices/cart-slice'
 import { clearCartStorage } from '../../../store/cart-storage'
 import {
-  clearAnonAuthStorage,
-  clearAuthStorage,
-} from '../../../store/local-storage'
-import { clearAnonAuth } from '../../../store/slices/auth-slice'
+  clearCustomerToken,
+  setCustomerToken,
+  clearAnonToken,
+} from '../../../store/token-storage'
 
 export async function loginUser(
   email: string,
@@ -33,6 +33,11 @@ export async function loginUser(
 }> {
   const tokenData = await loginWithPassword(email, password)
 
+  const expiresAt = new Date(
+    Date.now() + tokenData.expires_in * 1000,
+  ).toISOString()
+  setCustomerToken(tokenData.access_token, expiresAt)
+
   const customer = await getCustomerProfile(tokenData.access_token)
   if (!customer) {
     throw new Error('Failed to fetch customer profile')
@@ -40,13 +45,11 @@ export async function loginUser(
 
   store.dispatch(clearCart())
   clearCartStorage()
-  store.dispatch(clearAnonAuth())
-  clearAnonAuthStorage()
+  clearAnonToken()
 
   store.dispatch(
     login({
       customer,
-      token: tokenData.access_token,
     }),
   )
 
@@ -64,11 +67,10 @@ export const handleLogout = async () => {
   store.dispatch(clearCart())
   clearCartStorage()
 
-  store.dispatch(clearAnonAuth())
-  clearAnonAuthStorage()
+  clearAnonToken()
+  clearCustomerToken()
 
   store.dispatch(logout())
-  clearAuthStorage()
 
   await store.dispatch(initializeCart())
 }

@@ -6,12 +6,7 @@ import type { RootState } from '../index'
 export const authInitialState: AuthState = {
   isLoggedIn: false,
   customer: null,
-  token: null,
-  tokenExpiresAt: null,
   status: 'idle',
-  anonToken: null,
-  anonTokenExpiresAt: null,
-  anonymousId: null,
   error: null,
 }
 
@@ -23,10 +18,9 @@ const authSlice = createSlice({
       state.status = 'loading'
       state.error = null
     },
-    login(state, action: PayloadAction<{ customer: Customer; token: string }>) {
+    login(state, action: PayloadAction<{ customer: Customer }>) {
       state.isLoggedIn = true
       state.customer = action.payload.customer
-      state.token = action.payload.token
       state.status = 'succeeded'
       state.error = null
     },
@@ -40,32 +34,13 @@ const authSlice = createSlice({
     logout(state) {
       state.isLoggedIn = false
       state.customer = null
-      state.token = null
       state.status = 'idle'
       state.error = null
-    },
-    setAnonAuth(
-      state,
-      action: PayloadAction<{
-        anonToken: string
-        anonTokenExpiresAt: string
-        anonymousId: string
-      }>,
-    ) {
-      state.anonToken = action.payload.anonToken
-      state.anonTokenExpiresAt = action.payload.anonTokenExpiresAt
-      state.anonymousId = action.payload.anonymousId
-    },
-    clearAnonAuth(state) {
-      state.anonToken = null
-      state.anonTokenExpiresAt = null
-      state.anonymousId = null
     },
   },
 })
 
 const initialState: CustomerState = {
-  token: null,
   customer: null,
 }
 
@@ -73,15 +48,10 @@ const customerSlice = createSlice({
   name: 'customer',
   initialState,
   reducers: {
-    setCustomerData: (
-      state,
-      action: PayloadAction<{ token: string; customer: Customer }>,
-    ) => {
-      state.token = action.payload.token
+    setCustomerData: (state, action: PayloadAction<{ customer: Customer }>) => {
       state.customer = action.payload.customer
     },
     clearCustomerData: (state) => {
-      state.token = null
       state.customer = null
     },
   },
@@ -89,19 +59,10 @@ const customerSlice = createSlice({
 
 export const { setCustomerData, clearCustomerData } = customerSlice.actions
 
-export const {
-  loginStarted,
-  login,
-  loginFailed,
-  logoutStarted,
-  logout,
-  setAnonAuth,
-  clearAnonAuth,
-} = authSlice.actions
+export const { loginStarted, login, loginFailed, logoutStarted, logout } =
+  authSlice.actions
 
 export const getIsLoggingOut = (state: RootState): boolean =>
   state.auth.status === 'loggingOut'
-
-export const selectAnonToken = (state: RootState) => state.auth.anonToken
 
 export default authSlice.reducer

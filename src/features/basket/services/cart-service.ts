@@ -5,15 +5,18 @@ import {
 } from '../../../services/commercetools-constants'
 import { getActiveToken } from '../../../services/token-service'
 import type { Cart } from '@commercetools/platform-sdk'
-import { getStore } from '../../../store/store-accessor'
+import { getAnonTokenFromStorage } from '../../../store/token-storage'
+
+import { getCustomerTokenFromStorage } from '../../../store/token-storage'
 
 const isLoggedIn = (): boolean => {
-  return getStore().getState().auth.isLoggedIn
+  const { token } = getCustomerTokenFromStorage()
+  return !!token
 }
 
 export const fetchActiveCart = async (): Promise<Cart | null> => {
   const token = await getActiveToken()
-  const state = getStore().getState().auth
+  const { anonymousId } = getAnonTokenFromStorage()
 
   let response: Response
 
@@ -23,10 +26,10 @@ export const fetchActiveCart = async (): Promise<Cart | null> => {
       headers: { Authorization: `Bearer ${token}` },
     })
   } else {
-    if (!state.anonymousId) return null
+    if (!anonymousId) return null
 
     const query = new URLSearchParams({
-      where: `anonymousId="${state.anonymousId}"`,
+      where: `anonymousId="${anonymousId}"`,
     }).toString()
 
     response = await fetch(`${API_BASE_URL}/${PROJECT_KEY}/carts?${query}`, {
@@ -46,7 +49,7 @@ export const fetchActiveCart = async (): Promise<Cart | null> => {
 
 export const createCart = async (): Promise<Cart> => {
   const token = await getActiveToken()
-  const state = getStore().getState().auth
+  const { anonymousId } = getAnonTokenFromStorage()
 
   const cartDraft: {
     currency: string
@@ -57,8 +60,8 @@ export const createCart = async (): Promise<Cart> => {
     country: 'US',
   }
 
-  if (!isLoggedIn() && state.anonymousId) {
-    cartDraft.anonymousId = state.anonymousId
+  if (!isLoggedIn() && anonymousId) {
+    cartDraft.anonymousId = anonymousId
   }
 
   const url = isLoggedIn()

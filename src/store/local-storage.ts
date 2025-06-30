@@ -12,12 +12,7 @@ export const loadAuthState = (): AuthState | undefined => {
     return {
       isLoggedIn: parsedState.isLoggedIn ?? false,
       customer: parsedState.customer ?? null,
-      token: parsedState.token ?? null,
-      tokenExpiresAt: parsedState.tokenExpiresAt ?? null,
       status: parsedState.status ?? 'idle',
-      anonToken: parsedState.anonToken ?? null,
-      anonTokenExpiresAt: parsedState.anonTokenExpiresAt ?? null,
-      anonymousId: parsedState.anonymousId ?? null,
       error: parsedState.error ?? null,
     }
   } catch (err) {
@@ -40,23 +35,5 @@ export const clearAuthStorage = () => {
     localStorage.removeItem(AUTH_STATE_KEY)
   } catch (err) {
     console.warn('Failed to clear auth from localStorage:', err)
-  }
-}
-
-export const clearAnonAuthStorage = () => {
-  try {
-    const state = loadAuthState()
-    if (!state) return
-
-    const updatedState: AuthState = {
-      ...state,
-      anonToken: null,
-      anonTokenExpiresAt: null,
-      anonymousId: null,
-    }
-
-    saveAuthState(updatedState)
-  } catch (err) {
-    console.warn('Failed to clear anonymous auth from localStorage:', err)
   }
 }

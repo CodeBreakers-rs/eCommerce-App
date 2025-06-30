@@ -6,6 +6,7 @@ import {
   PROJECT_KEY,
 } from './commercetools-constants'
 import { encodeCredentials } from '../utils/encode-credentials'
+import { setCustomerToken as setCustomerTokenInStorage } from '../store/token-storage'
 
 export const getCustomerToken = async (
   email: string,
@@ -40,5 +41,9 @@ export const getCustomerToken = async (
   }
 
   const data: TokenResponse = await safeFetchJson(response)
+
+  const expiresAt = new Date(Date.now() + data.expires_in * 1000).toISOString()
+  setCustomerTokenInStorage(data.access_token, expiresAt)
+
   return data
 }

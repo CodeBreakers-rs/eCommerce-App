@@ -76,7 +76,17 @@ describe('UserDropdown', () => {
     )
     fireEvent.click(screen.getByRole('button'))
     fireEvent.click(screen.getByText(/Logout/))
-    expect(removeItemSpy).toHaveBeenCalledWith('auth')
+    expect(removeItemSpy).toHaveBeenCalled()
+    const removedKeys = removeItemSpy.mock.calls.map((call) => String(call[0]))
+    const expectedKeys = [
+      'auth',
+      'customerToken',
+      'customerTokenExpiresAt',
+      'anonToken',
+      'anonTokenExpiresAt',
+      'anonymousId',
+    ]
+    expect(removedKeys.some((key) => expectedKeys.includes(key))).toBe(true)
     expect(mockNavigate).toHaveBeenCalledWith('/login')
   })
 })

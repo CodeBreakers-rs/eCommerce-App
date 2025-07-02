@@ -67,7 +67,7 @@ export const LoginForm = () => {
 
   return (
     <div className="flex items-center justify-center bg-[#f6ebdf] px-4">
-      <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-6xl">
+      <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-6xl gap-6 md:gap-0 py-6">
         <div className="w-full md:w-1/3 p-8">
           <h1 className="text-3xl font-bold text-[#3c2c27] mb-2">
             Welcome again!
@@ -76,7 +76,7 @@ export const LoginForm = () => {
 
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-sm bg-[#fdf7f2] rounded-lg p-6 space-y-5 shadow-md"
+            className="w-full max-w-md bg-[#fdf7f2] rounded-lg p-4 sm:p-6 space-y-5 shadow-md mx-auto"
           >
             <div>
               <label htmlFor="email" className="block mb-1 font-medium">

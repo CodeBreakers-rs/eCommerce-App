@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
@@ -59,7 +59,7 @@ describe('UserDropdown', () => {
     expect(screen.getByText(/Logout/)).toBeInTheDocument()
   })
 
-  it('calls logout and navigates to login on logout click', () => {
+  it('calls logout and navigates to login on logout click', async () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: {
@@ -74,9 +74,15 @@ describe('UserDropdown', () => {
         </MemoryRouter>
       </Provider>,
     )
+
     fireEvent.click(screen.getByRole('button'))
     fireEvent.click(screen.getByText(/Logout/))
-    expect(removeItemSpy).toHaveBeenCalled()
+
+    await waitFor(() => {
+      expect(removeItemSpy).toHaveBeenCalled()
+      expect(mockNavigate).toHaveBeenCalledWith('/login')
+    })
+
     const removedKeys = removeItemSpy.mock.calls.map((call) => String(call[0]))
     const expectedKeys = [
       'auth',
@@ -87,6 +93,5 @@ describe('UserDropdown', () => {
       'anonymousId',
     ]
     expect(removedKeys.some((key) => expectedKeys.includes(key))).toBe(true)
-    expect(mockNavigate).toHaveBeenCalledWith('/login')
   })
 })

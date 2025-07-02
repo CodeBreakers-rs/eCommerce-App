@@ -263,14 +263,14 @@ export const RegForm = () => {
   )
 
   return (
-    <div className="flex items-center justify-center bg-[#f6ebdf] px-4 py-6">
+    <div className="flex items-center justify-center bg-[#f6ebdf] px-4 py-6 min-h-screen">
       <div className="flex  items-stretch">
         <div className="bg-[#fdf7f2] shadow rounded p-6 flex flex-col">
           <form
             onSubmit={(e) => {
               void handleSubmit(e)
             }}
-            className="bg-[#fdf7f2] shadow rounded p-6 h-[90vh] w-full flex flex-col justify-between"
+            className="bg-[#fdf7f2] shadow rounded p-4 sm:p-6 w-full max-w-4xl flex flex-col justify-between space-y-4 overflow-auto"
           >
             <div className="text-center mb-4">
               <h1 className="text-3xl font-bold text-[#40312d]">
@@ -287,12 +287,12 @@ export const RegForm = () => {
               )}
             </div>
 
-            <div className="flex flex-1 gap-6 overflow-y-auto">
+            <div className="flex flex-col md:flex-row flex-1 gap-6 overflow-y-auto">
               <div className="flex-1 space-y-2">
                 <h3 className="text-lg font-semibold text-gray-800">
                   Main Form
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {renderInput('email', 'Email', 'email')}
                   {renderInput('password', 'Password', 'password')}
                   {renderInput('firstName', 'First Name')}

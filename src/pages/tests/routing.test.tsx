@@ -32,7 +32,17 @@ describe('Direct Navigation Routes', () => {
         <Route path="/" element={<MainPage />} />
       </Routes>,
     )
-    expect(screen.getByText(/Main/i)).toBeInTheDocument()
+
+    const matches = screen.getAllByText(
+      (_, element) => element?.textContent?.includes('Homemade Zefir') ?? false,
+    )
+    expect(matches.length).toBeGreaterThan(0)
+
+    expect(
+      screen.getByRole('heading', {
+        name: /homemade zefir/i,
+      }),
+    ).toBeInTheDocument()
   })
 
   it('navigates to Login page via direct URL', () => {

@@ -127,7 +127,6 @@ export const RegForm = () => {
       dispatch(
         login({
           customer: loginResult.customer,
-          token: loginResult.token,
         }),
         dispatch(clearCart()),
         dispatch(initializeCart()),

@@ -54,7 +54,6 @@ export const LoginForm = () => {
         const result = await loginUser(email, password)
         dispatch(
           login({
-            token: result.token,
             customer: result.customer,
           }),
         )

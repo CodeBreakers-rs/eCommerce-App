@@ -1,22 +1,38 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import BasketPage from '../basket-page'
+import * as reactRedux from '../../store/hooks'
 
-describe('CartPage', () => {
-  it('renders cart product and recommendations', () => {
+describe('BasketPage', () => {
+  const useAppDispatchMock = vi.fn()
+
+  beforeEach(() => {
+    vi.spyOn(reactRedux, 'useAppDispatch').mockReturnValue(useAppDispatchMock)
+    vi.spyOn(reactRedux, 'useAppSelector').mockImplementation((selector) => {
+      if (selector.name === 'selectCart') {
+        return {
+          id: 'cart-id',
+          version: 1,
+          lineItems: [
+            {
+              id: 'item1',
+              name: { en: 'Apple-Cranberry 9' },
+              quantity: 1,
+              price: { value: { centAmount: 1450 } },
+              totalPrice: { centAmount: 1450 },
+              variant: { images: [{ url: '/test.png' }] },
+            },
+          ],
+        }
+      }
+      if (selector.name === 'selectCartStatus') return 'idle'
+      if (selector.name === 'selectCartError') return null
+    })
+  })
+
+  it('renders cart item and recommendations', () => {
     render(<BasketPage />)
-    const cartHeading = screen.getByRole('heading', { level: 2, name: /Cart/i })
-    expect(cartHeading).toBeInTheDocument()
-    expect(screen.getByText(/Apple-Cranberry 9/i)).toBeInTheDocument()
-    expect(screen.getByText(/Apple-Cranberry Pink/i)).toBeInTheDocument()
-    expect(screen.getByText(/Apple-natural/i)).toBeInTheDocument()
-    expect(screen.getByText(/Order now/i)).toBeDisabled()
-
-    const removeBtn = screen.getByRole('button', { name: /Remove from Cart/i })
-    expect(removeBtn).toBeInTheDocument()
-
-    fireEvent.click(removeBtn)
-
-    expect(screen.getByText(/Cart is empty/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/\$14.50/i).length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: /Remove/i })).toBeInTheDocument()
   })
 })

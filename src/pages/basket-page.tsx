@@ -1,131 +1,143 @@
-import { useState } from 'react'
-import recommended1 from '../assets/images/recommend-1.png'
-import recommended2 from '../assets/images/recommend-2.png'
+import { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
+import {
+  initializeCart,
+  removeFromCart,
+  selectCart,
+  selectCartStatus,
+  selectCartError,
+} from '../store/slices/cart-slice'
+import { updateCartQuantity } from '../features/basket/services/cart-quantity'
 
 const BasketPage = () => {
-  const [quantity, setQuantity] = useState(1)
-  const [removed, setRemoved] = useState(false)
+  const dispatch = useAppDispatch()
+  const cart = useAppSelector(selectCart)
+  const status = useAppSelector(selectCartStatus)
+  const error = useAppSelector(selectCartError)
 
-  const price = 14.5
-  const total = price * quantity
-  const minOrder = 20
+  useEffect(() => {
+    void dispatch(initializeCart())
+  }, [dispatch])
 
-  const handleRemove = () => {
-    setQuantity(0)
-    setRemoved(true)
+  const handleRemove = (lineItemId: string) => {
+    void dispatch(removeFromCart(lineItemId))
   }
 
+  if (!cart) return <p>Cart not loaded</p>
+
+  const handleQuantityChange = (lineItemId: string, change: number) => {
+    const lineItem = cart.lineItems.find((item) => item.id === lineItemId)
+    if (!lineItem) return
+
+    const newQty = lineItem.quantity + change
+    if (newQty < 1) return
+
+    void dispatch(updateCartQuantity({ lineItemId, quantity: newQty }))
+  }
+
+  const total = (cart.totalPrice?.centAmount ?? 0) / 100
+
   return (
-    <div className="bg-[#f6ebdf] text-[#40312d] px-4 py-10">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div>
-          <h2 className="text-3xl font-bold mb-6">Cart</h2>
-          {!removed ? (
-            <div className="space-y-4">
-              <div>
-                <button
-                  onClick={handleRemove}
-                  className="w-2xs text-1xl text-black-600 bg-[#ded2c5] rounded-full mt-2 mb-2 hover:bg-[#bdbab7] cursor-pointer"
+    <div className="min-h-screen bg-[#f5e6d8] text-[#2f2b27] p-6">
+      {status === 'loading' && <p>Loading cart...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <h2 className="text-3xl font-semibold mb-8">Cart</h2>
+
+      {(cart.lineItems?.length ?? 0) > 0 ? (
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex-1 space-y-6">
+            {cart.lineItems.map((item) => {
+              const { id, name, quantity, price, totalPrice, variant } = item
+              const imageUrl = variant?.images?.[0]?.url
+
+              return (
+                <div
+                  key={id}
+                  className="flex items-center justify-between border-b pb-4 border-[#ded2c5]"
                 >
-                  Remove from Cart
-                </button>
-                <div className="uppercase text-sm tracking-wide">
-                  Apple-Cranberry 9
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>${price.toFixed(2)}</span>
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    >
-                      ➖
-                    </button>
-                    <span>{quantity}</span>
-                    <button onClick={() => setQuantity((q) => q + 1)}>
-                      ➕
-                    </button>
+                  <div className="flex gap-4 items-center">
+                    {imageUrl && (
+                      <img
+                        src={imageUrl}
+                        alt={name['en']}
+                        className="w-24 h-24 rounded-xl object-cover"
+                      />
+                    )}
+                    <div className="space-y-1">
+                      <h3 className="uppercase text-lg font-semibold">
+                        {name['en']}
+                      </h3>
+                      <p className="text-base">
+                        ${(price.value.centAmount / 100).toFixed(2)}
+                      </p>
+                      <p className="text-sm">Quantity: {quantity}</p>
+                      <p className="text-sm">
+                        Total: ${(totalPrice.centAmount / 100).toFixed(2)}
+                      </p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          className="border border-gray-400 rounded-full px-2"
+                          onClick={() => handleQuantityChange(id, -1)}
+                        >
+                          −
+                        </button>
+                        <span>{quantity}</span>
+                        <button
+                          className="border border-gray-400 rounded-full px-2"
+                          onClick={() => handleQuantityChange(id, 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                   </div>
+
+                  <button
+                    className="text-sm bg-[#6b4f43] hover:bg-[#523e36] text-white px-4 py-2 rounded-xl"
+                    onClick={() => handleRemove(id)}
+                  >
+                    Remove
+                  </button>
                 </div>
+              )
+            })}
+
+            <div className="text-sm space-y-2 pt-4">
+              <div className="flex justify-between max-w-sm">
+                <span>Box</span>
+                <span>{cart.lineItems.length}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="uppercase">Box 1</span>
-                <span>1</span>
+              <div className="flex justify-between max-w-sm">
+                <span>Delivery</span>
+                <span>FREE</span>
               </div>
-              <div className="flex justify-between">
-                <span className="uppercase">Delivery</span>
-                <span>Free</span>
-              </div>
-              <div className="flex justify-between font-semibold mt-6">
+              <div className="flex justify-between max-w-sm font-semibold text-lg pt-2">
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
-              {total < minOrder && (
-                <p className="text-sm mt-2 uppercase">Not enough to order</p>
-              )}
+              <p className="text-sm pt-1">Not enough to order</p>
             </div>
-          ) : (
-            <p className="text-gray-500 italic">Cart is empty</p>
-          )}
-          <div className="mt-8">
-            <label className="flex items-center gap-3 text-sm font-medium">
-              <input type="checkbox" className="accent-[#40312d]" />I agree to
-              the terms and conditions
-            </label>
-            <button
-              disabled={total < minOrder}
-              className="mt-4 w-full bg-[#ded2c5] text-[#40312d] py-3 rounded-full font-semibold disabled:opacity-50"
-            >
-              Order now
-            </button>
-          </div>
-        </div>
 
-        <div>
-          <h3 className="text-center uppercase text-sm mb-4">
-            Personalized Recommendations
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[
-              {
-                image: recommended1,
-                title: 'Apple-Cranberry Pink',
-                desc: 'Refined Zefir, half-coated milk chocolate, balancing fruity and apple.',
-                price: 7.0,
-              },
-              {
-                image: recommended2,
-                title: 'Apple-natural',
-                desc: 'Delicate airy Zefir with pure fruity flavor, 4-piece box.',
-                price: 11.0,
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="rounded-3xl overflow-hidden bg-[#4d2d2d] text-white p-4 relative"
+            <div className="pt-4">
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input type="checkbox" className="accent-[#6b4f43]" />
+                <span className="underline">
+                  I agree to the terms and conditions
+                </span>
+              </label>
+              <button
+                className="mt-4 block w-full max-w-xs bg-[#d8c8b9] text-white text-sm py-3 rounded-full cursor-not-allowed"
+                disabled
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="absolute inset-0 w-full h-full object-cover opacity-40"
-                />
-                <div className="relative z-10 space-y-2">
-                  <div className="text-xs font-bold">0{index + 1}</div>
-                  <div className="text-lg font-semibold leading-tight">
-                    {item.title}
-                  </div>
-                  <p className="text-sm">{item.desc}</p>
-                  <div className="text-lg font-bold">
-                    ${item.price.toFixed(2)}
-                  </div>
-                  <button className="mt-2 px-4 py-2 bg-[#ded2c5] text-[#40312d] text-sm rounded-full">
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
+                ORDER NOW
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <p className="text-gray-500 italic">Cart is empty</p>
+      )}
     </div>
   )
 }

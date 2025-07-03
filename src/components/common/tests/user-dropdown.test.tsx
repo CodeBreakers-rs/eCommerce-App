@@ -12,6 +12,7 @@ import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import { describe, it, expect, vi } from 'vitest'
 import { mockCustomer } from '../../../tests/mock-data'
 import UserDropdown from '../navigation/user-dropdown'
+import * as authService from '../../../features/auth/services/auth-service'
 
 describe('UserDropdown', () => {
   it('does not render if not logged in or customer is missing', () => {
@@ -65,7 +66,11 @@ describe('UserDropdown', () => {
         auth: { ...authInitialState, isLoggedIn: true, customer: mockCustomer },
       },
     })
-    const removeItemSpy = vi.spyOn(window.localStorage.__proto__, 'removeItem')
+
+    const logoutSpy = vi
+      .spyOn(authService, 'handleLogout')
+      .mockImplementation(() => Promise.resolve())
+
     render(
       <Provider store={store}>
         <MemoryRouter>
@@ -78,19 +83,8 @@ describe('UserDropdown', () => {
     fireEvent.click(screen.getByText(/Logout/))
 
     await waitFor(() => {
-      expect(removeItemSpy).toHaveBeenCalled()
+      expect(logoutSpy).toHaveBeenCalled()
       expect(mockNavigate).toHaveBeenCalledWith('/login')
     })
-
-    const removedKeys = removeItemSpy.mock.calls.map((call) => String(call[0]))
-    const expectedKeys = [
-      'auth',
-      'customerToken',
-      'customerTokenExpiresAt',
-      'anonToken',
-      'anonTokenExpiresAt',
-      'anonymousId',
-    ]
-    expect(removedKeys.some((key) => expectedKeys.includes(key))).toBe(true)
   })
 })

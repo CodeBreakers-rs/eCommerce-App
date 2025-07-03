@@ -27,7 +27,7 @@ const productCards = [
 
 const MainPage = () => {
   return (
-    <main className="bg-[#f6ebdf] min-h-screen px-4 py-8 text-[#40312d]">
+    <>
       <section className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 mb-12">
         <img
           src={main1}
@@ -87,7 +87,7 @@ const MainPage = () => {
           </div>
         ))}
       </section>
-    </main>
+    </>
   )
 }
 

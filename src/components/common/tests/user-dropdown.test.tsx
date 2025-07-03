@@ -1,3 +1,9 @@
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return { ...actual, useNavigate: () => mockNavigate }
+})
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
@@ -5,13 +11,6 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
 import { describe, it, expect, vi } from 'vitest'
 import { mockCustomer } from '../../../tests/mock-data'
-
-const mockNavigate = vi.fn()
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom')
-  return { ...actual, useNavigate: () => mockNavigate }
-})
-
 import UserDropdown from '../navigation/user-dropdown'
 
 describe('UserDropdown', () => {

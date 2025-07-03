@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import magnifyingGlassIcon from '../../../assets/svg/magnifying-glass.svg'
-import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { useAppDispatch } from '../../../store/hooks'
 import { resetCatalog, setProducts } from '../../../store/slices/catalog-slice'
 import { fetchProducts, fetchProductsByText } from '../services/catalog-service'
 
@@ -10,7 +10,6 @@ const SearchInput = () => {
   const [error, setError] = useState<string | null>(null)
 
   const dispatch = useAppDispatch()
-  const token = useAppSelector((state) => state.auth.token)
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedQuery(query), 500)
@@ -39,7 +38,7 @@ const SearchInput = () => {
     }
 
     void fetchSearchResults()
-  }, [debouncedQuery, dispatch, token])
+  }, [debouncedQuery, dispatch])
 
   return (
     <div className="relative text-[#483528] text-xl w-full max-w-xs">

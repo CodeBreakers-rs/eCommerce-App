@@ -6,8 +6,9 @@ import {
 } from './commercetools-constants'
 import { encodeCredentials } from '../utils/encode-credentials'
 import { safeFetchJson, type TokenResponse } from '../types/api-response'
+import { setAnonTokenInStorage } from '../store/token-storage'
 
-export const getAnonToken = async (): Promise<{
+export const fetchAnonToken = async (): Promise<{
   anonToken: string
   anonTokenExpiresAt: string
   anonymousId: string
@@ -38,6 +39,8 @@ export const getAnonToken = async (): Promise<{
   const anonTokenExpiresAt = new Date(
     Date.now() + data.expires_in * 1000,
   ).toISOString()
+
+  setAnonTokenInStorage(anonToken, anonTokenExpiresAt, newAnonymousId)
 
   return {
     anonToken,

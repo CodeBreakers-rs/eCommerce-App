@@ -1,18 +1,18 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Provider } from 'react-redux'
-import { MemoryRouter } from 'react-router-dom'
-import { configureStore } from '@reduxjs/toolkit'
-import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
-import { describe, it, expect, vi } from 'vitest'
-import { mockCustomer } from '../../../tests/mock-data'
-
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom'
+import { configureStore } from '@reduxjs/toolkit'
+import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
+import { describe, it, expect, vi } from 'vitest'
+import { mockCustomer } from '../../../tests/mock-data'
 import UserDropdown from '../navigation/user-dropdown'
+import * as authService from '../../../features/auth/services/auth-service'
 
 describe('UserDropdown', () => {
   it('does not render if not logged in or customer is missing', () => {
@@ -59,14 +59,18 @@ describe('UserDropdown', () => {
     expect(screen.getByText(/Logout/)).toBeInTheDocument()
   })
 
-  it('calls logout and navigates to login on logout click', () => {
+  it('calls logout and navigates to login on logout click', async () => {
     const store = configureStore({
       reducer: { auth: authReducer },
       preloadedState: {
         auth: { ...authInitialState, isLoggedIn: true, customer: mockCustomer },
       },
     })
-    const removeItemSpy = vi.spyOn(window.localStorage.__proto__, 'removeItem')
+
+    const logoutSpy = vi
+      .spyOn(authService, 'handleLogout')
+      .mockImplementation(() => Promise.resolve())
+
     render(
       <Provider store={store}>
         <MemoryRouter>
@@ -74,9 +78,13 @@ describe('UserDropdown', () => {
         </MemoryRouter>
       </Provider>,
     )
+
     fireEvent.click(screen.getByRole('button'))
     fireEvent.click(screen.getByText(/Logout/))
-    expect(removeItemSpy).toHaveBeenCalledWith('auth')
-    expect(mockNavigate).toHaveBeenCalledWith('/login')
+
+    await waitFor(() => {
+      expect(logoutSpy).toHaveBeenCalled()
+      expect(mockNavigate).toHaveBeenCalledWith('/login')
+    })
   })
 })

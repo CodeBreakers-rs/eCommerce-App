@@ -5,11 +5,12 @@ import { setCustomerData, login } from '../store/slices/auth-slice'
 import { updateCustomerProfile } from '../features/profile/services/customer-service'
 import type { CustomerUpdatePayload } from '../types/customer'
 import { EditProfileModal } from '../features/profile/edit-profile-modal'
+import { getCustomerTokenFromStorage } from '../store/token-storage'
 
 const ProfilePage = () => {
   const dispatch = useDispatch()
   const customer = useAppSelector((state) => state.auth.customer)
-  const token = useAppSelector((state) => state.auth.token)
+  const { token } = getCustomerTokenFromStorage()
 
   const [defaultShippingId, setDefaultShippingId] = useState<string | null>(
     null,
@@ -30,13 +31,8 @@ const ProfilePage = () => {
       }
 
       const newCustomerData = await updateCustomerProfile(token, updatePayload)
-      dispatch(login({ customer: newCustomerData, token }))
-      dispatch(
-        setCustomerData({
-          token,
-          customer: newCustomerData,
-        }),
-      )
+      dispatch(login({ customer: newCustomerData }))
+      dispatch(setCustomerData({ customer: newCustomerData }))
       setStatusMessage('Profile updated successfully!')
       setIsEditMode(false)
     } catch (error) {

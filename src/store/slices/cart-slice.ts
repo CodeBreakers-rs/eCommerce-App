@@ -11,13 +11,14 @@ import {
   addLineItem,
 } from '../../features/basket/services/cart-service'
 import { PROJECT_KEY } from '../../services/commercetools-constants'
-
 import {
   clearCartStorage,
   loadCartFromStorage,
   saveCartToStorage,
 } from '../cart-storage'
 import { updateCartQuantity } from '../../features/basket/services/cart-quantity'
+import { loadCartFromStorage, saveCartToStorage } from '../cart-storage'
+
 
 const savedCart = loadCartFromStorage()
 
@@ -122,7 +123,6 @@ const cartSlice = createSlice({
       state.cart = null
       state.items = []
       state.pendingProductSlug = null
-      clearCartStorage()
     },
     setPendingProductSlug: (state, action: PayloadAction<string | null>) => {
       state.pendingProductSlug = action.payload

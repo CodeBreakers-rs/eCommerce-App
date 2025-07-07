@@ -2,12 +2,12 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer, { authInitialState } from '../../../store/slices/auth-slice'
-import Navigation from '../navigation/navigation'
+import Header from '../navigation/header'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { mockCustomer } from '../../../tests/mock-data'
 
-describe('Navigation', () => {
+describe('Header', () => {
   it('renders logo, nav links, and hamburger button', () => {
     const store = configureStore({
       reducer: { auth: authReducer },
@@ -18,7 +18,7 @@ describe('Navigation', () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <Navigation />
+          <Header />
         </MemoryRouter>
       </Provider>,
     )
@@ -37,12 +37,12 @@ describe('Navigation', () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <Navigation />
+          <Header />
         </MemoryRouter>
       </Provider>,
     )
     const hamburger = screen.getByRole('button')
-    const navLinks = screen.getByRole('list')
+    const navLinks = screen.getByRole('navigation')
     expect(navLinks.parentElement?.className).toContain('hidden')
 
     fireEvent.click(hamburger)
@@ -59,7 +59,7 @@ describe('Navigation', () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <Navigation />
+          <Header />
         </MemoryRouter>
       </Provider>,
     )

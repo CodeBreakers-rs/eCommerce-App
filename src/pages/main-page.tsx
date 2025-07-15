@@ -27,67 +27,83 @@ const productCards = [
 
 const MainPage = () => {
   return (
-    <main className="bg-[#f6ebdf] min-h-screen px-4 py-8 text-[#40312d]">
-      <section className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 mb-12">
+    <>
+      <section className="bg-[#f5e6d8]  w-full px-4 pt-4 pb-4">
+  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-center rounded-3xl bg-[#fbeee2] p-2">
+    <img
+      src={main1}
+      alt="Zefir Hero"
+      className="rounded-2xl object-cover w-full lg:w-1/2 h-[320px] lg:h-auto"
+    />
+
+    <div className="flex-1 text-center lg:text-left space-y-4">
+      <h1 className="text-4xl sm:text-5xl font-extrabold leading-snug text-[#2f2b27]">
+        Homemade Zefir,<br className="hidden sm:inline" /> No Artificial Flavors
+      </h1>
+      <p className="text-base sm:text-lg text-[#5a4b47] max-w-xl mx-auto lg:mx-0">
+        Whether you prefer natural flavors, homemade treats, or desserts without artificial additives.
+      </p>
+      <div className="flex flex-wrap justify-center lg:justify-start gap-2 pt-2">
+        <button className="border border-[#2f2b27] px-4 py-1 rounded-full text-xs sm:text-sm hover:bg-[#2f2b27] hover:text-white transition">
+          HIGH QUALITY
+        </button>
+        <button className="border border-[#2f2b27] px-4 py-1 rounded-full text-xs sm:text-sm hover:bg-[#2f2b27] hover:text-white transition">
+          PREMIUM ZEFIR
+        </button>
+        <button className="border border-[#2f2b27] px-4 py-1 rounded-full text-xs sm:text-sm hover:bg-[#2f2b27] hover:text-white transition">
+          VERSATILE
+        </button>
+        <button className="bg-[#2f2b27] text-white px-4 py-1 rounded-full text-xs sm:text-sm flex items-center gap-1 hover:bg-[#40312d]">
+          LEARN MORE ➝
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section className="bg-[#f5e6d8] py-10 px-4">
+  <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {productCards.map((card) => (
+      <div
+        key={card.id}
+        className="relative rounded-[1.5rem] overflow-hidden shadow-md cursor-pointer group bg-black"
+      >
         <img
-          src={main1}
-          alt="Zefir Hero"
-          className="rounded-2xl shadow-md object-cover w-full lg:w-1/2 cursor-pointer"
+          src={card.image}
+          alt={card.title}
+          className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="flex-1 space-y-6 text-center lg:text-left">
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Homemade Zefir, <br className="hidden sm:inline" /> No Artificial
-            Flavors
-          </h1>
-          <p className="text-lg text-[#5a4b47]">
-            Whether you prefer natural flavors, homemade treats, or desserts
-            without artificial additives.
-          </p>
-          <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-            <button className="border px-4 py-1 rounded-full text-sm cursor-pointer hover:bg-[#40312d] hover:text-white">
-              HIGH QUALITY
-            </button>
-            <button className="border px-4 py-1 rounded-full text-sm cursor-pointer hover:bg-[#40312d] hover:text-white">
-              PREMIUM ZEFIR
-            </button>
-            <button className="border px-4 py-1 rounded-full text-sm cursor-pointer hover:bg-[#40312d] hover:text-white">
-              VERSATILE
-            </button>
-            <button className="bg-[#40312d] text-white px-4 py-1 rounded-full text-sm flex items-center gap-1 hover:bg-[#5a4b47] cursor-pointer">
-              LEARN MORE <span>➝</span>
-            </button>
-          </div>
+
+
+        <div
+          className="absolute inset-y-0 left-0 w-1/2 p-4 flex flex-col justify-center text-white z-10"
+          style={{
+            background: `linear-gradient(90deg,
+             rgba(102, 71, 47, 1) 0%,
+             rgba(102, 71, 47, 0.75) 20%,
+             rgba(102, 71, 47, 0.75) 30%,
+             rgba(73, 50, 32, 0.155) 75%,
+             rgba(73, 50, 32, 0.155) 80%,
+             rgba(73, 50, 32, 0.155) 100%`,
+          }}
+        >
+          <div className="absolute top-3 left-3 bg-black/40 text-white rounded-full w-7 h-7 text-xs flex items-center justify-center font-bold z-10">
+          {card.id}
         </div>
-      </section>
+          <h3 className="text-white font-bold leading-tight drop-shadow-sm">
+            {card.title}
+          </h3>
+          <p className="text-sm text-white/90 drop-shadow-sm">
+            {card.description}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
 
-      <section className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {productCards.map((card) => (
-          <div
-            key={card.id}
-            className="relative text-white rounded-2xl overflow-hidden shadow-md cursor-pointer"
-          >
-            <img
-              src={card.image}
-              alt={card.title}
-              className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-            />
 
-            <div className="absolute top-2 left-2 bg-transparent rounded-full w-6 h-6 text-xs flex items-center justify-center font-bold border border-white">
-              {card.id}
-            </div>
-
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-black/20 text-white">
-              <h3 className="text-lg font-semibold leading-tight">
-                {card.title}
-              </h3>
-              <p className="text-sm leading-snug text-white/90">
-                {card.description}
-              </p>
-            </div>
-          </div>
-        ))}
-      </section>
-    </main>
+    </>
   )
 }
 

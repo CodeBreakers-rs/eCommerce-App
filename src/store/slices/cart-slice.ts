@@ -11,8 +11,12 @@ import {
   addLineItem,
 } from '../../features/basket/services/cart-service'
 import { PROJECT_KEY } from '../../services/commercetools-constants'
+import {
+  loadCartFromStorage,
+  saveCartToStorage,
+} from '../cart-storage'
+import { updateCartQuantity } from '../../features/basket/services/cart-quantity'
 
-import { loadCartFromStorage, saveCartToStorage } from '../cart-storage'
 
 const savedCart = loadCartFromStorage()
 
@@ -168,6 +172,19 @@ const cartSlice = createSlice({
         state.status = 'failed'
         state.error = action.error.message ?? 'Failed to add product to cart'
         state.pendingProductSlug = null
+      })
+      .addCase(updateCartQuantity.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.cart = action.payload
+        state.items = extractSlugsFromCart(action.payload)
+        saveCartToStorage({ cartId: action.payload.id, items: state.items })
+      })
+      .addCase(updateCartQuantity.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(updateCartQuantity.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message ?? 'Failed to update quantity'
       })
   },
 })

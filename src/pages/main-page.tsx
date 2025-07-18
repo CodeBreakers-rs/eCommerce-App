@@ -76,12 +76,12 @@ const MainPage = () => {
 
 
         <div
-          className="absolute inset-y-0 left-0 w-1/2 p-4 flex flex-col justify-center text-white z-10"
+          className="absolute inset-y-0 left-0 w-2/3 p-4 flex flex-col justify-center text-white z-10"
           style={{
             background: `linear-gradient(90deg,
              rgba(102, 71, 47, 1) 0%,
              rgba(102, 71, 47, 0.75) 20%,
-             rgba(102, 71, 47, 0.75) 30%,
+             rgba(102, 71, 47, 0.5) 50%,
              rgba(73, 50, 32, 0.155) 75%,
              rgba(73, 50, 32, 0.155) 80%,
              rgba(73, 50, 32, 0.155) 100%`,
@@ -90,7 +90,7 @@ const MainPage = () => {
           <div className="absolute top-3 left-3 bg-black/40 text-white rounded-full w-7 h-7 text-xs flex items-center justify-center font-bold z-10">
           {card.id}
         </div>
-          <h3 className="text-white font-bold leading-tight drop-shadow-sm">
+          <h3 className="text-white sm:text-2xl font-bold leading-tight drop-shadow-sm">
             {card.title}
           </h3>
           <p className="text-sm text-white/90 drop-shadow-sm">
@@ -102,6 +102,99 @@ const MainPage = () => {
   </div>
 </section>
 
+<section className="bg-[#f5e6d8] px-4 py-14">
+  <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div className="flex flex-col items-center md:items-start text-center md:text-left">
+      <div className="relative mb-6">
+        <img
+          src="src/assets/images/Canada.png"
+          alt="Delivery area"
+          className="w-64 h-auto object-contain"
+        />
+      </div>
+
+      <div className="space-y-1 mb-4">
+        <p className="text-lg text-[#493220] font-medium">Mississauga</p>
+        <p className="text-lg text-[#493220] font-medium">Toronto</p>
+        <p className="text-lg text-[#493220] font-medium">GTA</p>
+      </div>
+
+      <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
+        DELIVERY
+      </button>
+    </div>
+
+    <div className="text-[#2f2b27] text-base space-y-4 max-w-lg mx-auto md:mx-0">
+      <p>
+        We offer a convenient delivery service within Toronto for a flat fee of $35. You can choose to have your order delivered by taxi or by car, ensuring quick and reliable service.
+      </p>
+      <p>
+        Enjoy free delivery on orders of $120 or more, or take advantage of our special offer: free delivery every Tuesday between 12–2 pm, regardless of your order amount.
+      </p>
+    </div>
+  </div>
+
+  <div className="mt-10 flex flex-wrap justify-center gap-4">
+    <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
+        SWEET INFO
+      </button>
+    <img
+      src={main2}
+      alt="Zefir thumbnail"
+      className="w-32 h-32 object-cover rounded-xl shadow-md"
+    />
+    <img
+      src={main2}
+      alt="Zefir thumbnail"
+      className="w-32 h-32 object-cover rounded-xl shadow-md"
+    />
+    <img
+      src={main2}
+      alt="Zefir thumbnail"
+      className="w-32 h-32 object-cover rounded-xl shadow-md"
+    />
+    <div className="text-center text-sm text-[#493220] mt-8 space-y-2">
+    <p>Minimum Order: All orders must be at least $27.</p>
+    <p>
+      Order Deadline: Please place your orders at least 2 days before the
+      desired pickup or delivery date. This ensures that your desserts are
+      prepared fresh and on time.
+    </p>
+  </div>
+  </div>
+
+</section>
+<footer className="bg-[#f5e6d8] py-8 px-4 mt-16">
+  <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-[#493220]">
+    <p className="text-sm text-center md:text-left">
+      Terms of Condition.
+    </p>
+
+    <div className="flex gap-4">
+      <a href="twitter" target="_blank" rel="noopener noreferrer">
+        <img
+          src="src\assets\svg\twitter.svg"
+          alt="Twitter"
+          className="w-6 h-6 hover:scale-110 transition-transform"
+        />
+      </a>
+      <a href="https://facebook.com/yourprofile" target="_blank" rel="noopener noreferrer">
+        <img
+          src="src/assets/svg/facebook.svg"
+          alt="facebook"
+          className="w-6 h-6 hover:scale-110 transition-transform"
+        />
+      </a>
+      <a href="https://instagram.com/yourprofile">
+        <img
+          src="src/assets/svg/instagram.svg"
+          alt="instagram"
+          className="w-6 h-6 hover:scale-110 transition-transform"
+        />
+      </a>
+    </div>
+  </div>
+</footer>
 
     </>
   )

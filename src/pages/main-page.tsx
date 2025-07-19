@@ -104,66 +104,83 @@ const MainPage = () => {
 
 <section className="bg-[#f5e6d8] px-4 py-14">
   <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-    <div className="flex flex-col items-center md:items-start text-center md:text-left">
-      <div className="relative mb-6">
+    <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+      <div className="relative mb-6 md:mb-0 md:mr-6">
         <img
-          src="src/assets/images/Canada.png"
+          src=""
           alt="Delivery area"
           className="w-64 h-auto object-contain"
         />
+        <div className="absolute top-[22%] left-[32%] w-32 h-32 rounded-full border-[6px] border-[#493220] overflow-hidden shadow-xl">
+          <img
+            src="/images/pin-image.png"
+            alt="Pin"
+            className="object-cover w-full h-full"
+          />
+        </div>
       </div>
 
-      <div className="space-y-1 mb-4">
-        <p className="text-lg text-[#493220] font-medium">Mississauga</p>
-        <p className="text-lg text-[#493220] font-medium">Toronto</p>
-        <p className="text-lg text-[#493220] font-medium">GTA</p>
+      <div className="flex flex-col items-center md:items-start space-y-4 text-[#493220] font-medium text-lg">
+        <div className="space-y-1">
+          <p>Mississauga</p>
+          <p>Toronto</p>
+          <p>GTA</p>
+        </div>
+        <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
+          DELIVERY
+        </button>
       </div>
-
-      <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
-        DELIVERY
-      </button>
     </div>
 
     <div className="text-[#2f2b27] text-base space-y-4 max-w-lg mx-auto md:mx-0">
       <p>
-        We offer a convenient delivery service within Toronto for a flat fee of $35. You can choose to have your order delivered by taxi or by car, ensuring quick and reliable service.
+        We offer a convenient delivery service within Toronto for a flat fee of $35. You can choose
+        to have your order delivered by taxi or by car, ensuring quick and reliable service.
       </p>
       <p>
-        Enjoy free delivery on orders of $120 or more, or take advantage of our special offer: free delivery every Tuesday between 12–2 pm, regardless of your order amount.
+        Enjoy free delivery on orders of $120 or more, or take advantage of our special offer: free
+        delivery every Tuesday between 12–2 pm, regardless of your order amount.
       </p>
     </div>
   </div>
 
-  <div className="mt-10 flex flex-wrap justify-center gap-4">
+  <div className="mt-10 flex flex-wrap md:flex-nowrap items-start justify-center gap-25 md:justify-start md:px-8">
+  <div className="flex flex-col items-center space-y-4 max-w-sm text-center">
     <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
-        SWEET INFO
-      </button>
-    <img
-      src={main2}
-      alt="Zefir thumbnail"
-      className="w-32 h-32 object-cover rounded-xl shadow-md"
-    />
-    <img
-      src={main2}
-      alt="Zefir thumbnail"
-      className="w-32 h-32 object-cover rounded-xl shadow-md"
-    />
-    <img
-      src={main2}
-      alt="Zefir thumbnail"
-      className="w-32 h-32 object-cover rounded-xl shadow-md"
-    />
-    <div className="text-center text-sm text-[#493220] mt-8 space-y-2">
-    <p>Minimum Order: All orders must be at least $27.</p>
-    <p>
-      Order Deadline: Please place your orders at least 2 days before the
-      desired pickup or delivery date. This ensures that your desserts are
-      prepared fresh and on time.
-    </p>
+      SWEET INFO
+    </button>
+
+    <div className="text-sm text-[#493220] space-y-2 text-left w-full">
+      <p>Minimum Order: All orders must be at least $27.</p>
+      <p>
+        Order Deadline: Please place your orders at least 2 days before the desired pickup or
+        delivery date. This ensures that your desserts are prepared fresh and on time.
+      </p>
+    </div>
   </div>
+  <div className="mt-10 flex flex-wrap md:flex-nowrap items-start justify-center gap-8 md:justify-start md:px-8">
+  <img
+    src={main2}
+    alt="Zefir thumbnail thin"
+    className="w-24 h-32 object-cover rounded-xl shadow-md"
+  />
+  <img
+    src={main2}
+    alt="Zefir thumbnail medium"
+    className="w-32 h-32 object-cover rounded-xl shadow-md"
+  />
+  <img
+    src={main2}
+    alt="Zefir thumbnail thick"
+    className="w-40 h-32 object-cover rounded-xl shadow-md"
+  />
   </div>
+</div>
+
+
 
 </section>
+
 <footer className="bg-[#f5e6d8] py-8 px-4 mt-16">
   <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-[#493220]">
     <p className="text-sm text-center md:text-left">

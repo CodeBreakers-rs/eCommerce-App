@@ -107,7 +107,7 @@ const MainPage = () => {
     <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
       <div className="relative mb-6 md:mb-0 md:mr-6">
         <img
-          src=""
+          src="src\assets\images\Canada.jpg"
           alt="Delivery area"
           className="w-64 h-auto object-contain"
         />
@@ -160,7 +160,7 @@ const MainPage = () => {
   </div>
   <div className="mt-10 flex flex-wrap md:flex-nowrap items-start justify-center gap-8 md:justify-start md:px-8">
   <img
-    src={main2}
+    src="src\assets\images\recommend-1.png"
     alt="Zefir thumbnail thin"
     className="w-24 h-32 object-cover rounded-xl shadow-md"
   />
@@ -170,7 +170,7 @@ const MainPage = () => {
     className="w-32 h-32 object-cover rounded-xl shadow-md"
   />
   <img
-    src={main2}
+    src="src\assets\images\recommend-2.png"
     alt="Zefir thumbnail thick"
     className="w-40 h-32 object-cover rounded-xl shadow-md"
   />

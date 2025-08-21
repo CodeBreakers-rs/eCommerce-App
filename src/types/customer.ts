@@ -8,6 +8,8 @@ export type AuthState = {
   customer: SDKCustomer | null
   status: 'idle' | 'loading' | 'succeeded' | 'failed' | 'loggingOut'
   error: string | null
+  token?: string | null
+  anonToken?: string | null
 }
 
 export type CustomerDraftPayload = {

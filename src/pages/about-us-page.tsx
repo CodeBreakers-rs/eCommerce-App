@@ -6,7 +6,6 @@ const AboutUsPage = () => {
   return (
     <div className="bg-[#f6ebdf] py-10 px-4 sm:px-6 text-[#40312d]">
       <div className="max-w-5xl mx-auto">
-        {/* Intro Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-10 text-center sm:text-left">
           <p className="text-sm sm:text-base max-w-3xl">
             The entire development team behind this website came together
@@ -37,14 +36,12 @@ const AboutUsPage = () => {
           </div>
         </div>
 
-        {/* Team Section */}
         <div className="grid gap-6 sm:grid-cols-2">
           {teamMembers.map((member) => (
             <div
               key={member.name}
               className="bg-[#f6ebdf] rounded-xl shadow-md overflow-hidden flex flex-col sm:flex-row"
             >
-              {/* Image & GitHub */}
               <div className="relative w-full sm:w-1/3 min-w-[150px] h-60 sm:h-auto">
                 <img
                   src={member.image}
@@ -64,7 +61,6 @@ const AboutUsPage = () => {
                 </a>
               </div>
 
-              {/* Info */}
               <div className="flex flex-col justify-center p-4 sm:p-6 w-full">
                 <h3 className="text-lg font-semibold mb-1">{member.role}</h3>
                 <p className="text-sm mb-2">{member.bio}</p>

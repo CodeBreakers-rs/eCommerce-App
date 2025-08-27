@@ -16,7 +16,7 @@ export const teamMembers = [
     role: 'Frontend Developer',
     bio: 'Frontend developer since 2022, experienced in React, Redux, and modern JS tools.',
     contributions:
-      'Led team coordination, implemented product catalog and animations.',
+      'Led team coordination, implemented product catalog and animations. Implemented API requests.',
     github: 'https://github.com/Sergecage',
     image: teamlead,
   },

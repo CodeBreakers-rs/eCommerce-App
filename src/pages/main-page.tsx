@@ -108,13 +108,13 @@ const MainPage = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
             <div className="relative mb-6 md:mb-0 md:mr-6">
               <img
-                src="src\assets\images\Canada.jpg"
+                src="src\assets\images\2.png"
                 alt="Delivery area"
                 className="w-64 h-auto object-contain"
               />
-              <div className="absolute top-[22%] left-[32%] w-32 h-32 rounded-full border-[6px] border-[#493220] overflow-hidden shadow-xl">
+              <div className="absolute top-[25%] left-[32%] w-22 h-27 rounded-full overflow-hidden shadow-xl">
                 <img
-                  src="/images/pin-image.png"
+                  src="src\assets\images/1.png"
                   alt="Pin"
                   className="object-cover w-full h-full"
                 />
@@ -164,7 +164,7 @@ const MainPage = () => {
           </div>
           <div className="mt-10 flex flex-wrap md:flex-nowrap items-start justify-center gap-10 md:justify-start md:px-8">
             <img
-              src="src\assets\images\recommend-1.png"
+              src="src\assets\images\3.png"
               alt="Zefir thumbnail thin"
               className="w-24 h-32 object-cover rounded-xl shadow-md"
             />
@@ -174,7 +174,7 @@ const MainPage = () => {
               className="w-32 h-32 object-cover rounded-xl shadow-md"
             />
             <img
-              src="src\assets\images\recommend-2.png"
+              src="src\assets\images\5.png"
               alt="Zefir thumbnail thick"
               className="w-40 h-32 object-cover rounded-xl shadow-md"
             />

@@ -11,6 +11,7 @@ import {
   isValidCountry,
 } from '../../utils/validators'
 import { ChangePasswordModal } from './change-password-modal'
+import { Modal } from '../../hooks/modal'
 
 export const EditProfileModal = ({
   customer,
@@ -141,7 +142,7 @@ export const EditProfileModal = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <Modal isOpen={true} onClose={onClose} title="Edit Profile">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
         <h2 className="text-2xl font-semibold mb-6">Edit Profile</h2>
 
@@ -369,7 +370,7 @@ export const EditProfileModal = ({
       {isShownPasswordModal && (
         <ChangePasswordModal token={token} onClose={handleClosePasswordModal} />
       )}
-    </div>
+    </Modal>
   )
 }
 

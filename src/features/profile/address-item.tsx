@@ -72,7 +72,8 @@ export const AddressItem = ({
         Country
       </label>
       <select
-        value={`country-${index}`}
+        id={`country-${index}`}
+        value={address.country}
         onChange={(e) => onChange(index, 'country', e.target.value)}
         className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
       >

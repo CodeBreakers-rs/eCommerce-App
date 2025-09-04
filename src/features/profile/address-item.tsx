@@ -65,9 +65,14 @@ export const AddressItem = ({
     />
 
     <div>
-      <label className="block text-sm font-medium mb-1">Country</label>
+      <label
+        htmlFor={`country-${index}`}
+        className="block text-sm font-medium mb-1"
+      >
+        Country
+      </label>
       <select
-        value={address.country ?? ''}
+        value={`country-${index}`}
         onChange={(e) => onChange(index, 'country', e.target.value)}
         className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
       >

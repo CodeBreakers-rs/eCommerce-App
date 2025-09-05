@@ -112,9 +112,9 @@ const MainPage = () => {
                 alt="Delivery area"
                 className="w-64 h-auto object-contain"
               />
-              <div className="absolute top-[25%] left-[32%] w-22 h-27 rounded-full overflow-hidden shadow-xl">
+              <div className="absolute top-[15%] left-[37%] w-22 h-27 rounded-full overflow-hidden shadow-xl">
                 <img
-                  src="src\assets\images/1.png"
+                  src="src\assets\images\1.png"
                   alt="Pin"
                   className="object-cover w-full h-full"
                 />

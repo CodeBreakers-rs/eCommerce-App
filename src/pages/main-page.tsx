@@ -29,7 +29,7 @@ const MainPage = () => {
   return (
     <>
       <section className="bg-[#f5e6d8]  w-full px-4 pt-4 pb-4">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-center rounded-3xl bg-[#fbeee2] p-2">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-2 pt-2 w-full">
           <img
             src={main1}
             alt="Zefir Hero"
@@ -147,7 +147,7 @@ const MainPage = () => {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-wrap md:flex-nowrap items-start justify-center gap-25 md:justify-start md:px-8">
+        <div className="mt-10 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-6 md:justify-start md:px-8">
           <div className="flex flex-col items-center space-y-4 max-w-sm text-center">
             <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
               SWEET INFO

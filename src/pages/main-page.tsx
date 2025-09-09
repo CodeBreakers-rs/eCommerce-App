@@ -105,7 +105,7 @@ const MainPage = () => {
 
       <section className="bg-[#f5e6d8] px-4 py-14">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left">
             <div className="relative mb-6 md:mb-0 md:mr-6">
               <img
                 src="src/assets/images/2.png"

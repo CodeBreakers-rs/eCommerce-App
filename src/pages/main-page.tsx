@@ -104,17 +104,17 @@ const MainPage = () => {
       </section>
 
       <section className="bg-[#f5e6d8] px-4 py-14">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
             <div className="relative mb-6 md:mb-0 md:mr-6">
               <img
-                src="src\assets\images\2.png"
+                src="src/assets/images/2.png"
                 alt="Delivery area"
-                className="w-64 h-auto object-contain"
+                className="w-48 sm:w-56 md:w-64 h-auto object-contain"
               />
               <div className="absolute top-[15%] left-[37%] w-22 h-27 rounded-full overflow-hidden shadow-xl">
                 <img
-                  src="src\assets\images\1.png"
+                  src="src/assets/images/1.png"
                   alt="Pin"
                   className="object-cover w-full h-full"
                 />
@@ -133,7 +133,7 @@ const MainPage = () => {
             </div>
           </div>
 
-          <div className="text-[#2f2b27] text-base space-y-4 max-w-lg mx-auto md:mx-0">
+          <div className="text-[#2f2b27] text-base space-y-4 max-w-xl mx-auto lg:mx-0">
             <p>
               We offer a convenient delivery service within Toronto for a flat
               fee of $35. You can choose to have your order delivered by taxi or
@@ -147,12 +147,11 @@ const MainPage = () => {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-6 md:justify-start md:px-8">
+        <div className="mt-10 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-6 px-4">
           <div className="flex flex-col items-center space-y-4 max-w-sm text-center">
             <button className="border border-[#2f2b27] px-6 py-2 rounded-full text-sm hover:bg-[#2f2b27] hover:text-white transition">
               SWEET INFO
             </button>
-
             <div className="text-sm text-[#493220] space-y-5 text-left w-full">
               <p>Minimum Order: All orders must be at least $27.</p>
               <p>
@@ -162,20 +161,18 @@ const MainPage = () => {
               </p>
             </div>
           </div>
-          <div className="mt-10 flex flex-wrap md:flex-nowrap items-start justify-center gap-10 md:justify-start md:px-8">
+
+          <div className="mt-10 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-6 px-4">
             <img
-              src="src\assets\images\3.png"
-              alt="Zefir thumbnail thin"
+              src="src/assets/images/3.png"
               className="w-24 h-32 object-cover rounded-xl shadow-md"
             />
             <img
               src={main2}
-              alt="Zefir thumbnail medium"
               className="w-32 h-32 object-cover rounded-xl shadow-md"
             />
             <img
-              src="src\assets\images\5.png"
-              alt="Zefir thumbnail thick"
+              src="src/assets/images/5.png"
               className="w-40 h-32 object-cover rounded-xl shadow-md"
             />
           </div>

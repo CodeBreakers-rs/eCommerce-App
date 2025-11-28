@@ -6,9 +6,10 @@ import type {
 export type AuthState = {
   isLoggedIn: boolean
   customer: SDKCustomer | null
-  token: string | null
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: 'idle' | 'loading' | 'succeeded' | 'failed' | 'loggingOut'
   error: string | null
+  token?: string | null
+  anonToken?: string | null
 }
 
 export type CustomerDraftPayload = {
@@ -56,6 +57,7 @@ export interface CustomerProfile {
 
 export interface EditProfileModalProps {
   customer: SDKCustomer
+  token: string
   onSave: (_data: CustomerUpdatePayload) => Promise<void>
   onClose: () => void
 }
@@ -87,6 +89,5 @@ export type CustomerProfileType = {
 }
 
 export interface CustomerState {
-  token: string | null
   customer: SDKCustomer | null
 }

@@ -5,11 +5,12 @@ import { setCustomerData, login } from '../store/slices/auth-slice'
 import { updateCustomerProfile } from '../features/profile/services/customer-service'
 import type { CustomerUpdatePayload } from '../types/customer'
 import { EditProfileModal } from '../features/profile/edit-profile-modal'
+import { getCustomerTokenFromStorage } from '../store/token-storage'
 
 const ProfilePage = () => {
   const dispatch = useDispatch()
   const customer = useAppSelector((state) => state.auth.customer)
-  const token = useAppSelector((state) => state.auth.token)
+  const { token } = getCustomerTokenFromStorage()
 
   const [defaultShippingId, setDefaultShippingId] = useState<string | null>(
     null,
@@ -30,13 +31,8 @@ const ProfilePage = () => {
       }
 
       const newCustomerData = await updateCustomerProfile(token, updatePayload)
-      dispatch(login({ customer: newCustomerData, token }))
-      dispatch(
-        setCustomerData({
-          token,
-          customer: newCustomerData,
-        }),
-      )
+      dispatch(login({ customer: newCustomerData }))
+      dispatch(setCustomerData({ customer: newCustomerData }))
       setStatusMessage('Profile updated successfully!')
       setIsEditMode(false)
     } catch (error) {
@@ -72,11 +68,10 @@ const ProfilePage = () => {
 
       <button
         onClick={() => setIsEditMode(true)}
-        className="mb-4 px-4 py-2 rounded-lg bg-blue-600 text-black hover:bg-blue-700 transition"
+        className="mb-4 px-4 py-2 rounded-lg bg-gray-400 hover:bg-[#40312d] text-white transition"
       >
         Edit Profile
       </button>
-
       <section className="mb-8 bg-white p-6 rounded-2xl shadow">
         <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
         <div className="space-y-2 text-gray-700">
@@ -151,6 +146,7 @@ const ProfilePage = () => {
           <>
             <EditProfileModal
               customer={customer}
+              token={token!}
               onSave={handleProfileSave}
               onClose={() => setIsEditMode(false)}
             />

@@ -54,9 +54,9 @@ const ImageSlider = ({ images }: Props) => {
             </button>
 
             <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2">
-              {images.map((_, i) => (
+              {images.map((img, i) => (
                 <button
-                  key={i}
+                  key={img.url}
                   onClick={() => goToSlide(i)}
                   className={`w-2.5 h-2.5 rounded-full ${
                     current === i ? 'bg-white' : 'bg-white/50'

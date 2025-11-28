@@ -1,15 +1,30 @@
 import type { Customer } from '@commercetools/platform-sdk'
 import type { CustomerDraftPayload } from '../../../types/customer'
 import { getCustomerProfile } from '../../profile/services/customer-service'
-
-const PROJECT_KEY = import.meta.env.VITE_CT_PROJECT_KEY
-const CLIENT_ID = import.meta.env.VITE_CT_CLIENT_ID
-const CLIENT_SECRET = import.meta.env.VITE_CT_CLIENT_SECRET
-const API_BASE_URL = import.meta.env.VITE_CT_API_URL
-const AUTH_BASE_URL = import.meta.env.VITE_CT_AUTH_URL
-
-const API_SIGNUP_URL = `${API_BASE_URL}/${PROJECT_KEY}/customers`
-const API_TOKEN_URL = `${AUTH_BASE_URL}/oauth/${PROJECT_KEY}/customers/token`
+import {
+  AUTH_URL,
+  CLIENT_ID,
+  CLIENT_SECRET,
+  PROJECT_KEY,
+  SIGNUP_URL,
+  TOKEN_URL,
+} from '../../../services/commercetools-constants'
+import {
+  safeFetchJson,
+  type ErrorResponse,
+  type TokenResponse,
+} from '../../../types/api-response'
+import { store } from '../../../store'
+import { login, logout, logoutStarted } from '../../../store/slices/auth-slice'
+import { clearCart, initializeCart } from '../../../store/slices/cart-slice'
+import { clearCartStorage } from '../../../store/cart-storage'
+import {
+  clearCustomerToken,
+  setCustomerToken,
+  clearAnonToken,
+  getAnonTokenFromStorage,
+} from '../../../store/token-storage'
+import { encodeCredentials } from '../../../utils/encode-credentials'
 
 export async function loginUser(
   email: string,
@@ -18,21 +33,54 @@ export async function loginUser(
   token: string
   customer: Customer
 }> {
-  const tokenData = await loginWithPassword(email, password)
-  const customer = await getCustomerProfile(tokenData.access_token)
+  const anonData = getAnonTokenFromStorage()
+  const tokenData = await loginWithPassword(
+    email,
+    password,
+    anonData?.anonymousId ?? undefined,
+  )
 
+  const expiresAt = new Date(
+    Date.now() + tokenData.expires_in * 1000,
+  ).toISOString()
+  setCustomerToken(tokenData.access_token, expiresAt)
+
+  const customer = await getCustomerProfile(tokenData.access_token)
   if (!customer) {
     throw new Error('Failed to fetch customer profile')
   }
 
+  store.dispatch(
+    login({
+      customer,
+    }),
+  )
+  clearAnonToken()
+
+  await store.dispatch(initializeCart())
+
   return {
     token: tokenData.access_token,
-    customer: customer as Customer,
+    customer,
   }
 }
 
-export async function getClientAccessToken() {
-  const response = await fetch(`${AUTH_BASE_URL}/oauth/token`, {
+export const handleLogout = async () => {
+  store.dispatch(logoutStarted())
+
+  store.dispatch(clearCart())
+  clearCartStorage()
+
+  clearAnonToken()
+  clearCustomerToken()
+
+  store.dispatch(logout())
+
+  await store.dispatch(initializeCart())
+}
+
+export async function getClientAccessToken(): Promise<string> {
+  const response = await fetch(`${AUTH_URL}/oauth/token`, {
     method: 'POST',
     headers: {
       Authorization: `Basic ${encodeCredentials(CLIENT_ID, CLIENT_SECRET)}`,
@@ -45,12 +93,12 @@ export async function getClientAccessToken() {
   })
 
   if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || 'Failed to get access token')
+    const error = (await response.json().catch(() => ({}))) as ErrorResponse
+    throw new Error(error.message ?? 'Failed to get access token')
   }
 
-  const customerData = await response.json()
-  return customerData.access_token
+  const tokenData = await safeFetchJson<TokenResponse>(response)
+  return tokenData.access_token
 }
 
 export function sanitizeCustomerDraft(
@@ -58,8 +106,8 @@ export function sanitizeCustomerDraft(
 ): Record<string, unknown> {
   const cleaned: Record<string, unknown> = {}
 
-  for (const key in draft) {
-    const value = (draft as any)[key]
+  for (const key of Object.keys(draft)) {
+    const value = draft[key as keyof CustomerDraftPayload]
     if (value !== undefined && value !== null) {
       cleaned[key] = value
     }
@@ -68,12 +116,13 @@ export function sanitizeCustomerDraft(
   return cleaned
 }
 
-export async function registerCustomer(customerDraft: CustomerDraftPayload) {
+export async function registerCustomer(
+  customerDraft: CustomerDraftPayload,
+): Promise<Customer> {
   const token = await getClientAccessToken()
-
   const sanitized = sanitizeCustomerDraft(customerDraft)
 
-  const response = await fetch(API_SIGNUP_URL, {
+  const response = await fetch(SIGNUP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -83,23 +132,26 @@ export async function registerCustomer(customerDraft: CustomerDraftPayload) {
   })
 
   if (!response.ok) {
-    const errorBody = await response.json()
-    throw {
-      statusCode: response.status,
-      message: errorBody.message || 'Registration failed',
-      errors: errorBody.errors || [],
-      error: errorBody.error || 'registration_error',
-    }
+    const errorBody = (await response.json().catch(() => ({}))) as ErrorResponse
+    const errorMessage = errorBody.message ?? 'Registration failed'
+    throw new Error(errorMessage)
   }
-
-  return await response.json()
+  const customer = await safeFetchJson<Customer>(response)
+  return customer
 }
 
-const encodeCredentials = (clientId: string, clientSecret: string) =>
-  btoa(`${clientId}:${clientSecret}`)
-
-export async function loginWithPassword(email: string, password: string) {
-  const tokenRes = await fetch(API_TOKEN_URL, {
+export async function loginWithPassword(
+  email: string,
+  password: string,
+  anonymousId?: string,
+): Promise<TokenResponse> {
+  const url = new URL(TOKEN_URL)
+  console.log(anonymousId)
+  if (anonymousId) {
+    url.searchParams.set('anonymous_id', anonymousId)
+    console.log(url)
+  }
+  const tokenRes = await fetch(url.toString(), {
     method: 'POST',
     headers: {
       Authorization: `Basic ${encodeCredentials(CLIENT_ID, CLIENT_SECRET)}`,
@@ -108,7 +160,7 @@ export async function loginWithPassword(email: string, password: string) {
     body: new URLSearchParams({
       grant_type: 'password',
       username: email,
-      password: password,
+      password,
       scope: [
         `view_published_products:${PROJECT_KEY}`,
         `manage_my_orders:${PROJECT_KEY}`,
@@ -118,11 +170,9 @@ export async function loginWithPassword(email: string, password: string) {
   })
 
   if (!tokenRes.ok) {
-    const err = await tokenRes.json().catch(() => ({}))
-    console.error('Login failed response:', err)
-    throw new Error(err.message || 'Login failed')
+    throw new Error(`Login failed: ${tokenRes.status}`)
   }
 
-  const tokenData = await tokenRes.json()
+  const tokenData: TokenResponse = await safeFetchJson<TokenResponse>(tokenRes)
   return tokenData
 }

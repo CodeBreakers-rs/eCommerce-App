@@ -86,9 +86,9 @@ const EnlargedImageModal = ({
               </div>
 
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                {images.map((_, index) => (
+                {images.map((img, index) => (
                   <button
-                    key={index}
+                    key={img.url}
                     onClick={() => setCurrentIndex(index)}
                     aria-label={`View image ${index + 1}`}
                     className={`w-3 h-3 rounded-full transition-colors ${

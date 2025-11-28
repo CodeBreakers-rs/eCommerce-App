@@ -1,13 +1,12 @@
 import { useState, useRef } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useAppSelector, useAppDispatch } from '../../../store/hooks'
-import { logout } from '../../../store/slices/auth-slice'
+import { useAppSelector } from '../../../store/hooks'
 import { useClickOutside } from '../../../hooks/use-click-outside'
+import { handleLogout } from '../../../features/auth/services/auth-service'
 
 const UserDropdown = () => {
   const [open, setOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn)
@@ -15,10 +14,9 @@ const UserDropdown = () => {
 
   useClickOutside(dropdownRef, () => setOpen(false))
 
-  const handleLogout = () => {
-    dispatch(logout())
-    localStorage.removeItem('auth')
-    navigate('/login')
+  const onLogout = async () => {
+    await handleLogout()
+    void navigate('/login')
   }
 
   if (!isLoggedIn || !customer) return null
@@ -75,7 +73,7 @@ const UserDropdown = () => {
               <button
                 onClick={() => {
                   setOpen(false)
-                  handleLogout()
+                  void onLogout()
                 }}
                 className={`w-full ${dropdownMenuItemClass}`}
               >

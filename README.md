@@ -1,111 +1,118 @@
-# 🛍️ E-Commerce Project with CommerceTools
+# CommerceTools E-Commerce Platform
 
-## 🌟 Project Overview
+## Project Overview
 
-**Project Name**: CommerceTools E-Commerce Platform  
-**Purpose**: Build a modern e-commerce solution powered by CommerceTools API with robust development workflows  
-**Status**: In Development (Sprint 1)
+A modern, responsive Single Page Application (SPA) that replicates a real-world online store experience. Users can browse products, view detailed information, register or log in, manage a shopping basket, and explore various pages — all powered by the CommerceTools API and built entirely from scratch without templates.
+Developed as a team project for the Rolling Scopes School Front-End course, the app uses modern technologies and follows professional development practices.
 
-This project implements a full-featured e-commerce platform using CommerceTools as the backend service. The current sprint focuses on setting up the development environment, project infrastructure, and CommerceTools integration.
+### Development Highlights
 
-## 🏗️ Sprint 1 Focus Areas
+- Modular and responsive UI, optimized for screens starting from 390px wide
+- Custom data model in CommerceTools, including categories, product types, and localized attributes
+- Clear code quality rules and clean Git history, supported by ESLint, Prettier, and Husky hooks
+- Team-based workflow with GitHub PR templates, task tracking in Trello, and SCRUM-like collaboration
 
-- Repository setup and organization
-- Project management board configuration
-- CommerceTools project and API client setup
-- Development environment configuration
-- Testing and quality assurance setup
+## Tech Stack
 
-## 🛠 Technology Stack
+### Core Technologies
 
-### Core Infrastructure
+- React (SPA architecture)
+- TypeScript
+- Tailwind CSS
 
-- **Version Control**: GitHub
-- **Project Management**: [Trello]
-- **Package Manager**: npm
+### Dev Tools & Workflow
 
-### Development Tools
-
-- **Bundler**: Vite
-- **Language**: TypeScript
-- **Framework**: React
-- **Linting**: ESLint
-- **Formatting**: Prettier
-- **Git Hooks**: Husky
-- **Testing**: Vitest
+- Vite (bundler)
+- Redux Toolkit (state management)
+- ESLint & Prettier (linting & formatting)
+- GitHub (version control, pull requests)
+- Husky (Git hooks)
+- Cloudflare Pages (deployment)
 
 ### CommerceTools Integration
 
-- **API Client**: CommerceTools SDK
-- **Authentication**: OAuth 2.0
-- **Data Model**: products, carts, orders
+- OAuth 2.0 authentication
+- Product and cart management
+- Custom dataset via CommerceTools API
 
-## 🚀 Getting Started
+### Testing
 
-### Prerequisites
+The project uses **Vitest** for unit testing, with coverage reporting powered by the **v8** coverage tool. Tests are organized in `tests` folders located next to the source files they cover (e.g., `src/pages/tests` for `src/pages`), promoting modular and maintainable test code.
 
-- Node.js v22+
-- CommerceTools account with admin access
-- GitHub account
+- **Coverage**: Approximately 60% line coverage across the codebase.
+- **Strong coverage areas** include pages, navigation, and catalog components.
+- **Areas needing improvement** include some services, Redux slices, and authentication components.
+- **Some utilities, layout components, and type definitions** currently have limited or no test coverage.
 
-### Installation
+## Deployment
 
-1. Clone the repository: https://github.com/CodeBreakers-rs/eCommerce-App.git
+- **Live App**: [ecommerce-app-4sh.pages.dev](https://ecommerce-app-4sh.pages.dev)
+- **Deployment Branch**: `release/basket-about_us`
+- **Vite Config**: `base: '/'` is set in `vite.config.ts` for proper asset resolution.
+- **Deployment Type**: Automatic deployments are enabled for the production branch.
 
-2. cd eCommerce-App
+> ⚠️ **Note**: API access is currently limited due to CommerceTools trial expiration. Functionality may be restricted.
 
-3. Install dependencies: npm install
+## Code Quality & Automation
 
-4. Then fill in your CommerceTools credentials:
+This project uses a set of tools and automated workflows to ensure consistent code quality, maintainability, and developer productivity.
 
-```
-    CT_PROJECT_KEY=your_project_key
+- **ESLint** enforces code style and best practices.
+- **Prettier** formats code automatically based on defined style rules.
+- **Vitest** handles unit testing and tracks test coverage (~60%).
+- **Husky** manages Git hooks to automate quality checks at key Git lifecycle events:
+  - **pre-commit**: Runs `lint-staged` to lint and format staged files before committing.
+  - **pre-push**: Runs tests to prevent broken code from being pushed.
+  - **post-merge**: Installs dependencies and runs tests with coverage after merging branches.
 
-    CT_CLIENT_ID=your_client_id
+### Key npm Scripts
 
-    CT_CLIENT_SECRET=your_client_secret
+| Command                 | Description                                                       |
+| ----------------------- | ----------------------------------------------------------------- |
+| `npm run dev`           | Starts the Vite development server                                |
+| `npm run build`         | Runs TypeScript build (`tsc -b`) and builds the production bundle |
+| `npm run preview`       | Serves the production build locally using Vite                    |
+| `npm run lint`          | Lints all project files with ESLint                               |
+| `npm run format`        | Formats all code files using Prettier                             |
+| `npm test`              | Runs all unit tests headlessly with Vitest                        |
+| `npm run test:coverage` | Runs all tests with coverage reporting (using v8 engine)          |
+| `npm run prepare`       | Sets up Husky Git hooks on install (npm lifecycle script)         |
 
-    CT_API_URL=https://api.europe-west1.gcp.commercetools.com
+These scripts, combined with automated Git hooks, help catch issues early and keep the codebase clean and consistent throughout development.
 
-    CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com
-```
+## Project Management
 
-5. npm run dev
+This project was developed using Agile SCRUM methodology.
 
-### Scripts Overview
+- Led collaboration and code reviews in a SCRUM-based front-end team (3→2 developers)
+- Used Git and GitHub PRs for version control and code reviews
+- Organized and tracked tasks in Trello: [Trello Board (private)](https://trello.com/b/yoJ1bPla/ecommerce)
 
-#### `npm run dev`
+> Note: The Trello board is currently private. It includes task breakdowns, sprint planning, and issue tracking used during development.
 
-✅ Starts the development server. Standard for Vite.
+## Features
 
-#### `npm run build`
+- Login & Registration
+- Main Page
+- Catalog Page
+- Product Details Page
+- User Profile Page
+- Basket Page
+- About Us Page
+- Responsive design (min width: 390px)
 
-✅ Runs TypeScript build with project references (`tsconfig.json` with "composite": true assumed).  
-✅ Then builds for production using Vite. Ideal for TypeScript projects.
+> ⚠️ **Checkout process is not implemented** – only product management in the cart is available..
 
-#### `npm run lint`
+## Getting Started
 
-✅ Lints all files in the project using ESLint. Ensures code quality.
+This project requires access to private CommerceTools API credentials to run locally.
 
-#### `npm run preview`
+If you are a contributor or team member, please contact the maintainers for environment setup instructions.
 
-✅ Serves the production build locally. Great for final testing before deployment.
+For general usage, you can explore the live deployed version here: [Live App](https://ecommerce-app-4sh.pages.dev)
 
-#### `npm run format`
+## Team & Credits
 
-✅ Formats all files using Prettier. Helps maintain consistent code style.
+Project developed as part of the Rolling Scopes School Front-End course.
 
-#### `npm test`
-
-✅ Runs tests headlessly with Vitest. Suitable for CI and local test runs.
-
-### ✅ Summary
-
-All scripts are correctly set up to support:
-
-- `dev`: Development server
-- `build`: Production build
-- `lint`: Code quality checks
-- `format`: Code formatting
-- `test`: Test execution
-- `preview`: Production preview
+Meet the team on the [About Us](https://ecommerce-app-4sh.pages.dev/about) page of the deployed project.

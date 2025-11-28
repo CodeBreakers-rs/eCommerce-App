@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { CustomerState, AuthState } from '../../types/customer'
 import type { Customer } from '@commercetools/platform-sdk'
+import type { RootState } from '../index'
 
 export const authInitialState: AuthState = {
   isLoggedIn: false,
   customer: null,
-  token: null,
   status: 'idle',
   error: null,
 }
@@ -18,10 +18,9 @@ const authSlice = createSlice({
       state.status = 'loading'
       state.error = null
     },
-    login(state, action: PayloadAction<{ customer: Customer; token: string }>) {
+    login(state, action: PayloadAction<{ customer: Customer }>) {
       state.isLoggedIn = true
       state.customer = action.payload.customer
-      state.token = action.payload.token
       state.status = 'succeeded'
       state.error = null
     },
@@ -29,10 +28,12 @@ const authSlice = createSlice({
       state.status = 'failed'
       state.error = action.payload
     },
+    logoutStarted(state) {
+      state.status = 'loggingOut'
+    },
     logout(state) {
       state.isLoggedIn = false
       state.customer = null
-      state.token = null
       state.status = 'idle'
       state.error = null
     },
@@ -40,7 +41,6 @@ const authSlice = createSlice({
 })
 
 const initialState: CustomerState = {
-  token: null,
   customer: null,
 }
 
@@ -48,15 +48,10 @@ const customerSlice = createSlice({
   name: 'customer',
   initialState,
   reducers: {
-    setCustomerData: (
-      state,
-      action: PayloadAction<{ token: string; customer: Customer }>,
-    ) => {
-      state.token = action.payload.token
+    setCustomerData: (state, action: PayloadAction<{ customer: Customer }>) => {
       state.customer = action.payload.customer
     },
     clearCustomerData: (state) => {
-      state.token = null
       state.customer = null
     },
   },
@@ -64,5 +59,10 @@ const customerSlice = createSlice({
 
 export const { setCustomerData, clearCustomerData } = customerSlice.actions
 
-export const { loginStarted, login, loginFailed, logout } = authSlice.actions
+export const { loginStarted, login, loginFailed, logoutStarted, logout } =
+  authSlice.actions
+
+export const getIsLoggingOut = (state: RootState): boolean =>
+  state.auth.status === 'loggingOut'
+
 export default authSlice.reducer
